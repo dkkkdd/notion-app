@@ -1,0 +1,49 @@
+.form {
+  padding: 2em;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgb(27, 27, 27);
+  max-width: 30em;
+}
+.input {
+  outline: 1px solid grey;
+
+  padding: 1em;
+  border-radius: 10px;
+  width: 100%;
+  transition: all 0.2s ease-in;
+}
+.input + span {
+  position: absolute;
+  top: 0.8em;
+  left: 1em;
+  color: grey;
+  transition: all 0.2s ease-in;
+  background-color: #242424;
+  padding: 0.2em 0.5em;
+}
+
+label .input:focus + span,
+label .input:valid + span {
+  top: -1em;
+  font-size: 0.7em;
+  font-weight: 600;
+}
+label .input:focus + span {
+  color: rgb(66, 112, 209);
+}
+.input:focus {
+  outline: 2px solid #4270d1;
+}
+label {
+  position: relative;
+}
+legend {
+  font-size: 2em;
+  font-weight: bold;
+  background: linear-gradient(to right, #4270d1, #9d174d, #9d174d);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

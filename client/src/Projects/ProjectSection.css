@@ -1,0 +1,92 @@
+.projects {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+.heart {
+  margin: 0 0.5em;
+}
+.project {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.2em 0em;
+  border-radius: 8px;
+  position: relative;
+  overflow: visible;
+}
+
+#icon-three-dots-punctuation-sign-svgrepo-com {
+  transform: rotate(90deg);
+}
+.project-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.project:hover {
+  background-color: #363636;
+  cursor: pointer;
+}
+.project-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.add-project-btn {
+  cursor: pointer;
+}
+
+.project-event-btn {
+  display: flex;
+}
+.project-event-btn span.plus {
+  transform: rotate(45deg);
+}
+.project-event-btn span.close {
+  transition: all 0.25s ease;
+}
+.hidden {
+  opacity: 0;
+}
+.project-actions {
+  transition: none;
+  opacity: 0;
+}
+.project:hover .project-actions {
+  opacity: 1;
+}
+/* Keep the button visible when menu is open */
+.project-actions.active {
+  opacity: 1;
+  background-color: #82828241; /* Same as your .tip:hover */
+}
+
+/* Ensure the row stays highlighted when menu is open */
+.project.menu-active {
+  background-color: #2a2a2a; /* Same as .selected or slightly different */
+}
+
+/* Modify your existing hover rule to also account for the active state */
+.project:hover .project-actions,
+.project-actions.active {
+  opacity: 1;
+}
+
+.projects-wrapper {
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  z-index: 999;
+}
+
+.project.selected {
+  background-color: #3b3b3b;
+}

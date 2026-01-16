@@ -1,0 +1,24 @@
+.projects-fav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fav-projects-wrapper {
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+
+.fav-projects-wrapper.open {
+  max-height: 1000px;
+}
+
+.fav-projects-wrapper.closed {
+  max-height: 0;
+}
+.task-form-settings {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 1em;
+}
