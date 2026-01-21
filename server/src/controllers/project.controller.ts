@@ -4,29 +4,68 @@ import { prisma } from "../prisma";
 export async function getProjects(req: any, res: Response) {
   const userId = req.userId;
 
-  if (!userId) {
-    return res.status(400).json({ error: "userId is required" });
-  }
-
   const projects = await prisma.project.findMany({
     where: { userId },
     include: {
-      // Считаем количество задач, чтобы не тянуть их все (опционально для оптимизации)
+      sections: {
+        orderBy: { order: "asc" },
+      },
       _count: { select: { tasks: true } },
     },
-    // ОБЯЗАТЕЛЬНО: Сортируем по порядку
-    orderBy: {
-      order: "asc",
-    },
+    orderBy: { order: "asc" },
   });
 
   res.json(projects);
 }
 
+export async function getProjectBoard(req: any, res: Response) {
+  const { id } = req.params; // ID проекта
+  const userId = req.userId;
+  try {
+    const project = await prisma.project.findUnique({
+      where: { id: String(id), userId },
+      include: {
+        sections: {
+          orderBy: { order: "asc" },
+          include: {
+            tasks: {
+              where: { parentId: null }, // Только главные задачи (подзадачи внутри)
+              orderBy: { order: "asc" },
+              include: {
+                subtasks: {
+                  orderBy: { order: "asc" },
+                },
+              },
+            },
+          },
+        },
+        // Задачи проекта, которые БЕЗ секций (висят вверху проекта)
+        tasks: {
+          where: {
+            sectionId: null,
+            parentId: null,
+          },
+          orderBy: { order: "asc" },
+          include: {
+            subtasks: {
+              orderBy: { order: "asc" },
+            },
+          },
+        },
+      },
+    });
+
+    if (!project) return res.status(404).json({ error: "Project not found" });
+
+    res.json(project);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch project data" });
+  }
+}
+
 export async function createProject(req: any, res: Response) {
   const { title, color, favorites, order } = req.body;
-  const userId = req.userId; // Достаем из middleware
-
+  const userId = req.userId;
   if (!title) {
     return res.status(400).json({ error: "title is required" });
   }
@@ -44,8 +83,10 @@ export async function createProject(req: any, res: Response) {
   res.status(201).json(project);
 }
 
-export async function updateProject(req: Request, res: Response) {
+export async function updateProject(req: any, res: Response) {
   const { id } = req.params;
+  const userId = req.userId;
+
   // Используем деструктуризацию, чтобы было чище
   const { title, color, favorites, order } = req.body;
 
@@ -54,8 +95,8 @@ export async function updateProject(req: Request, res: Response) {
   }
 
   try {
-    const project = await prisma.project.update({
-      where: { id },
+    const project = await prisma.project.updateMany({
+      where: { id: String(id), userId },
       data: {
         ...(title !== undefined && { title }),
         ...(color !== undefined && { color }),
@@ -69,24 +110,11 @@ export async function updateProject(req: Request, res: Response) {
   }
 }
 
-export async function deleteProject(req: Request, res: Response) {
+export async function deleteProject(req: any, res: Response) {
   const { id } = req.params;
+  const userId = req.userId;
 
-  // Если удаляем проект, Prisma сама удалит задачи (если в схеме ON DELETE CASCADE)
-  // или выдаст ошибку, если связи защищены.
-  await prisma.project.delete({ where: { id } });
+  await prisma.project.deleteMany({ where: { id: String(id), userId } });
 
   res.status(204).send();
-}
-
-export async function getProjectTasks(req: Request, res: Response) {
-  const { projectId } = req.params;
-
-  const tasks = await prisma.task.findMany({
-    where: { projectId },
-    // Здесь тоже логично добавить сортировку по order
-    orderBy: { order: "asc" },
-  });
-
-  res.json(tasks);
 }

@@ -1,19 +1,20 @@
 import { Router } from "express";
-import { auth } from "../controllers/auth.controller";
 import {
   getProjects,
+  getProjectBoard,
   createProject,
   updateProject,
   deleteProject,
-  getProjectTasks,
 } from "../controllers/project.controller";
-console.log("PROJECT ROUTES LOADED");
 
+import { authMiddleware } from "../middleware/auth";
 const router = Router();
-router.get("/", auth, getProjects);
-router.post("/", auth, createProject);
+
+router.use(authMiddleware);
+router.get("/", getProjects);
+router.get("/:id", getProjectBoard);
+router.post("/", createProject);
 router.patch("/:id", updateProject);
 router.delete("/:id", deleteProject);
-router.get("/:projectId/tasks", getProjectTasks);
 
 export default router;
