@@ -13,6 +13,7 @@ import type { Task } from "../../types/tasks";
 export const TaskList = () => {
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
+  const [activeParentId, setActiveParentId] = useState<string | null>(null);
   const [openForm, setOpenForm] = useState(false);
   const { mode } = useProjectsContext();
   const { tasks, ready } = useFilteredTasks();
@@ -30,7 +31,24 @@ export const TaskList = () => {
               isEditing={editingTaskId === task.id}
               onEdit={() => setEditingTaskId(task.id)}
               onDeleteRequest={() => setTaskToDelete(task)}
+              onAddSubtask={() => {
+                setActiveParentId(task.id);
+                setOpenForm(true);
+              }}
             />
+            {activeParentId === task.id && (
+              <div className="ml-8 mt-2 border-l-2 border-[#444] pl-4">
+                <TaskForm
+                  formMode="create"
+                  parentId={task.id}
+                  onClose={() => setActiveParentId(null)}
+                  onSubmit={async (data) => {
+                    await createTask({ ...data, parentId: task.id });
+                    setActiveParentId(null);
+                  }}
+                />
+              </div>
+            )}
             {editingTaskId === task.id && (
               <TaskForm
                 initiaTask={task}
@@ -38,17 +56,18 @@ export const TaskList = () => {
                 onClose={() => {
                   setEditingTaskId(null);
                   setOpenForm(false);
+                  setActiveParentId(null);
                 }}
                 onSubmit={async (data) => {
                   await updateTask(task.id, data);
                   setEditingTaskId(null);
+                  setActiveParentId(null);
                 }}
               />
             )}
           </div>
         ))}
       </div>
-
       {taskToDelete && (
         <ConfirmModal
           title="Delete Task"
@@ -62,7 +81,10 @@ export const TaskList = () => {
             await deleteTask(taskToDelete.id);
             setTaskToDelete(null);
           }}
-          onClose={() => setTaskToDelete(null)}
+          onClose={() => {
+            setTaskToDelete(null);
+            setActiveParentId(null);
+          }}
           confirmText="Delete Now"
         />
       )}
@@ -71,9 +93,11 @@ export const TaskList = () => {
           formMode="create"
           onClose={() => {
             setOpenForm(false);
+            setActiveParentId(null);
           }}
           onSubmit={async (data) => {
             await createTask(data);
+            setActiveParentId(null);
           }}
         />
       )}
@@ -86,7 +110,6 @@ export const TaskList = () => {
           }}
         />
       )}
-
       {!openForm && tasks.length === 0 && (
         <EmptyState mode={mode} onOpenForm={() => setOpenForm(true)} />
       )}

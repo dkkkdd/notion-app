@@ -5,7 +5,8 @@ import { useProjectsContext } from "../context/ProjectsContext";
 import "./ProjectSection.css";
 
 export function ProjectsSection() {
-  const { projects, createProject } = useProjectsContext();
+  const { projects, createProject, changeMode, setSelectedProjectId } =
+    useProjectsContext();
   const [showProjects, setShowProjects] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -52,7 +53,11 @@ export function ProjectsSection() {
           mode="create"
           onClose={() => setShowForm(false)}
           onSubmit={async ({ title, color }) => {
-            await createProject(title, 3, color, false);
+            const newProject = await createProject(title, 3, color, false);
+            if (newProject) {
+              setSelectedProjectId(newProject.id);
+              changeMode("project", newProject.id);
+            }
             setShowForm(false);
           }}
         />

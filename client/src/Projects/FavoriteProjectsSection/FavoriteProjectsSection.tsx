@@ -1,21 +1,28 @@
 import "./favorites.css";
 import { ProjectsList } from "../ProjectsList";
-import { useState, useRef, useLayoutEffect } from "react";
+import { useState, useRef, useLayoutEffect, useMemo } from "react";
 import { useProjectsContext } from "../../context/ProjectsContext"; // Наш склад данных
 
 export const FavoriteProjects = () => {
   const { projects } = useProjectsContext();
   const [showProjects, setShowProjects] = useState(true);
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const favProjects = projects.filter((p) => p.favorites);
+  const favProjects = useMemo(
+    () => projects.filter((p) => p.favorites),
+    [projects]
+  );
 
   useLayoutEffect(() => {
     if (!wrapperRef.current) return;
+    if (favProjects.length === 0) {
+      wrapperRef.current.style.maxHeight = "0px";
+      return;
+    }
     wrapperRef.current.style.maxHeight = showProjects
       ? `${wrapperRef.current.scrollHeight}px`
       : "0px";
-  }, [showProjects, favProjects.length]);
-
+  }, [showProjects, favProjects]);
+  if (favProjects.length === 0) return null;
   return (
     <div className="nav-item">
       {" "}

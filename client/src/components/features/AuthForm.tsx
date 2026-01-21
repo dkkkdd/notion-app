@@ -1,171 +1,235 @@
-import React, { useState } from "react";
-import { useAuthContext } from "../../context/AuthContext";
-import "./form.css";
-import img from "../../assets/form.png";
-export const AuthForm = () => {
-  const [isLogin, setIsLogin] = useState(true);
-  const { loginUser, registerUser } = useAuthContext();
+import { useNavigate } from "react-router-dom";
+import React, { memo } from "react";
+interface AuthFormProps {
+  isLoginMode: boolean;
+  email: string;
+  setEmail: (val: string) => void;
+  password: string;
+  setPassword: (val: string) => void;
+  userName: string;
+  setUserName: (val: string) => void;
+  confirmPassword: string;
+  setConfirmPassword: (val: string) => void;
+  error: string | null;
+  setError: (val: string | null) => void;
+  showPass: boolean;
+  setShowPass: (val: boolean) => void;
+  handleSubmit: (e: React.FormEvent) => void;
+  isMatching: boolean;
+}
+export const AuthForm = memo(
+  ({
+    isLoginMode,
+    email,
+    setEmail,
+    password,
+    setPassword,
+    userName,
+    setUserName,
+    confirmPassword,
+    setConfirmPassword,
+    error,
+    setError,
+    showPass,
+    setShowPass,
+    handleSubmit,
+    isMatching,
+  }: AuthFormProps) => {
+    const navigate = useNavigate();
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center p-6  ">
+        <form
+          className="flex flex-col gap-[1.2em] p-[2em] rounded-[10px] shadow-[0_0_15px_rgb(27,27,27)]  w-full max-w-[35em] bg-[#242424]"
+          onSubmit={handleSubmit}
+        >
+          <legend className="text-[2em] font-bold bg-gradient-to-r from-[#4270d1] via-[#9d174d] to-[#9d174d] bg-clip-text text-transparent mb-4">
+            {isLoginMode ? "Welcome back!" : "Create an account"}
+          </legend>
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [userName, setUserName] = useState("");
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      if (isLogin) {
-        await loginUser({ email, password });
-        window.location.href = "/";
-      } else {
-        await registerUser({ userName, email, password });
-        window.location.href = "/";
-      }
-    } catch (err) {
-      alert("error, Check your data or console.");
-      console.error(err);
-    }
-  };
-
-  return (
-    <div className="flex">
-      <div className="w-[40%] h-[100vh]">
-        <img className="w-full h-full object-cover" src={img} alt="" />
-      </div>
-      <div className="flex flex-1 flex-col items-center justify-center min-h-[60vh] ">
-        {/* <div className="w-full max-w-sm p-8  border border-gray-100 shadow-2xl rounded-lg"> */}
-        {/* <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-2">
-          {isLogin ? "Welcome back!" : "Create an account"}
-        </h2> */}
-        <p className="text-gray-500 text-center mb-8 text-sm">
-          {isLogin
-            ? "Glad to see you again"
-            : "Start planning your activities today"}
-        </p>
-
-        {/* <form onSubmit={handleSubmit} className="space-y-4 ">
-            {!isLogin && (
+          {!isLoginMode && (
+            <label className="relative block">
               <input
-                type="text"
-                autoComplete={isLogin ? "current-text" : "new-text"}
-                placeholder="Your name"
-                className="w-full px-4 py-3 bg-gray-50 border-transparent rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
+                minLength={3}
+                maxLength={30}
+                placeholder=" "
                 required
-              />
-            )}
-
-            <input
-              type="email"
-              autoComplete={isLogin ? "current-email" : "new-email"}
-              placeholder="Email"
-              className="w-full px-4 py-3 bg-[#444] border-transparent rounded-lg focus:bg-black focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-
-            <input
-              type="password"
-              autoComplete={isLogin ? "current-password" : "new-password"}
-              placeholder="Password"
-              className="w-full px-4 py-3 bg-[#444] border-transparent rounded-lg focus:bg-black focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-
-            <button
-              type="submit"
-              className="w-full py-3 px-4 bg-gray-900 text-white font-bold rounded-lg hover:bg-gray-800 transform active:scale-[0.98] transition-all shadow-lg hover:shadow-gray-200"
-            >
-              {isLogin ? "Login" : "Create"}
-            </button>
-          </form> */}
-
-        <form className="form min-w-[60%]" onSubmit={handleSubmit}>
-          <legend> {isLogin ? "Welcome back!" : "Create an account"}</legend>
-          {!isLogin && (
-            <label>
-              <input
-                required
-                placeholder=""
+                autoComplete="username"
                 type="text"
                 value={userName}
-                autoComplete={isLogin ? "current-text" : "new-text"}
-                className="input"
+                className="peer w-full p-[1em] rounded-[10px] bg-transparent outline outline-1 outline-gray-500 focus:outline-2 focus:outline-[#4270d1] transition-all"
                 onChange={(e) => setUserName(e.target.value)}
               />
-              <span>Your name</span>
+              <span className="absolute top-[1em] left-[1em] px-[0.5em] bg-[#242424] text-gray-500 transition-all pointer-events-none peer-focus:-top-[0.7em] peer-focus:text-[0.75em] peer-focus:text-[#4270d1] peer-[:not(:placeholder-shown)]:-top-[0.7em] peer-[:not(:placeholder-shown)]:text-[0.75em]">
+                Your name
+              </span>
             </label>
           )}
 
-          <label>
+          {/* Email: Красный доминирует, если есть ошибка */}
+          <label className="relative block">
             <input
+              minLength={8}
+              maxLength={150}
+              placeholder=" "
               required
-              placeholder=""
               type="email"
-              autoComplete={isLogin ? "current-email" : "new-email"}
-              className="input"
+              autoComplete="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              className={`peer w-full p-[1em] rounded-[10px] bg-transparent outline transition-all focus:outline-2 
+                ${
+                  error?.includes("email")
+                    ? "outline-2 outline-red-500 focus:outline-red-500"
+                    : "outline-1 outline-gray-500 focus:outline-[#4270d1]"
+                }`}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (error) setError(null);
+              }}
             />
-            <span>Email</span>
+            <span
+              className={`absolute top-[1em] left-[1em] px-[0.5em] bg-[#242424] transition-all pointer-events-none peer-focus:-top-[0.7em] peer-focus:text-[0.75em] peer-[:not(:placeholder-shown)]:-top-[0.7em] peer-[:not(:placeholder-shown)]:text-[0.75em]
+              ${
+                error?.includes("email") && email.length > 0
+                  ? "text-red-500"
+                  : "text-gray-500 peer-focus:text-[#4270d1]"
+              }`}
+            >
+              Email
+            </span>
+            {error?.includes("email") && (
+              <span className="text-[0.7em] text-red-500 mt-1 block">
+                {error}
+              </span>
+            )}
           </label>
 
-          <label>
+          {/* Password: Красный доминирует, если меньше 8 символов */}
+          <label className="relative block">
             <input
+              placeholder=" "
+              minLength={8}
+              maxLength={30}
               required
-              placeholder=""
-              type="password"
-              autoComplete={isLogin ? "current-password" : "new-password"}
-              className="input"
+              autoComplete={isLoginMode ? "current-password" : "new-password"}
+              type={showPass ? "text" : "password"}
               value={password}
+              className={`peer w-full p-[1em] rounded-[10px] bg-transparent outline transition-all focus:outline-2 
+                ${
+                  password.length > 0 && password.length < 8 && !isLoginMode
+                    ? "outline-2 outline-red-500 focus:outline-red-500"
+                    : "outline-1 outline-gray-500 focus:outline-[#4270d1]"
+                }`}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <span>Password</span>
+            <span
+              className={`absolute top-[1em] left-[1em] px-[0.5em] bg-[#242424] transition-all pointer-events-none peer-focus:-top-[0.7em] peer-focus:text-[0.75em] peer-[:not(:placeholder-shown)]:-top-[0.7em] peer-[:not(:placeholder-shown)]:text-[0.75em]
+              ${
+                password.length > 0 && password.length < 8 && !isLoginMode
+                  ? "text-red-500"
+                  : "text-gray-500 peer-focus:text-[#4270d1]"
+              }`}
+            >
+              Password
+            </span>
+            {password.length > 0 && password.length < 8 && !isLoginMode && (
+              <span className="text-[0.7em] text-red-500 mt-1 block">
+                At least 8 characters
+              </span>
+            )}
+            {!isLoginMode && (
+              <button
+                type="button"
+                onClick={() => {
+                  const pass = Math.random().toString(36).slice(-10);
+                  setPassword(pass);
+                  setConfirmPassword(pass);
+                }}
+                className="text-[#4270d1] pt-3 cursor-pointer text-sm flex items-center gap-2 hover:underline w-fit cursor"
+              >
+                <span className="icon-key2"></span> Generate password
+              </button>
+            )}
           </label>
-          <label>
+
+          {/* Confirm: Красный доминирует, если не совпадает */}
+          {!isLoginMode && (
+            <label className="relative block">
+              <input
+                placeholder=" "
+                required
+                autoComplete={isLoginMode ? "current-password" : "new-password"}
+                type={showPass ? "text" : "password"}
+                value={confirmPassword}
+                className={`peer w-full p-[1em] rounded-[10px] bg-transparent outline transition-all focus:outline-2 
+                  ${
+                    confirmPassword.length > 0 && !isMatching
+                      ? "outline-2 outline-red-500 focus:outline-red-500"
+                      : "outline-1 outline-gray-500 focus:outline-[#4270d1]"
+                  }`}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+              <span
+                className={`absolute top-[1em] left-[1em] px-[0.5em] bg-[#242424] transition-all pointer-events-none peer-focus:-top-[0.7em] peer-focus:text-[0.75em] peer-[:not(:placeholder-shown)]:-top-[0.7em] peer-[:not(:placeholder-shown)]:text-[0.75em]
+                ${
+                  confirmPassword.length > 0 && !isMatching
+                    ? "text-red-500"
+                    : "text-gray-500 peer-focus:text-[#4270d1]"
+                }`}
+              >
+                Confirm password
+              </span>
+              {!isMatching && confirmPassword.length > 0 && (
+                <span className="text-[0.7em] text-red-500 mt-1 block">
+                  Passwords do not match
+                </span>
+              )}
+            </label>
+          )}
+
+          <div className="flex items-center gap-2 text-white text-sm">
             <input
-              required
-              placeholder=""
-              type="password"
-              autoComplete={isLogin ? "current-password" : "new-password"}
-              className="input"
+              type="checkbox"
+              className="accent-[#4270d1]"
+              checked={showPass}
+              onChange={() => setShowPass(!showPass)}
             />
-            <span>Confirm password</span>
-          </label>
-          {/* <button className="submit">Submit</button> */}
+            <label
+              className="cursor-pointer"
+              onClick={() => setShowPass(!showPass)}
+            >
+              Show password
+            </label>
+          </div>
+
           <button
             type="submit"
-            className="w-full py-3 px-4 bg-[rgb(64,78,201)] cursor-pointer text-white font-bold rounded-lg hover:bg-[rgb(64,78,221)] transition-color "
+            className="w-full py-3 bg-[#4270d1] cursor-pointer text-white font-bold rounded-lg hover:bg-[#4270d9] transition-all shadow-lg active:scale-95"
           >
-            {isLogin ? "Login" : "Create"}
+            {isLoginMode ? "Login" : "Create"}
           </button>
-          <div className="text-center">
+
+          <div className="text-center mt-2 border-t border-gray-700 pt-4">
             <button
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-sm font-medium text-[rgb(64,78,201)] hover:text-[rgb(64,78,221)] cursor-pointer transition-colors"
+              type="button"
+              onClick={() => {
+                navigate(isLoginMode ? "/register" : "/login");
+                if (error) {
+                  setError(null);
+                  setEmail("");
+                  setPassword("");
+                  setConfirmPassword("");
+                  setUserName("");
+                }
+              }}
+              className="text-[#4270d1] cursor-pointer text-sm hover:underline"
             >
-              {isLogin
+              {isLoginMode
                 ? "Still not registered? Create account"
                 : "Already have an account? Login"}
             </button>
           </div>
         </form>
-
-        {/* <div className="mt-6 text-center">
-          <button
-            onClick={() => setIsLogin(!isLogin)}
-            className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
-          >
-            {isLogin
-              ? "Still not registered? Create account"
-              : "Already have an account? Login"}
-          </button>
-        </div> */}
       </div>
-    </div>
-    // </div>
-  );
-};
+    );
+  }
+);

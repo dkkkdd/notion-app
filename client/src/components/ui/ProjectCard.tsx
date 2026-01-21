@@ -25,7 +25,9 @@ export function ProjectCardUI({
   return (
     <div
       onClick={onSelect}
-      className={`project ${isSelected ? "bg-[#ff648b]/30" : ""}`}
+      className={`project ${
+        isSelected ? "!bg-[#9d174d]/15" : ""
+      } hover:bg-[#363636]`}
     >
       <div className="project-title">
         <span className="heart icon-heart-svgrepo-com" style={{ color }} />

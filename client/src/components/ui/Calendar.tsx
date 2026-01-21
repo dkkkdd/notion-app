@@ -173,7 +173,7 @@ export const CalendarUi = (props: CalendarUiProps) => {
                 {time && (
                   <button
                     onClick={() => setTime("")}
-                    className="text-[10px] text-[#ff648b] hover:underline"
+                    className="text-[10px] cursor-pointer text-[#9d174d] hover:underline"
                   >
                     Remove
                   </button>

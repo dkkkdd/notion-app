@@ -16,6 +16,7 @@ import { useTasksActions } from "../../context/TasksContext";
 import { CustomCalendar } from "./Calendar";
 import { QuickBtn } from "../utils/QuickBtn";
 import type { Task } from "../../types/tasks";
+import { useMemo } from "react";
 interface GlobalMenuProps {
   anchorEl: HTMLElement | null; // Элемент, у которого надо открыться
   isOpen: boolean;
@@ -27,6 +28,7 @@ interface GlobalMenuProps {
   setIsCalOpen: (val: boolean) => void;
   updateDate: (newDate: string | null) => void;
   updateTime: (newTime: string) => void;
+  onAddSubtask: () => void;
 }
 
 export const GlobalDropdown = ({
@@ -40,6 +42,7 @@ export const GlobalDropdown = ({
   setIsCalOpen,
   updateDate,
   updateTime,
+  onAddSubtask,
 }: GlobalMenuProps) => {
   const { refs, floatingStyles, context } = useFloating({
     open: isOpen,
@@ -56,9 +59,20 @@ export const GlobalDropdown = ({
   const dismiss = useDismiss(context);
   const role = useRole(context);
   const { getFloatingProps } = useInteractions([dismiss, role]);
-
+  const currentDeadlineStr = task.deadline
+    ? format(new Date(task.deadline), "yyyy-MM-dd")
+    : null;
+  const dates = useMemo(() => {
+    const now = new Date();
+    return {
+      today: format(now, "yyyy-MM-dd"),
+      tomorrow: format(addDays(now, 1), "yyyy-MM-dd"),
+      weekend: format(nextSaturday(now), "yyyy-MM-dd"),
+      nextWeek: format(addDays(now, 7), "yyyy-MM-dd"),
+    };
+  }, [isOpen]);
   if (!isOpen) return null;
-  console.log("menu render");
+
   return (
     <FloatingPortal>
       <FloatingFocusManager context={context} modal={false}>
@@ -69,18 +83,13 @@ export const GlobalDropdown = ({
           className="z-[100] min-w-[20em] min-h-[fit-content] max-w-[20em] !bg-[#232323] border border-[#444] rounded-md p-1 shadow-xl outline-none"
         >
           <div
-            onClick={() => {
-              onEdit();
-            }}
+            onClick={() => onEdit()}
             className="w-full text-left p-2 C cursor-pointer hover:bg-[#82828241] text-white rounded "
           >
             <span className="icon-pencil"> </span>Edit
           </div>
           <div
-            onClick={() => {
-              onEdit();
-              // onCreateSubTask();
-            }}
+            onClick={() => onAddSubtask()}
             className="w-full text-left p-2 C cursor-pointer hover:bg-[#82828241] text-white rounded "
           >
             <span className="icon-plus-svgrepo-com-1"> </span>Create sub-task
@@ -92,9 +101,9 @@ export const GlobalDropdown = ({
               <QuickBtn
                 icon="icon-calendar-_2"
                 color="text-[#00c853]"
-                isActive={task.deadline === format(new Date(), "yyyy-MM-dd")}
+                isActive={currentDeadlineStr === dates.today}
                 onClick={() => {
-                  updateDate(format(new Date(), "yyyy-MM-dd"));
+                  updateDate(dates.today);
                   setIsCalOpen(false);
                   onClose();
                 }}
@@ -102,11 +111,9 @@ export const GlobalDropdown = ({
               <QuickBtn
                 icon="icon-calendar-_5"
                 color="text-[#ffab00]"
-                isActive={
-                  task.deadline === format(addDays(new Date(), 1), "yyyy-MM-dd")
-                }
+                isActive={currentDeadlineStr === dates.tomorrow}
                 onClick={() => {
-                  updateDate(format(addDays(new Date(), 1), "yyyy-MM-dd"));
+                  updateDate(dates.tomorrow);
                   setIsCalOpen(false);
                   onClose();
                 }}
@@ -114,12 +121,9 @@ export const GlobalDropdown = ({
               <QuickBtn
                 icon="icon-calendar-_4"
                 color="text-blue-500"
-                isActive={
-                  task.deadline ===
-                  format(nextSaturday(new Date()), "yyyy-MM-dd")
-                }
+                isActive={currentDeadlineStr === dates.weekend}
                 onClick={() => {
-                  updateDate(format(nextSaturday(new Date()), "yyyy-MM-dd"));
+                  updateDate(dates.weekend);
                   setIsCalOpen(false);
                   onClose();
                 }}
@@ -127,11 +131,9 @@ export const GlobalDropdown = ({
               <QuickBtn
                 icon="icon-calendar-_3"
                 color="text-[#673ab7]"
-                isActive={
-                  task.deadline === format(addDays(new Date(), 7), "yyyy-MM-dd")
-                }
+                isActive={currentDeadlineStr === dates.nextWeek}
                 onClick={() => {
-                  updateDate(format(addDays(new Date(), 7), "yyyy-MM-dd"));
+                  updateDate(dates.nextWeek);
                   setIsCalOpen(false);
                   onClose();
                 }}

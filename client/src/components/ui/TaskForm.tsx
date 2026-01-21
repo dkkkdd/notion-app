@@ -58,7 +58,7 @@ export const TaskFormUi = ({
     <div className="container">
       <form
         ref={containerRef}
-        className="bg-[#1f1f1f] mt-1 round-2 relative p-5 border-[0.5px] border-[#d0d0d05a]/60 rounded-lg shadow-xl"
+        className="bg-[#1f1f1f] mt-1 round-2 relative p-5 border-[0.5px] border-[#d0d0d05a]/60 rounded-lg shadow-xl max-w-[850px]"
         id="task-form"
         onSubmit={handleSubmit}
         onClick={(e) => e.stopPropagation()}
@@ -110,7 +110,7 @@ export const TaskFormUi = ({
           <div className="flex gap-2 text-[#888] text-[0.8rem] max-w-[50%]">
             <div className="flex flex-col  items-center gap-2 ">
               <CustomSelect
-                position="bottom"
+                position="bottom-start"
                 key="priority-select"
                 symbol={"icon-flag"}
                 value={priority}
@@ -130,7 +130,7 @@ export const TaskFormUi = ({
 
             <div className="flex flex-col gap-2  ">
               <CustomSelect
-                position="bottom"
+                position="bottom-start"
                 key="project-select"
                 symbol={"icon-heart-svgrepo-com"}
                 value={projectId}
@@ -150,7 +150,7 @@ export const TaskFormUi = ({
 
           <div className="flex gap-3 justify-end ">
             <button
-              className="focus:outline-none focus:border-[#888] focus:ring-1 focus:ring-white/20 cursor-pointer px-3 py-2 border-[0.5px] border-[#888] rounded-lg"
+              className="cursor-pointer px-5 py-2.5 text-sm font-medium text-gray-400 hover:text-white transition-colors"
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
@@ -158,7 +158,7 @@ export const TaskFormUi = ({
               Cancel
             </button>
             <button
-              className=" focus:outline-none focus:border-[#888] focus:ring-1 focus:ring-white/20 cursor-pointer px-5 py-2  bg-[#ff648b] hover:shadow-[0_0_10px_#ff648b] disabled:opacity-50 disabled:hover:shadow-none rounded-lg text-white "
+              className=" focus:outline-none focus:border-[#888] focus:ring-1 focus:ring-white/20 cursor-pointer px-5 py-2  bg-[#9d174d] hover:shadow-[0_0_10px_#9d174d] disabled:opacity-50 disabled:hover:shadow-none rounded-lg text-white "
               type="submit"
               disabled={!name.trim() || isSubmitting}
             >

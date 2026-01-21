@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo } from "react";
+import { createContext, useContext, useMemo, useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
 import type { User } from "../types/user";
 
@@ -21,6 +21,12 @@ const AuthStateContext = createContext<AuthState | null>(null);
 const AuthActionsContext = createContext<AuthActions | null>(null);
 
 export function AuthProvider({ children }: any) {
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      getMe();
+    }
+  }, []);
   const {
     user,
     loading,

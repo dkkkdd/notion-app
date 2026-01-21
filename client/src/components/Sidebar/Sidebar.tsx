@@ -33,17 +33,15 @@ export function Sidebar({ collapsed }: { collapsed: boolean }) {
             </div>
             <span className="!text-[#4270d1]"> {user?.userName}</span>
           </span>
-
-          {/* <span>{user?.email} </span>
-          <span onClick={logoutUser}>logout</span> */}
         </div>
-        <div className="flex flex-col items-start justify-center">
+        <div className="flex flex-col items-start justify-center pl-[5px]">
           <AddTaskBtn onOpenForm={() => setOpenForm(true)} />
         </div>
         <SidebarNavigation
           onChangeMode={(id, n) => changeMode(id, n)}
           mode={mode}
         />
+
         <FavoriteProjects />
         <ProjectsSection />
       </div>

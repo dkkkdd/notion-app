@@ -38,10 +38,10 @@ export const ProjectFormUi = ({
       <form
         onSubmit={handleSubmit}
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-[600px] min-w-[320px] bg-[var(--backColor)] p-5 rounded-lg shadow-xl"
+        className="relative w-full max-w-[40em] min-w-fit bg-[#242424] p-5 rounded-lg shadow-xl"
       >
         {/* Title */}
-        <h2 className="text-xl font-medium border-b border-[#82828238] pb-2 mb-4 text-left">
+        <h2 className=" text-2 text-white border-b  border-[#d0d0d05a]/60 mb-2 pb-2">
           {mode === "create" ? "Add project" : "Edit project"}
         </h2>
 
@@ -75,7 +75,7 @@ export const ProjectFormUi = ({
           <div className="flex flex-col gap-2 items-start text-sm text-[#888]">
             Color
             <CustomSelect
-              position="bottom"
+              position="bottom-start"
               symbol="dot"
               value={color}
               options={options.map((o) => ({
@@ -92,14 +92,14 @@ export const ProjectFormUi = ({
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
-              className="cursor-pointer px-3 py-2 border-[0.5px] border-[#888] rounded-lg"
+              className="cursor-pointer px-5 py-2.5 text-sm font-medium text-gray-400 hover:text-white transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={!name.trim() || isSubmitting}
-              className="cursor-pointer  px-6 py-2  bg-[#ff648b] hover:shadow-[0_0_10px_#ff648b] disabled:opacity-50 disabled:hover:shadow-none rounded-lg text-white transition-all"
+              className="cursor-pointer  px-6 py-2  bg-[#9d174d] hover:shadow-[0_0_10px_#9d174d] disabled:opacity-50 disabled:hover:shadow-none rounded-lg text-white transition-all"
             >
               {isSubmitting ? "..." : mode === "create" ? "Add" : "Save"}
             </button>

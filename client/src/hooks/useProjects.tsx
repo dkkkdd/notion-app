@@ -30,8 +30,10 @@ export function useProjects() {
     try {
       const real = await projectsApi.createProject({ title, color, favorites });
       setProjects((p) => p.map((x) => (x.id === temp.id ? real : x)));
+      return real;
     } catch {
       setProjects((p) => p.filter((x) => x.id !== temp.id));
+      throw new Error("Failed to create");
     }
   };
 

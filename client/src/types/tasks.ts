@@ -12,7 +12,7 @@ export interface Task {
   userId: string;
   projectId?: string | null;
   completedAt: Date | null | undefined;
-
+  subtasks?: Task[];
   sectionId?: string | null;
   _count?: { tasks: number };
 }

@@ -1,4 +1,5 @@
 import React, { memo } from "react";
+import { format } from "date-fns";
 import type { Project } from "../../types/project";
 import { CustomCalendar } from "../features/Calendar";
 import { formatFullDate } from "../utils/dateFormatters";
@@ -58,8 +59,9 @@ export const TaskCardUi = memo(function TaskCardUi({
   const projectOfTask = projects?.find((p) => p.id === projectId);
   const color = projectOfTask?.color;
   const isCompletedMode = mode === "completed";
-  // console.log("task card render");
-
+  const currentDeadlineStr = deadline
+    ? format(new Date(deadline), "yyyy-MM-dd")
+    : null;
   return (
     <>
       <div
@@ -95,22 +97,24 @@ export const TaskCardUi = memo(function TaskCardUi({
             {/* Нижний ряд: Дата, Завершено и Проект */}
             <div className="flex items-center text-[0.9em] gap-2 mt-1 w-full">
               {/* Блок даты */}
-              {deadline && !isCompletedMode && (
+              {currentDeadlineStr && !isCompletedMode && (
                 <div
-                  style={{ color: dateColor(formatDateLabel(deadline)).color }}
+                  style={{
+                    color: dateColor(formatDateLabel(currentDeadlineStr)).color,
+                  }}
                   className={
                     isCompletedMode ? "pointer-events-none opacity-60" : ""
                   }
                 >
                   <CustomCalendar
-                    date={deadline}
+                    date={currentDeadlineStr}
                     setDate={updateDate}
                     time={reminderAt}
                     setTime={updateTime}
                   >
                     <span className="flex items-center gap-1 cursor-pointer">
                       <span className="icon-calendar-_1" />
-                      {formatDateLabel(deadline)}
+                      {formatDateLabel(currentDeadlineStr)}
                       {reminderAt && (
                         <span className="ml-1 opacity-80">{reminderAt}</span>
                       )}
@@ -162,7 +166,7 @@ export const TaskCardUi = memo(function TaskCardUi({
             className=" !transition-none opacity-0 group-hover:opacity-100 tip icon-pencil p-2 rounded-md cursor-pointer hover:bg-[#82828241]"
           />
           <CustomCalendar
-            date={deadline}
+            date={currentDeadlineStr}
             setDate={updateDate} // Использует handleDate из родителя
             time={reminderAt}
             setIsCalOpen={setIsCalOpen}

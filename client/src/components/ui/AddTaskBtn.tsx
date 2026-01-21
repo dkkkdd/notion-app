@@ -6,13 +6,12 @@ export const AddTaskBtn = ({ onOpenForm }: AddTaskBtnProps) => {
   return (
     <button
       onClick={onOpenForm}
-      className="group w-full flex items-center gap-3 py-2 px-1 cursor-pointer transition-all focus:outline-none"
+      className="group w-full flex items-center gap-3 py-2  cursor-pointer transition-all focus:outline-none"
     >
-      {/* Плюс на SVG для идеальной центровки */}
       <div
         className="flex items-center justify-center w-[22px] h-[22px] rounded-full 
-                    border border-[#ff648b] text-[#ff648b]
-                    group-hover:bg-[#ff648b] transition-all duration-200"
+                    border border-[#9d174d] text-[#9d174d]
+                    group-hover:bg-[#9d174d] transition-all duration-200"
       >
         <svg
           width="12"
@@ -29,7 +28,7 @@ export const AddTaskBtn = ({ onOpenForm }: AddTaskBtnProps) => {
         </svg>
       </div>
 
-      <span className="text-[14px] font-medium text-white/50 group-hover:text-[#ff648b] transition-colors">
+      <span className="text-[14px] font-medium text-white/50 group-hover:text-[#9d174d] transition-colors">
         Add task
       </span>
     </button>

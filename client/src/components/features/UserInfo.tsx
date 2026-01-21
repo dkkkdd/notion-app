@@ -2,8 +2,9 @@ import { useAuthState, useAuthContext } from "../../context/AuthContext";
 import { format, formatDistanceToNow } from "date-fns";
 import { ConfirmModal } from "../ui/ConfirmModal";
 import { enUS } from "date-fns/locale";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { UpdateUserInfo } from "./UpdateUserInfo";
+import { ModalPortal } from "../ui/ModalPortal";
 export const UserInfo = ({
   onClose,
   isOpen,
@@ -11,14 +12,8 @@ export const UserInfo = ({
   onClose: () => void;
   isOpen: boolean;
 }) => {
-  const { getMe } = useAuthContext();
   const { user } = useAuthState();
 
-  useEffect(() => {
-    if (isOpen) {
-      getMe();
-    }
-  }, [isOpen]);
   if (!user) return;
   const [openComfirm, setOpenConfirm] = useState(false);
   const [openForm, setOpenForm] = useState(false);
@@ -48,10 +43,14 @@ export const UserInfo = ({
           ? "opacity-100 visible backdrop-blur-sm bg-black/20"
           : "opacity-0 invisible backdrop-blur-0 bg-black/0"
       }`}
-      onClick={onClose}
+      onClick={() => {
+        if (!openComfirm && !openComfirmDelete && !openForm) {
+          onClose();
+        }
+      }}
     >
       <div
-        className={`relative z-[100] bg-[#222] w-full max-w-[450px] rounded-lg   
+        className={`relative z-[100] bg-[#242424] w-full max-w-[450px] rounded-lg border border-white/5 
       transform transition-all duration-300 ease-out p-2
       ${isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0"}`}
         onClick={(e) => e.stopPropagation()}
@@ -62,17 +61,18 @@ export const UserInfo = ({
         ></span>
 
         <div className="px-6 pb-6 ">
-          <div className="flex flex items-center justify-start py-8">
-            <div className="w-20 h-20 bg-[#333] border border-[#222] rounded-lg flex items-center justify-center text-3xl font-bold text-white shadow-xl">
-              {user.userName?.charAt(0).toUpperCase() ||
-                user.email.charAt(0).toUpperCase()}
-            </div>
-
-            <div className="ml-3">
-              <h3 className="text-xl font-bold text-white">
-                {user.userName || "User"}
-              </h3>
-              <p className="text-gray-400 text-sm">{user.email}</p>
+          <div className="flex flex items-center justify-between py-8">
+            <div className="flex items-center">
+              <div className="w-20 h-20 bg-[#333] border border-[#222] rounded-lg flex items-center justify-center text-3xl font-bold text-white shadow-xl">
+                {user.userName?.charAt(0).toUpperCase() ||
+                  user.email.charAt(0).toUpperCase()}
+              </div>
+              <div className="ml-3">
+                <h3 className="text-xl font-bold text-white">
+                  {user.userName || "User"}
+                </h3>
+                <p className="text-gray-400 text-sm">{user.email}</p>
+              </div>
             </div>
             <div className=" cursor-pointer group py-3 text-gray-100 px-4 hover:text-gray-200 rounded-lg transition-all flex items-center justify-center outline-none">
               <div className="flex items-center">
@@ -81,7 +81,7 @@ export const UserInfo = ({
                   onClick={() => {
                     setOpenForm(true);
                   }}
-                  className="icon-pencil mr-3 text-gray-500 "
+                  className="icon-pencil mr-3 text-gray-500  p-3 rounded-lg tip !text-[#777]"
                 ></span>
               </div>
               <span className="icon-chevron-right text-xs opacity-30"></span>
@@ -159,31 +159,37 @@ export const UserInfo = ({
         </div>
       </div>
       {openComfirm && (
-        <ConfirmModal
-          title="Logout"
-          message="Are you sure you want to leave your session?"
-          variant="warning"
-          confirmText="Logout"
-          onConfirm={logoutUser}
-          onClose={() => setOpenConfirm(false)}
-        />
+        <ModalPortal>
+          <ConfirmModal
+            title="Logout"
+            message="Are you sure you want to leave your session?"
+            variant="warning"
+            confirmText="Logout"
+            onConfirm={logoutUser}
+            onClose={() => setOpenConfirm(false)}
+          />
+        </ModalPortal>
       )}
       {openComfirmDelete && (
-        <ConfirmModal
-          title="Delete Account"
-          message="Are you sure you want to delete your account? This action cannot be undone."
-          variant="danger"
-          confirmText="Delete"
-          onConfirm={() => deleteUser()}
-          onClose={() => setOpenConfirmDelete(false)}
-        />
+        <ModalPortal>
+          <ConfirmModal
+            title="Delete Account"
+            message="Are you sure you want to delete your account? This action cannot be undone."
+            variant="danger"
+            confirmText="Delete"
+            onConfirm={() => deleteUser()}
+            onClose={() => setOpenConfirmDelete(false)}
+          />
+        </ModalPortal>
       )}
       {openForm && btnRef.current && (
-        <UpdateUserInfo
-          anchorEl={btnRef.current}
-          isOpen={openForm}
-          onClose={() => setOpenForm(false)}
-        />
+        <ModalPortal>
+          <UpdateUserInfo
+            anchorEl={btnRef.current}
+            isOpen={openForm}
+            onClose={() => setOpenForm(false)}
+          />
+        </ModalPortal>
       )}
     </div>
   );

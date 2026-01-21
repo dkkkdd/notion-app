@@ -7,7 +7,7 @@ import { format } from "date-fns";
 export interface TaskFormProps {
   formMode: "create" | "edit";
   initiaTask?: Task;
-
+  parentId?: string | null;
   onSubmit: (data: {
     title: string;
     projectId: string | null;
@@ -15,6 +15,7 @@ export interface TaskFormProps {
     reminderAt?: string | null;
     comment?: string | null;
     priority?: number;
+    parentId?: string | null;
   }) => void | Promise<void>;
   onClose: () => void;
 }
@@ -22,6 +23,7 @@ export interface TaskFormProps {
 export const TaskForm = ({
   formMode,
   initiaTask,
+  parentId = null,
   onSubmit,
   onClose,
 }: TaskFormProps) => {
@@ -67,6 +69,7 @@ export const TaskForm = ({
         deadline: finalDeadline,
         reminderAt: time,
         comment: comment,
+        parentId: initiaTask?.parentId || parentId,
       });
 
       if (formMode !== "edit") {

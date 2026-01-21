@@ -21,14 +21,18 @@ async function apiRequest<T>(endpoint: string, options: any = {}): Promise<T> {
   const response = await fetch(`${BASE_URL}${endpoint}`, config);
 
   if (response.status === 401) {
-    // Если токен протух — выкидываем на логин
     localStorage.removeItem("token");
-    window.location.href = "/login";
+    throw new Error("Incorrect password or email");
   }
-
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || "Something went wrong");
+    let errorMessage = "Something went wrong";
+    try {
+      const errorData = await response.json();
+      errorMessage = errorData.error || errorData.message || errorMessage;
+    } catch (e) {
+      errorMessage = response.statusText;
+    }
+    throw new Error(errorMessage);
   }
 
   if (response.status === 204) return {} as T;

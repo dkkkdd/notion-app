@@ -12,6 +12,7 @@ interface TaskCardProps {
   onEdit: () => void;
   isEditing: boolean;
   onDeleteRequest: () => void;
+  onAddSubtask: () => void;
   // isMenuOpen: boolean;
 }
 
@@ -21,6 +22,7 @@ export const TaskCard = memo(
     onEdit,
     isEditing,
     onDeleteRequest,
+    onAddSubtask,
   }: // isMenuOpen,
   TaskCardProps) => {
     const { updateDone, updateTask } = useTasksActions();
@@ -41,11 +43,9 @@ export const TaskCard = memo(
     const handleDate = useCallback(
       (newDate: string | null) => {
         updateTask(task.id, { deadline: newDate });
-        setIsCalOpen(true);
       },
       [task.id, updateTask]
     );
-
     const handleTime = useCallback(
       (newTime: string) => {
         updateTask(task.id, { reminderAt: newTime });
@@ -110,6 +110,7 @@ export const TaskCard = memo(
               onDeleteRequest();
               setIsMenuOpen(false);
             }}
+            onAddSubtask={onAddSubtask}
           />
         )}
       </>

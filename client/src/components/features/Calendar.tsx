@@ -26,24 +26,20 @@ const STEP = 30;
 
 export const CustomCalendar = (props: CustomCalendarProps) => {
   const { date, setDate, time, setIsCalOpen } = props;
-  const todayStr = useMemo(() => format(new Date(), "yyyy-MM-dd"), []);
-  const tomorrowStr = useMemo(
-    () => format(addDays(new Date(), 1), "yyyy-MM-dd"),
-    []
-  );
-  const weekendStr = useMemo(
-    () => format(nextSaturday(new Date()), "yyyy-MM-dd"),
-    []
-  );
-  const nextWeekStr = useMemo(
-    () => format(addDays(new Date(), 7), "yyyy-MM-dd"),
-    []
-  );
-  const nextWeekDayNameStr = useMemo(
-    () => `Next ${format(addDays(new Date(), 7), "EEEE")}`,
-    []
-  );
+  const currentDeadlineStr = date ? format(new Date(date), "yyyy-MM-dd") : null;
+
   const [open, setOpen] = useState(false);
+  const dates = useMemo(() => {
+    const now = new Date();
+    const nextWeekDate = addDays(now, 7);
+    return {
+      today: format(now, "yyyy-MM-dd"),
+      tomorrow: format(addDays(now, 1), "yyyy-MM-dd"),
+      weekend: format(nextSaturday(now), "yyyy-MM-dd"),
+      nextWeek: format(nextWeekDate, "yyyy-MM-dd"),
+      nextWeekLabel: `Next ${format(nextWeekDate, "EEEE")}`,
+    };
+  }, [open]);
 
   useEffect(() => {
     if (setIsCalOpen) setIsCalOpen(open);
@@ -51,8 +47,8 @@ export const CustomCalendar = (props: CustomCalendarProps) => {
 
   const { refs, floatingStyles, context, isPositioned } = useFloating({
     open: open,
-    onOpenChange: setOpen, // Это само будет менять true/false
-    placement: "bottom-start", // bottom-start обычно стабильнее для форм
+    onOpenChange: setOpen,
+    placement: "bottom-start",
     whileElementsMounted: autoUpdate,
     strategy: "fixed",
     middleware: [offset(4), flip(), shift({ padding: 10 })],
@@ -66,25 +62,24 @@ export const CustomCalendar = (props: CustomCalendarProps) => {
   ]);
   useEffect(() => {
     if (!time) return;
-
     const now = new Date();
     const [selectedHours, selectedMinutes] = time.split(":").map(Number);
     const selectedTimeToday = new Date();
     selectedTimeToday.setHours(selectedHours, selectedMinutes, 0, 0);
 
-    // Если даты нет или она сегодняшняя, а время уже прошло — ставим завтра
-    if (!date || date === todayStr) {
+    if (!currentDeadlineStr || currentDeadlineStr === dates.today) {
       if (selectedTimeToday < now) {
-        setDate(tomorrowStr);
+        setDate(dates.tomorrow);
       } else if (!date) {
-        setDate(todayStr);
+        setDate(dates.today);
       }
+    } else if (
+      currentDeadlineStr === dates.tomorrow &&
+      selectedTimeToday > now
+    ) {
+      setDate(dates.today);
     }
-    // Если дата завтрашняя, а время выбрали будущее — возвращаем на сегодня
-    else if (date === tomorrowStr && selectedTimeToday > now) {
-      setDate(todayStr);
-    }
-  }, [time, date, setDate, todayStr, tomorrowStr]);
+  }, [time, date, setDate, dates]);
 
   const timeOptions = useMemo(() => {
     const options = Array.from({ length: (24 * 60) / STEP }, (_, i) => {
@@ -113,7 +108,7 @@ export const CustomCalendar = (props: CustomCalendarProps) => {
     return [...options.slice(idx), ...options.slice(0, idx)];
   }, [open]); // Пересчитываем только при открытии
 
-  const safeDate = date ? new Date(date) : null;
+  const safeDate = currentDeadlineStr ? new Date(currentDeadlineStr) : null;
 
   return (
     <CalendarUi
@@ -126,11 +121,11 @@ export const CustomCalendar = (props: CustomCalendarProps) => {
       floatingStyles={floatingStyles}
       getReferenceProps={getReferenceProps}
       getFloatingProps={getFloatingProps}
-      todayStr={todayStr}
-      tomorrowStr={tomorrowStr}
-      weekendStr={weekendStr}
-      nextWeekStr={nextWeekStr}
-      nextWeekDayNameStr={nextWeekDayNameStr}
+      todayStr={dates.today}
+      tomorrowStr={dates.tomorrow}
+      weekendStr={dates.weekend}
+      nextWeekStr={dates.nextWeek}
+      nextWeekDayNameStr={dates.nextWeekLabel}
       timeOptions={timeOptions}
     />
   );

@@ -29,9 +29,17 @@ export function useAuth() {
   }, []);
 
   const login = async (data: { email: string; password: string }) => {
-    const { token, user } = await authApi.login(data);
+    const { token, user: initialUser } = await authApi.login(data);
+
     localStorage.setItem("token", token);
-    setUser(user);
+    setUser(initialUser);
+
+    try {
+      const fullUserData = await authApi.getMe();
+      setUser(fullUserData);
+    } catch (err) {
+      console.warn("Could not fetch full user details, using basic info");
+    }
   };
 
   const register = async (data: {

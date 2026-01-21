@@ -25,7 +25,7 @@ export const UpdateUserInfo = ({
   onClose,
   anchorEl,
 }: UpdateUserInfoProps) => {
-  const { refs, floatingStyles, context } = useFloating({
+  const { refs, floatingStyles, context, isPositioned } = useFloating({
     open: isOpen,
     onOpenChange: (open) => !open && onClose(),
     elements: {
@@ -60,54 +60,81 @@ export const UpdateUserInfo = ({
         <FloatingFocusManager context={context} modal={false}>
           <div
             ref={refs.setFloating}
-            style={{ ...floatingStyles, zIndex: 2000 }}
+            style={{
+              ...floatingStyles,
+              zIndex: 2000,
+
+              opacity: isPositioned ? 1 : 0,
+              visibility: isPositioned ? "visible" : "hidden",
+            }}
             {...getFloatingProps()}
-            className="animate-in fade-in zoom-in duration-200"
+            className="transition-opacity duration-200"
           >
             <form
-              className="form min-w-[300px] shadow-2xl bg-[#242424]"
+              className="bg-[#242424] w-full min-w-[320px] max-w-[400px] p-6 rounded-lg border border-white/5 shadow-2xl flex flex-col gap-5 animate-in fade-in zoom-in duration-200"
               onSubmit={handleSubmit}
             >
-              <legend>Update Profile</legend>
+              {/* Header - Стиль как в ConfirmModal */}
+              <h2 className=" text-2 text-white border-b  border-[#d0d0d05a]/60 mb-2 pb-2">
+                Update Profile
+              </h2>
 
-              <label>
-                <input
-                  required
-                  placeholder=""
-                  type="text"
-                  className="input"
-                  value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
-                />
-                <span>Username</span>
-              </label>
+              {/* Body - Поля ввода */}
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <label className="relative block">
+                    <input
+                      minLength={3}
+                      maxLength={30}
+                      placeholder=" "
+                      required
+                      autoComplete="username"
+                      type="text"
+                      value={userName}
+                      className="peer w-full p-[0.9em] text-[0.8em] rounded-[10px] bg-transparent outline outline-1 outline-white/10 focus:outline-2 focus:outline-[#4270d1] transition-all"
+                      onChange={(e) => setUserName(e.target.value)}
+                    />
+                    <span className="absolute top-[0.55em] left-[0.5em] px-[0.5em] bg-[#242424] text-gray-500 transition-all pointer-events-none peer-focus:-top-[0.7em] peer-focus:text-[0.75em] peer-focus:text-[#4270d1] peer-[:not(:placeholder-shown)]:-top-[0.7em] peer-[:not(:placeholder-shown)]:text-[0.75em]">
+                      Your name
+                    </span>
+                  </label>
+                </div>
 
-              <label>
-                <input
-                  required
-                  placeholder=""
-                  type="email"
-                  className="input"
-                  value={userEmail}
-                  onChange={(e) => setUserEmail(e.target.value)}
-                />
-                <span>Email</span>
-              </label>
+                <div className="flex flex-col gap-1.5">
+                  <label className="relative block">
+                    <input
+                      minLength={3}
+                      maxLength={30}
+                      placeholder=" "
+                      required
+                      autoComplete="username"
+                      type="text"
+                      value={userEmail}
+                      onChange={(e) => setUserEmail(e.target.value)}
+                      className="peer w-full p-[0.9em] text-[0.8em] rounded-[10px] bg-transparent outline outline-1 outline-white/10 focus:outline-2 focus:outline-[#4270d1] transition-all"
+                    />
+                    <span className="absolute top-[0.55em] left-[0.5em] px-[0.5em] bg-[#242424] text-gray-500 transition-all pointer-events-none peer-focus:-top-[0.7em] peer-focus:text-[0.75em] peer-focus:text-[#4270d1] peer-[:not(:placeholder-shown)]:-top-[0.7em] peer-[:not(:placeholder-shown)]:text-[0.75em]">
+                      Email
+                    </span>
+                  </label>
+                </div>
+              </div>
 
-              <div className="flex flex-col gap-2 mt-4">
+              {/* Actions - Стиль как в ConfirmModal */}
+              <div className="flex gap-3 justify-end mt-2">
                 <button
-                  type="submit"
-                  className="w-full py-3 px-4 bg-[#9d174d] cursor-pointer text-white font-bold rounded-lg hover:bg-[#831340] transition-all transform active:scale-95"
+                  type="button"
+                  className="cursor-pointer px-4 py-2 text-sm font-medium text-gray-400 hover:text-white transition-colors"
+                  onClick={onClose}
                 >
-                  Save Changes
+                  Cancel
                 </button>
 
                 <button
-                  type="button"
-                  onClick={onClose}
-                  className="text-gray-400 text-sm hover:text-white transition-colors py-1"
+                  type="submit"
+                  className="cursor-pointer px-6 py-2.5 text-sm font-bold rounded-xl text-white transition-all bg-[#9d174d] hover:shadow-[0_0_15px_rgba(255,100,139,0.4)] active:scale-95 disabled:opacity-50"
                 >
-                  Cancel
+                  Save Changes
                 </button>
               </div>
             </form>

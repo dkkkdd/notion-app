@@ -20,7 +20,7 @@ export const ConfirmModal = ({
   isLoading = false,
 }: ConfirmModalProps) => {
   const variantStyles = {
-    danger: "bg-[#ff648b] hover:shadow-[0_0_15px_rgba(255,100,139,0.4)]",
+    danger: "bg-[#9d174d] hover:shadow-[0_0_15px_rgba(157,23,77,0.4)]",
     primary: "bg-[#4270d1] hover:shadow-[0_0_15px_rgba(37,99,235,0.4)]",
     warning: "bg-orange-500 hover:shadow-[0_0_15px_rgba(249,115,22,0.4)]",
   };
@@ -61,7 +61,7 @@ export const ConfirmModal = ({
               onClose();
             }}
             className={`
-              cursor-pointer px-6 py-2.5 text-sm font-bold rounded-xl text-white transition-all 
+              cursor-pointer px-6 py-2.5 text-sm font-bold rounded-lg text-white transition-all 
               active:scale-95 disabled:opacity-50 disabled:pointer-events-none
               ${variantStyles[variant]}
             `}

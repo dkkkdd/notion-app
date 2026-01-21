@@ -53,9 +53,9 @@
   font-weight: 600;
   margin-bottom: 24px;
 }
-.sidebar-user span {
+/* .sidebar-user span {
   color: var(--btnColor);
-}
+} */
 .nav-item {
   padding: 8px 0;
 }

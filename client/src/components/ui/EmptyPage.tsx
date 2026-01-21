@@ -35,7 +35,7 @@ export const EmptyState = ({
     <div className="flex flex-col items-center justify-center py-20 px-4 text-center select-none animate-in fade-in duration-500">
       <div className="bg-white/5 p-6 rounded-full mb-4">
         <span
-          className={`${content.icon} text-[3em] text-[#ff648b] opacity-50`}
+          className={`${content.icon} text-[3em] text-[#9d174d] opacity-50`}
         />
       </div>
       <h3 className="text-xl font-semibold text-white/90 mb-1">
@@ -48,8 +48,8 @@ export const EmptyState = ({
         <button
           onClick={onOpenForm}
           className="flex items-center gap-2 px-4 py-2 rounded-full border border-white/5 mt-3 
-                   hover:border-[#ff648b]/50 hover:bg-[#ff648b]/5 transition-all duration-200
-                   text-[13px] text-white/40 hover:text-[#ff648b] cursor-pointer"
+                   hover:border-[#9d174d]/50 hover:bg-[#9d174d]/5 transition-all duration-200
+                   text-[13px] text-white/40 hover:text-[#9d174d] cursor-pointer"
         >
           <svg
             width="10"

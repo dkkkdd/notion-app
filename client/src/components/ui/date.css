@@ -1,5 +1,5 @@
 :root {
-  --btnColor: hsl(345, 100%, 70%);
+  --btnColor: #9d174d;
   --bg-dark: #242424;
   --bg-header: #242424;
   --border-color: rgba(208, 208, 208, 0.2);
@@ -123,5 +123,5 @@
   width: 100px !important;
 }
 .custom-time-picker .react-datepicker__time-list-item:hover {
-  background-color: #ff648b !important;
+  background-color: #9d174d !important;
 }

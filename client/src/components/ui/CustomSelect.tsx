@@ -103,7 +103,7 @@ export const CustomSelectUi = ({
               zIndex: 9999,
             }}
             {...getFloatingProps()}
-            className="!bg-[#222] border border-[#88888833] rounded-lg list-none p-1 shadow-2xl overflow-y-auto box-border max-h-[15rem] outline-none min-w-[15em] max-w-fit"
+            className="!bg-[#222] border border-[#88888833] rounded-lg list-none p-1 shadow-2xl overflow-y-auto box-border  outline-none  min-w-[12em] max-h-[15rem]"
           >
             {options.map((o, index) => (
               <li
@@ -123,7 +123,7 @@ export const CustomSelectUi = ({
                           ? "bg-white/10 text-white"
                           : "text-white/80"
                       }
-                      ${value === o.value ? "!text-[#ff648b] font-bold" : ""}
+                      ${value === o.value ? "!text-[#9d174d] font-bold" : ""}
                     `}
               >
                 {o.icon ? (
