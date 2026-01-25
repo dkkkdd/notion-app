@@ -2,13 +2,15 @@ import { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
 import { useProjects } from "../hooks/useProjects";
 
-export type TaskMode = "project" | "inbox" | "today" | "completed";
+export type TaskMode = "project" | "inbox" | "today" | "completed" | "overdue";
 
 type ProjectsContextType = ReturnType<typeof useProjects> & {
   selectedProjectId: string | null;
   setSelectedProjectId: (id: string | null) => void;
   mode: TaskMode;
   setMode: (mode: TaskMode) => void;
+  showAll: boolean; // Добавили
+  setShowAll: (val: boolean) => void; // Добавили
   changeMode: (newMode: TaskMode, projectId?: string | null) => void;
 };
 
@@ -22,7 +24,9 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
     null
   );
-
+  const [showAll, setShowAll] = useState(() => {
+    return localStorage.getItem("showAll") === "true";
+  });
   const changeMode = (newMode: TaskMode, projectId: string | null = null) => {
     setMode(newMode);
     setSelectedProjectId(projectId);
@@ -36,6 +40,8 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
         setSelectedProjectId,
         mode,
         setMode,
+        showAll,
+        setShowAll,
         changeMode,
       }}
     >

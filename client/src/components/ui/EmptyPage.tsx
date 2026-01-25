@@ -1,25 +1,28 @@
-const EMPTY_STATES = {
+import { useTranslation } from "react-i18next";
+
+const EMPTY_STATES_CONFIG = {
   inbox: {
-    title: "All caught up!",
-    desc: "Your inbox is clear. Time to plan something new.",
+    titleKey: "empty_states.inbox_title",
+    descKey: "empty_states.inbox_desc",
     icon: "icon-price-tag",
   },
   today: {
-    title: "Nothing for today",
-    desc: "You've finished everything on your plate. Take a break!",
+    titleKey: "empty_states.today_title",
+    descKey: "empty_states.today_desc",
     icon: "icon-calendar-_1",
   },
   completed: {
-    title: "No completed tasks",
-    desc: "Get to work and start checking things off!",
+    titleKey: "empty_states.completed_title",
+    descKey: "empty_states.completed_desc",
     icon: "icon-checkmark",
   },
   default: {
-    title: "No tasks found",
-    desc: "Start by creating a new task to stay on track.",
+    titleKey: "empty_states.default_title",
+    descKey: "empty_states.default_desc",
     icon: "icon-heart-svgrepo-com",
   },
 } as const;
+
 export const EmptyState = ({
   mode,
   onOpenForm,
@@ -27,29 +30,35 @@ export const EmptyState = ({
   mode: string;
   onOpenForm: () => void;
 }) => {
-  // берем конфиг по ключу или дефолтный
-  const content =
-    EMPTY_STATES[mode as keyof typeof EMPTY_STATES] || EMPTY_STATES.default;
+  const { t } = useTranslation();
+
+  // Берем конфиг или дефолтный
+  const config =
+    EMPTY_STATES_CONFIG[mode as keyof typeof EMPTY_STATES_CONFIG] ||
+    EMPTY_STATES_CONFIG.default;
 
   return (
     <div className="flex flex-col items-center justify-center py-20 px-4 text-center select-none animate-in fade-in duration-500">
-      <div className="bg-white/5 p-6 rounded-full mb-4">
+      <div className="bg-black/5 dark:bg-white/5 p-6 rounded-full mb-4">
         <span
-          className={`${content.icon} text-[3em] text-[#9d174d] opacity-50`}
+          className={`${config.icon} text-[3em] text-[#9d174d] opacity-50`}
         />
       </div>
-      <h3 className="text-xl font-semibold text-white/90 mb-1">
-        {content.title}
+
+      <h3 className="text-xl font-semibold text-black/90 dark:text-white/90 mb-1">
+        {t(config.titleKey)}
       </h3>
-      <p className="text-sm text-white/40 max-w-[200px] leading-relaxed">
-        {content.desc}
+
+      <p className="text-sm text-black/40 dark:text-white/40 max-w-[200px] leading-relaxed">
+        {t(config.descKey)}
       </p>
+
       {mode !== "completed" && (
         <button
           onClick={onOpenForm}
-          className="flex items-center gap-2 px-4 py-2 rounded-full border border-white/5 mt-3 
+          className="flex items-center gap-2 px-4 py-2 rounded-full border border-black/10 dark:border-white/5 mt-3 
                    hover:border-[#9d174d]/50 hover:bg-[#9d174d]/5 transition-all duration-200
-                   text-[13px] text-white/40 hover:text-[#9d174d] cursor-pointer"
+                   text-[13px] text-black/40 dark:text-white/40 hover:text-[#9d174d] cursor-pointer"
         >
           <svg
             width="10"
@@ -62,7 +71,7 @@ export const EmptyState = ({
             <line x1="6" y1="2" x2="6" y2="10" />
             <line x1="2" y1="6" x2="10" y2="6" />
           </svg>
-          Or add your first task
+          {t("empty_states.add_first_btn")}
         </button>
       )}
     </div>

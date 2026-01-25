@@ -2,6 +2,8 @@ import { ProjectCardUI } from "../ui/ProjectCard";
 import { useProjectsContext } from "../../context/ProjectsContext";
 import type { Project } from "../../types/project";
 import { useCallback, useRef } from "react";
+import { useTasksState } from "../../context/TasksContext";
+import type { Task } from "../../types/tasks";
 
 interface ProjectCardProps {
   project: Project;
@@ -13,12 +15,8 @@ export function ProjectItem({
   onOpenMenu,
   isMenuOpen,
 }: ProjectCardProps) {
-  const {
-    selectedProjectId,
-    setSelectedProjectId,
-
-    changeMode,
-  } = useProjectsContext();
+  const { selectedProjectId, setSelectedProjectId, changeMode } =
+    useProjectsContext();
   const btnRef = useRef<HTMLDivElement>(null);
   const handleMenuClick = useCallback(
     (e: React.MouseEvent) => {
@@ -29,6 +27,10 @@ export function ProjectItem({
     },
     [onOpenMenu]
   );
+  const { tasks } = useTasksState();
+  const projectTasks = tasks.filter(
+    (t: Task) => t.projectId === project.id && t.isDone === false
+  ).length;
 
   return (
     <>
@@ -37,6 +39,7 @@ export function ProjectItem({
         color={project.color}
         isSelected={selectedProjectId === project.id}
         onOpenMenu={handleMenuClick}
+        projectTasks={projectTasks}
         btnRef={btnRef}
         isMenuOpen={isMenuOpen}
         onSelect={() => {

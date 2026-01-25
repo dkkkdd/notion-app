@@ -12,6 +12,8 @@ import { AppLayout } from "./components/layout/AppLayout";
 import { TaskList } from "./components/features/TaskList";
 import { AuthPage } from "./components/features/AuthPage";
 import { useProjectsContext } from "./context/ProjectsContext";
+import { useEffect } from "react";
+import { applyTheme } from "./components/features/UserInfo";
 
 // Обертка для задач
 function TasksWrapper({ children }: { children: React.ReactNode }) {
@@ -56,7 +58,19 @@ function ProtectedApp() {
 function AppContent() {
   const { isAuthenticated, loading } = useAuthState();
   const location = useLocation();
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
+    const handleChange = () => {
+      const savedTheme = localStorage.getItem("theme") || "system";
+      if (savedTheme === "system") {
+        applyTheme("system");
+      }
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
   if (loading)
     return (
       <div className="h-screen w-full flex items-center justify-center bg-[#111] text-white">

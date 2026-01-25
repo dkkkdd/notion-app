@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3001/api";
+const BASE_URL = "http://192.168.0.104:3001/api";
 
 async function apiRequest<T>(endpoint: string, options: any = {}): Promise<T> {
   const { body, ...customConfig } = options;

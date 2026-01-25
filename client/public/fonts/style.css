@@ -1,10 +1,10 @@
 @font-face {
   font-family: "icomoon";
-  src: url("fonts/icomoon.eot?rjtygr");
-  src: url("fonts/icomoon.eot?rjtygr#iefix") format("embedded-opentype"),
-    url("fonts/icomoon.ttf?rjtygr") format("truetype"),
-    url("fonts/icomoon.woff?rjtygr") format("woff"),
-    url("fonts/icomoon.svg?rjtygr#icomoon") format("svg");
+  src: url("fonts/icomoon.eot?pwtxay");
+  src: url("fonts/icomoon.eot?pwtxay#iefix") format("embedded-opentype"),
+    url("fonts/icomoon.ttf?pwtxay") format("truetype"),
+    url("fonts/icomoon.woff?pwtxay") format("woff"),
+    url("fonts/icomoon.svg?pwtxay#icomoon") format("svg");
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -14,7 +14,7 @@
 [class*=" icon-"] {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: "icomoon" !important;
-
+  /* speak: never; */
   font-style: normal;
   font-weight: normal;
   font-variant: normal;
@@ -26,6 +26,21 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-night:before {
+  content: "\e917";
+}
+.icon-sun:before {
+  content: "\e918";
+}
+.icon-prize:before {
+  content: "\e90f";
+}
+.icon-inbox:before {
+  content: "\e915";
+}
+.icon-language:before {
+  content: "\e916";
+}
 .icon-calendar-_5:before {
   content: "\e908";
 }

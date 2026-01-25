@@ -1,17 +1,15 @@
-// src/context/TasksContext.tsx
-
 import { createContext, useContext, useMemo } from "react";
 import { useTasks } from "../hooks/useTasks";
+import { useAuth } from "../hooks/useAuth";
 
-// 1. Контекст только для данных
 const TasksStateContext = createContext<any>(null);
 const TasksActionsContext = createContext<any>(null);
 
 export function TasksProvider({ children }: any) {
+  const { user } = useAuth();
   const { tasks, loading, createTask, deleteTask, updateTask, updateDone } =
-    useTasks("у0209у-2");
+    useTasks(user?.id || "");
 
-  // Оборачиваем методы в useCallback, чтобы ссылки на них были стабильны
   const actions = useMemo(
     () => ({
       createTask,
@@ -33,7 +31,6 @@ export function TasksProvider({ children }: any) {
   );
 }
 
-// Кастомные хуки для удобного доступа
 export const useTasksState = () => {
   const context = useContext(TasksStateContext);
   if (!context)

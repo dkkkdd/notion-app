@@ -6,13 +6,17 @@ import { GlobalDropdown } from "./TaskMenu";
 import { TaskCardUi } from "../ui/TaskCard";
 import { formatDateLabel, dateColor } from "../utils/dateFormatters";
 import { useProjectsContext } from "../../context/ProjectsContext";
+import { TaskInfo } from "../features/TaskInfo";
+import { ModalPortal } from "../ui/ModalPortal";
 
 interface TaskCardProps {
   task: Task;
   onEdit: () => void;
   isEditing: boolean;
   onDeleteRequest: () => void;
-  onAddSubtask: () => void;
+  onAddSubtask?: () => void;
+  setShowSubTasks?: () => void; // Теперь это просто функция без аргументов
+  showSubTasks?: boolean;
   // isMenuOpen: boolean;
 }
 
@@ -23,12 +27,14 @@ export const TaskCard = memo(
     isEditing,
     onDeleteRequest,
     onAddSubtask,
+    setShowSubTasks,
+    showSubTasks,
   }: // isMenuOpen,
   TaskCardProps) => {
     const { updateDone, updateTask } = useTasksActions();
     const { mode, setMode, projects, setSelectedProjectId } =
       useProjectsContext();
-
+    const [openTaskInfo, setOpenTaskInfo] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isCalOpen, setIsCalOpen] = useState(false);
     const btnRef = useRef<HTMLSpanElement>(null);
@@ -36,9 +42,19 @@ export const TaskCard = memo(
     const handleToggle = useCallback(
       (e: React.MouseEvent) => {
         e.stopPropagation();
+
+        if (task.subtasks && task.subtasks.length > 0) {
+          task.subtasks.forEach((s) => {
+            if (!task.isDone) {
+              updateDone(s.id, true);
+            }
+          });
+          updateDone(task.id, !task.isDone);
+        }
+
         updateDone(task.id, !task.isDone);
       },
-      [task.id, task.isDone, updateDone]
+      [task.id, task.isDone, task.subtasks, updateDone]
     );
     const handleDate = useCallback(
       (newDate: string | null) => {
@@ -67,11 +83,19 @@ export const TaskCard = memo(
     if (isEditing) {
       return null;
     }
+    const subCount = task.subtasks?.length || 0;
+    const subDone = task.subtasks?.filter((t) => t.isDone === true).length || 0;
+
     return (
       <>
         <TaskCardUi
           {...task}
+          showSubTasks={showSubTasks}
+          setShowSubTasks={setShowSubTasks}
+          subCount={subCount}
+          subDone={subDone}
           onEdit={onEdit}
+          setOpenTaskInfo={setOpenTaskInfo}
           btnRef={btnRef}
           isCalOpen={isCalOpen}
           setIsCalOpen={setIsCalOpen}
@@ -91,7 +115,18 @@ export const TaskCard = memo(
           projects={projects}
           formatDateLabel={formatDateLabel}
         />
-        {/* Глобальное меню рендерится только если эта карточка открыта */}
+
+        {openTaskInfo && (
+          <ModalPortal>
+            <TaskInfo
+              isOpen={openTaskInfo}
+              task={task}
+              projects={projects}
+              onClose={() => setOpenTaskInfo(false)}
+            />
+          </ModalPortal>
+        )}
+
         {isMenuOpen && btnRef.current && (
           <GlobalDropdown
             isCalOpen={isCalOpen}
@@ -100,7 +135,7 @@ export const TaskCard = memo(
             updateTime={handleTime}
             task={task}
             isOpen={isMenuOpen}
-            anchorEl={btnRef.current} // Передаем физическую кнопку
+            anchorEl={btnRef.current}
             onClose={() => setIsMenuOpen(false)}
             onEdit={() => {
               onEdit();

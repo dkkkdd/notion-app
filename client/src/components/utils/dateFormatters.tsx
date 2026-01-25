@@ -2,6 +2,9 @@
 // date-utils.ts
 // ======================
 
+import i18next, { t } from "i18next";
+import { addDays } from "date-fns";
+
 /* ---------- helpers ---------- */
 export const startOfDay = (d: Date) =>
   new Date(d.getFullYear(), d.getMonth(), d.getDate());
@@ -14,36 +17,55 @@ export const startOfWeek = (d: Date) => {
 };
 
 /* ---------- label formatter ---------- */
-export const formatDateLabel = (dateInput: string | Date | null): string => {
+
+export const formatDateLabel = (
+  dateInput: string | Date | null,
+  t: any
+): string => {
   if (!dateInput) return "";
 
   const now = startOfDay(new Date());
   const target = startOfDay(new Date(dateInput));
 
-  const diffDays = (target.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
+  // Разница в днях
+  const diffDays = Math.round(
+    (target.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+  );
 
-  if (diffDays === 0) return "Today";
-  if (diffDays === 1) return "Tomorrow";
-  if (diffDays === -1) return "Yesterday";
+  // 1. Сначала проверяем конкретные именованные дни
+  if (diffDays === 0) return t("today");
+  if (diffDays === 1) return t("tomorrow");
+  if (diffDays === -1) return t("yesterday");
 
-  const thisWeekStart = startOfWeek(now);
-  const nextWeekStart = new Date(thisWeekStart);
-  nextWeekStart.setDate(thisWeekStart.getDate() + 7);
-
-  // this week → weekday name
-  if (target >= thisWeekStart && target < nextWeekStart) {
-    return target.toLocaleDateString("en-GB", { weekday: "long" });
+  // 2. Если дата ПРОШЛАЯ (старее вчера), сразу возвращаем цифры
+  if (diffDays < -1) {
+    return target.toLocaleDateString(i18next.language, {
+      day: "numeric",
+      month: "short",
+      ...(now.getFullYear() === target.getFullYear()
+        ? {}
+        : { year: "numeric" }),
+    });
   }
 
-  // same weekday next week
-  if (diffDays === 7) return "Next week";
+  // 3. Для БУДУЩИХ дат на этой неделе оставляем название дня
+  const thisWeekStart = startOfWeek(now);
+  const nextWeekStart = addDays(thisWeekStart, 7);
 
-  // default → date
-  const isSameYear = now.getFullYear() === target.getFullYear();
-  return target.toLocaleDateString("en-GB", {
+  if (target >= thisWeekStart && target < nextWeekStart) {
+    const dayName = target
+      .toLocaleDateString("en-US", { weekday: "long" })
+      .toLowerCase();
+    return t(dayName);
+  }
+
+  if (diffDays === 7) return t("next_week");
+
+  // Остальное (далекое будущее)
+  return target.toLocaleDateString(i18next.language, {
     day: "numeric",
     month: "short",
-    ...(isSameYear ? {} : { year: "numeric" }),
+    ...(now.getFullYear() === target.getFullYear() ? {} : { year: "numeric" }),
   });
 };
 
@@ -104,26 +126,55 @@ export const SPECIAL_COLORS: Record<SpecialLabel, DateMeta> = {
 };
 
 const DEFAULT_META: DateMeta = {
-  color: "#ffffffd9",
+  color: "currentColor",
   icon: "icon-calendar-_1",
 };
 
 /* ---------- meta resolver ---------- */
-export const dateColor = (label: string): DateMeta => {
-  const isWeekend = label === "Saturday" || label === "Sunday";
-  if (label in SPECIAL_COLORS) {
-    return SPECIAL_COLORS[label as SpecialLabel];
+export const dateColor = (
+  label: string,
+  dateInput?: string | Date | null
+): DateMeta => {
+  // 1. Если есть дата, проверяем на реальную просрочку
+  if (dateInput) {
+    const now = startOfDay(new Date());
+    const target = startOfDay(new Date(dateInput));
+
+    if (target < now) {
+      return SPECIAL_COLORS["Yesterday"]; // Красный для всего, что было до сегодня
+    }
   }
-  if (label in WEEKDAY_COLORS) {
+
+  // 2. Если даты нет, работаем по старым добрым лейблам (для будущего)
+  if (label === t("today")) return SPECIAL_COLORS["Today"];
+  if (label === t("tomorrow")) return SPECIAL_COLORS["Tomorrow"];
+  if (label === t("next_week")) return SPECIAL_COLORS["Next week"];
+
+  const isWeekend = label === t("saturday") || label === t("sunday");
+  if (isWeekend) return SPECIAL_COLORS["Weekend"];
+
+  // 3. Поиск по дням недели (для будущего)
+  const days = [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday",
+  ];
+  const foundDay = days.find((d) => t(d) === label);
+
+  if (foundDay) {
+    const englishKey = foundDay.charAt(0).toUpperCase() + foundDay.slice(1);
     return {
-      color: WEEKDAY_COLORS[label as Weekday],
-      icon: isWeekend ? "icon-calendar-_4" : "icon-calendar-_3",
+      color: WEEKDAY_COLORS[englishKey as Weekday],
+      icon: "icon-calendar-_3",
     };
   }
 
   return DEFAULT_META;
 };
-
 /* ---------- full date formatter ---------- */
 export const formatFullDate = (dateInput: string | Date): string => {
   const date = new Date(dateInput);

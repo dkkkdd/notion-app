@@ -9,6 +9,7 @@ import { useAuthContext } from "../../context/AuthContext";
 import { AuthForm } from "./AuthForm";
 import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import img from "../../assets/form.png";
+import { useTranslation } from "react-i18next";
 
 interface AuthPageProps {
   isLoginMode: boolean;
@@ -18,7 +19,7 @@ export const AuthPage = ({ isLoginMode }: AuthPageProps) => {
   const [searchParams] = useSearchParams();
   const location = useLocation(); // Используем хук вместо глобального объекта
   const navigate = useNavigate();
-
+  const { t } = useTranslation();
   // Типизируем location.state, чтобы избежать ошибок TS
   const locationState = location.state as {
     from?: { pathname: string };
@@ -44,15 +45,15 @@ export const AuthPage = ({ isLoginMode }: AuthPageProps) => {
 
       if (!isLoginMode) {
         if (password.length < 8) {
-          setError("Password must be at least 8 characters");
+          setError(t("password_min_length"));
           return;
         }
         if (password !== confirmPassword) {
-          setError("Passwords do not match");
+          setError(t("passwords_not_match"));
           return;
         }
         if (!userName.trim()) {
-          setError("Name is required");
+          setError(t("name_required"));
           return;
         }
       }
@@ -67,7 +68,12 @@ export const AuthPage = ({ isLoginMode }: AuthPageProps) => {
 
           navigate(from, { replace: true });
         } catch (err: any) {
-          setError(err.message || "Connection error");
+          const message =
+            err.message === "Incorrect password or email"
+              ? t("auth_error_invalid")
+              : err.message || t("connection_error");
+
+          setError(message);
         }
       }
     },

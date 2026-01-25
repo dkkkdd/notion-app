@@ -8,108 +8,194 @@ import { AddTaskBtn } from "../ui/AddTaskBtn";
 import { EmptyState } from "../ui/EmptyPage";
 import { useProjectsContext } from "../../context/ProjectsContext";
 import type { Task } from "../../types/tasks";
+import { GlobalMenuController } from "./GeneralMenu";
+import { ProjectMenuController } from "./ProjectMenu";
+import { useProjectMenu } from "./ProjectMenu";
+import { Trans, useTranslation } from "react-i18next";
 
-// TaskList.tsx
 export const TaskList = () => {
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
   const [activeParentId, setActiveParentId] = useState<string | null>(null);
   const [openForm, setOpenForm] = useState(false);
-  const { mode } = useProjectsContext();
+  const [expandedTasks, setExpandedTasks] = useState<Record<string, boolean>>(
+    {}
+  );
+  const { t } = useTranslation();
+  const { mode, selectedProjectId } = useProjectsContext();
+
+  const toggleTask = (taskId: string) => {
+    setExpandedTasks((prev) => ({
+      ...prev,
+      [taskId]: prev[taskId] === false ? true : false,
+    }));
+  };
   const { tasks, ready } = useFilteredTasks();
   const { deleteTask, updateTask, createTask } = useTasksActions();
+  const handleStartEditing = (id: string) => {
+    setEditingTaskId(id);
+    setActiveParentId(null);
+    setOpenForm(false);
+  };
 
+  const handleStartAddSubtask = (parentId: string) => {
+    setActiveParentId(parentId);
+    setEditingTaskId(null);
+    setOpenForm(false);
+  };
+
+  const handleStartCreateRoot = () => {
+    setOpenForm(true);
+    setEditingTaskId(null);
+    setActiveParentId(null);
+  };
+  const [globalMenuAnchor, setGlobalMenuAnchor] = useState<HTMLElement | null>(
+    null
+  );
+
+  const menu = useProjectMenu();
   if (!ready) return null;
 
   return (
     <div className="mx-auto max-w-[870px] p-4">
-      <div className="tasks ">
-        {tasks.map((task: Task) => (
-          <div key={task.id}>
-            <TaskCard
-              task={task}
-              isEditing={editingTaskId === task.id}
-              onEdit={() => setEditingTaskId(task.id)}
-              onDeleteRequest={() => setTaskToDelete(task)}
-              onAddSubtask={() => {
-                setActiveParentId(task.id);
-                setOpenForm(true);
-              }}
-            />
-            {activeParentId === task.id && (
-              <div className="ml-8 mt-2 border-l-2 border-[#444] pl-4">
-                <TaskForm
-                  formMode="create"
-                  parentId={task.id}
-                  onClose={() => setActiveParentId(null)}
-                  onSubmit={async (data) => {
-                    await createTask({ ...data, parentId: task.id });
-                    setActiveParentId(null);
-                  }}
-                />
-              </div>
-            )}
-            {editingTaskId === task.id && (
+      {mode !== "completed" && (
+        <div className="flex">
+          <button
+            // Адаптировал цвета и ховер кнопки меню под две темы
+            className="!ml-auto !inline-flex absolute top-5 right-5 cursor-pointer flex items-center justify-center leading-none bg-transparent p-[0.3em] rounded-[8px] hover:bg-black/5 dark:hover:bg-[#82828241] text-black dark:text-white transition-colors"
+            onClick={(e) => {
+              if (selectedProjectId) {
+                menu.open(e.currentTarget, selectedProjectId);
+              } else {
+                setGlobalMenuAnchor(e.currentTarget);
+              }
+            }}
+          >
+            <span className="icon-three-dots-punctuation-sign-svgrepo-com rotate-[90deg] text-[1.3em]" />
+          </button>
+        </div>
+      )}
+
+      <ProjectMenuController
+        anchor={menu.anchor}
+        projectId={menu.projectId}
+        onClose={menu.close}
+        onReset={menu.reset}
+      />
+
+      <GlobalMenuController
+        anchor={globalMenuAnchor}
+        mode={mode}
+        onClose={() => setGlobalMenuAnchor(null)}
+      />
+
+      <div className="tasks flex flex-col">
+        {tasks.map((task: any) => (
+          <div key={task.id} className="task-group flex flex-col">
+            {editingTaskId === task.id ? (
               <TaskForm
                 initiaTask={task}
                 formMode="edit"
-                onClose={() => {
-                  setEditingTaskId(null);
-                  setOpenForm(false);
-                  setActiveParentId(null);
-                }}
+                onClose={() => setEditingTaskId(null)}
                 onSubmit={async (data) => {
                   await updateTask(task.id, data);
                   setEditingTaskId(null);
-                  setActiveParentId(null);
                 }}
               />
+            ) : (
+              <TaskCard
+                task={task}
+                isEditing={false}
+                showSubTasks={
+                  mode === "today" ? false : expandedTasks[task.id] !== false
+                }
+                setShowSubTasks={() => toggleTask(task.id)}
+                onEdit={() => handleStartEditing(task.id)}
+                onDeleteRequest={() => setTaskToDelete(task)}
+                onAddSubtask={() => handleStartAddSubtask(task.id)}
+              />
+            )}
+
+            {mode !== "today" && expandedTasks[task.id] !== false && (
+              <div className="subtasks-container ml-8 pl-4 flex flex-col">
+                {task.subtasks?.map((sub: any) => (
+                  <div key={sub.id}>
+                    {editingTaskId === sub.id ? (
+                      <TaskForm
+                        initiaTask={sub}
+                        formMode="edit"
+                        onClose={() => setEditingTaskId(null)}
+                        onSubmit={async (data) => {
+                          await updateTask(sub.id, data);
+                          setEditingTaskId(null);
+                        }}
+                      />
+                    ) : (
+                      <TaskCard
+                        task={sub}
+                        isEditing={false}
+                        onEdit={() => handleStartEditing(sub.id)}
+                        onDeleteRequest={() => setTaskToDelete(sub)}
+                      />
+                    )}
+                  </div>
+                ))}
+
+                {activeParentId === task.id && (
+                  <TaskForm
+                    formMode="create"
+                    parentId={task.id}
+                    onClose={() => setActiveParentId(null)}
+                    onSubmit={async (data) => {
+                      await createTask({ ...data, parentId: task.id });
+                      setActiveParentId(null);
+                    }}
+                  />
+                )}
+              </div>
             )}
           </div>
         ))}
       </div>
+
       {taskToDelete && (
         <ConfirmModal
-          title="Delete Task"
+          title={t("delete_task_title")}
           variant="primary"
           message={
-            <>
-              Task <b>"{taskToDelete.title}"</b> will be gone forever.
-            </>
+            <Trans
+              i18nKey="delete_task_message"
+              values={{ title: taskToDelete.title }}
+              components={{
+                b: <b className="font-bold text-black dark:text-white" />,
+              }}
+            />
           }
           onConfirm={async () => {
             await deleteTask(taskToDelete.id);
             setTaskToDelete(null);
           }}
-          onClose={() => {
-            setTaskToDelete(null);
-            setActiveParentId(null);
-          }}
-          confirmText="Delete Now"
+          onClose={() => setTaskToDelete(null)}
+          confirmText={t("delete_now")}
+          cancelText={t("cancel")}
         />
       )}
-      {openForm && !editingTaskId && (
+
+      {openForm && (
         <TaskForm
           formMode="create"
-          onClose={() => {
-            setOpenForm(false);
-            setActiveParentId(null);
-          }}
+          onClose={() => setOpenForm(false)}
           onSubmit={async (data) => {
             await createTask(data);
-            setActiveParentId(null);
           }}
         />
       )}
 
-      {!openForm && tasks.length !== 0 && mode !== "completed" && (
-        <AddTaskBtn
-          onOpenForm={() => {
-            setOpenForm(true);
-            setEditingTaskId(null);
-          }}
-        />
-      )}
+      {!openForm &&
+        tasks.length !== 0 &&
+        mode !== "completed" &&
+        mode !== "overdue" && <AddTaskBtn onOpenForm={handleStartCreateRoot} />}
+
       {!openForm && tasks.length === 0 && (
         <EmptyState mode={mode} onOpenForm={() => setOpenForm(true)} />
       )}

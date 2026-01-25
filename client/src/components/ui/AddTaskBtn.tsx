@@ -1,8 +1,11 @@
+import { useTranslation } from "react-i18next";
+
 interface AddTaskBtnProps {
   onOpenForm: () => void;
 }
 
 export const AddTaskBtn = ({ onOpenForm }: AddTaskBtnProps) => {
+  const { t } = useTranslation();
   return (
     <button
       onClick={onOpenForm}
@@ -28,8 +31,8 @@ export const AddTaskBtn = ({ onOpenForm }: AddTaskBtnProps) => {
         </svg>
       </div>
 
-      <span className="text-[14px] font-medium text-white/50 group-hover:text-[#9d174d] transition-colors">
-        Add task
+      <span className="text-[14px] font-medium dark:text-white/50 text-black/70 group-hover:text-[#9d174d] transition-colors">
+        {t("add_task")}
       </span>
     </button>
   );

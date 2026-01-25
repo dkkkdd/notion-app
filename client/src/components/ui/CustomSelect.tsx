@@ -18,6 +18,7 @@ interface CustomSelectUiProps {
   getReferenceProps: (userProps?: React.HTMLProps<Element>) => any;
   getFloatingProps: (userProps?: React.HTMLProps<HTMLElement>) => any;
   getItemProps: (userProps?: React.HTMLProps<HTMLElement>) => any;
+  border?: boolean;
 
   // Рефы и функции
   listItemsRef: React.MutableRefObject<(HTMLLIElement | null)[]>;
@@ -35,6 +36,7 @@ export const CustomSelectUi = ({
   placeholder,
   symbol,
   refs,
+  border,
   floatingStyles,
   getFloatingProps,
   getReferenceProps,
@@ -53,16 +55,26 @@ export const CustomSelectUi = ({
           onKeyDown: handleKeyDown,
         })}
         type="button"
-        className={`focus:outline-none focus:border-[#888] focus:ring-1 focus:ring-white/20 relative w-full min-h-[38px] flex items-center justify-between px-3 gap-2 !bg-[#242424] border-[0.5px] border-[#d0d0d05a]/60 hover:border-[#888] rounded-lg cursor-pointer outline-none box-border pr-7 ${
-          open ? "ring-1 ring-[#ff648b]/30 border-[#ff648b]" : ""
-        }`}
+        className={`
+          focus:outline-none relative w-full min-h-[38px]
+          flex items-center justify-between gap-2 p-2 pr-7
+          rounded cursor-pointer box-border 
+          bg-transparent text-gray-700
+          hover:bg-black/5 dark:hover:bg-[#333] m-0
+          ${
+            border !== false
+              ? "border-[0.5px] border-black/20 dark:border-[#444] hover:border-gray-400 dark:hover:border-[#555]"
+              : "border-none"
+          }
+          ${open ? "ring-1 ring-[#ff648b]/30 bg-black/5 dark:bg-[#333]" : ""}
+        `}
       >
-        <div className="flex items-center justify-start gap-2 overflow-hidden text-sm">
+        <div className="flex items-center justify-start gap-2 overflow-hidden ">
           {current ? (
             <>
               {current.icon ? (
                 <span
-                  className={`${current.icon} shrink-0 text-xs opacity-70`}
+                  className={`${current.icon} shrink-0 opacity-70  text-gray-700 dark:text-white`}
                 />
               ) : current.color ? (
                 <span
@@ -80,12 +92,12 @@ export const CustomSelectUi = ({
             </>
           ) : null}
 
-          <span className="truncate text-white/90">
+          <span className="truncate  text-gray-700 dark:text-white">
             {current ? current.label : placeholder}
           </span>
         </div>
         <span
-          className={`absolute top-[25%] right-[10px] transition-transform duration-200 ${
+          className={`absolute top-[25%] right-[10px] transition-transform duration-200 text-[10px text-gray-700${
             open ? "rotate-180" : ""
           }`}
         >
@@ -103,7 +115,7 @@ export const CustomSelectUi = ({
               zIndex: 9999,
             }}
             {...getFloatingProps()}
-            className="!bg-[#222] border border-[#88888833] rounded-lg list-none p-1 shadow-2xl overflow-y-auto box-border  outline-none  min-w-[12em] max-h-[15rem]"
+            className="bg-white dark:!bg-[#232323] border border-black/10 dark:border-[#444] rounded-md list-none p-1 shadow-2xl overflow-y-auto box-border outline-none min-w-[12em] max-h-[15rem]"
           >
             {options.map((o, index) => (
               <li
@@ -117,12 +129,13 @@ export const CustomSelectUi = ({
                     setOpen(false);
                   },
                 })}
-                className={`py-2 px-3 flex items-center gap-2 rounded-md cursor-pointer text-sm outline-none
+                className={`py-2 px-3 flex items-center gap-2 rounded cursor-pointer text-sm outline-none transition-colors
                       ${
                         activeIndex === index
-                          ? "bg-white/10 text-white"
-                          : "text-white/80"
+                          ? "bg-black/5 dark:bg-[#333] text-black dark:text-white"
+                          : "text-gray-700 dark:text-white"
                       }
+                      hover:bg-black/5 dark:hover:bg-[#333]
                       ${value === o.value ? "!text-[#9d174d] font-bold" : ""}
                     `}
               >

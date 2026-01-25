@@ -48,6 +48,7 @@ export const TaskForm = ({
       onClose();
     }
   }, [selectedProjectId, onClose]);
+
   useEffect(() => {
     if (mode === "today" && formMode === "create") {
       setDate(format(new Date(), "yyyy-MM-dd"));
@@ -93,10 +94,11 @@ export const TaskForm = ({
       setIsSubmitting(false);
     }
   };
-
+  const isSubTask = !!(parentId || initiaTask?.parentId);
   return (
     <TaskFormUi
       mode={formMode}
+      isSubTaskForm={isSubTask}
       name={name}
       setName={setName}
       priority={priority}

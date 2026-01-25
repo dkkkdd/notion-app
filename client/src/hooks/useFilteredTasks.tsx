@@ -1,51 +1,77 @@
-import type { Task } from "../types/tasks";
+// import type { Task } from "../types/tasks";
 import { useMemo } from "react";
 import { useTasksState } from "../context/TasksContext";
 import { useProjectsContext } from "../context/ProjectsContext";
+import type { Task } from "../types/tasks";
+import { isBefore, isToday, startOfToday } from "date-fns";
 
-function isToday(date: string | null) {
-  if (date === null) return false;
-  const d = new Date(date);
-  const today = new Date();
-  const currentYear = today.getFullYear();
-  const currentMonth = today.getMonth();
-  const currentDay = today.getDate();
-
-  return (
-    d.getFullYear() === currentYear &&
-    d.getMonth() === currentMonth &&
-    d.getDate() === currentDay
-  );
-}
 export function useFilteredTasks() {
   const { tasks, loading } = useTasksState();
-  const { mode, selectedProjectId } = useProjectsContext();
+  const { mode, selectedProjectId, showAll } = useProjectsContext();
 
   const filteredTasks = useMemo(() => {
     if (loading) return [];
 
-    switch (mode) {
-      case "inbox":
-        return tasks.filter((t: Task) => !t.projectId && !t.isDone);
+    const todayStart = startOfToday();
 
-      case "today":
-        return tasks.filter((t: Task) => !t.isDone && isToday(t.deadline));
+    const checkDeadline = (task: Task) => {
+      if (!task.deadline) return false;
+      const d = new Date(task.deadline);
 
-      case "completed":
-        return tasks.filter((t: Task) => t.isDone);
+      switch (mode) {
+        case "today":
+          return isToday(d);
+        case "overdue":
+          return isBefore(d, todayStart) && !task.isDone;
+        default:
+          return false;
+      }
+    };
 
-      case "project":
-        return tasks.filter(
-          (t: Task) => t.projectId === selectedProjectId && !t.isDone
-        );
+    if (mode === "today" || mode === "overdue") {
+      const allItems: any[] = [];
 
-      default:
-        return [];
+      tasks.forEach((parent: any) => {
+        if (checkDeadline(parent) && (showAll || !parent.isDone)) {
+          allItems.push({
+            ...parent,
+            subtasks: [],
+            isFlat: true,
+          });
+        }
+
+        parent.subtasks?.forEach((sub: any) => {
+          if (checkDeadline(sub) && (showAll || !sub.isDone)) {
+            allItems.push({
+              ...sub,
+              isFlat: true,
+              isStandaloneSubtask: true,
+
+              parentName: parent.title,
+            });
+          }
+        });
+      });
+
+      return allItems.sort((a, b) => Number(a.isDone) - Number(b.isDone));
     }
-  }, [tasks, mode, selectedProjectId, loading]);
 
-  return {
-    tasks: filteredTasks,
-    ready: !loading,
-  };
+    const filtered = tasks.filter((t: Task) => {
+      if (mode === "completed") return t.isDone;
+
+      let matchesPage = false;
+      if (mode === "inbox") matchesPage = !t.projectId;
+      else if (mode === "project")
+        matchesPage = t.projectId === selectedProjectId;
+
+      if (!matchesPage) return false;
+      return showAll ? true : !t.isDone;
+    });
+
+    return filtered.sort(
+      (a: any, b: any) => Number(a.isDone) - Number(b.isDone)
+    );
+  }, [tasks, mode, selectedProjectId, loading, showAll]);
+
+  return { tasks: filteredTasks, ready: !loading };
 }

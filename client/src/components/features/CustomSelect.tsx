@@ -28,6 +28,8 @@ interface CustomSelectProps {
   options: Option[];
   onChange: (v: any) => void;
   placeholder?: string;
+  border?: boolean;
+
   position: Placement | undefined;
 }
 
@@ -37,6 +39,7 @@ export function CustomSelect({
   options,
   onChange,
   placeholder,
+  border,
   position,
 }: CustomSelectProps) {
   const [open, setOpen] = useState(false);
@@ -117,6 +120,7 @@ export function CustomSelect({
       activeIndex={activeIndex}
       current={current}
       refs={refs}
+      border={border}
       floatingStyles={floatingStyles}
       getReferenceProps={getReferenceProps}
       getFloatingProps={getFloatingProps}

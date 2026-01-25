@@ -1,64 +1,88 @@
-@import "../public/fonts/style.css";
-@import "tailwindcss"; /* Это всё, что нужно для v4 */
+@import "tailwindcss";
 @import "../public/fonts/style.css";
 
-/* Ваши остальные стили (шрифты и т.д.) ниже */
+@theme {
+  --font-sans: system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+@variant dark (&:where(.dark, .dark *));
+
 :root {
-  --btnColor: #ff648b;
-  --backColor: #242424;
-  --borderColor: #828282;
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-size: 14px;
-  font-weight: 400;
-  overflow: hidden;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: var(--backColor);
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-#root {
-  width: 100%;
-  height: 100%;
+  --bg-dark: #1f1f1f;
 }
 
-* {
-  box-sizing: border-box;
-}
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+/* =========================
+   BASE RESET (iOS-safe)
+   ========================= */
+
+html {
+  background-color: var(--bg-dark);
 }
 
 body {
   margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
+  padding: 0;
+  width: 100%;
+  background-color: var(--bg-dark);
+  color: white;
+  font-family: var(--font-sans);
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior: none;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* ❗️ВАЖНО
+   НЕТ height: 100dvh на body
+*/
+#root {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-dark);
 }
+
+/* =========================
+   LAYOUT HELPERS
+   ========================= */
+
 .container {
   margin: 0 auto;
-  max-width: 900px;
-}
-.task-list-container {
-  content-visibility: auto;
-  contain-intrinsic-size: 100px 500px; /* Примерная высота списка */
+  width: 100%;
+  max-width: 850px;
+  padding: 0 16px;
 }
 
-/* Плавное появление, чтобы не было резкого скачка */
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* =========================
+   FORMS
+   ========================= */
+
+form {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* =========================
+   SCROLL RULES
+   ========================= */
+
+/*
+  НЕ задаём overflow-y тут.
+  Скролл должен быть назначен
+  ТОЛЬКО в layout-компоненте (main)
+*/
+main {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* =========================
+   ANIMATIONS
+   ========================= */
+
 .fade-in {
   animation: fadeIn 0.2s ease-in-out;
 }
@@ -73,52 +97,58 @@ h1 {
     transform: translateY(0);
   }
 }
+
+/* =========================
+   UI
+   ========================= */
+
 .tip {
-  margin: 0;
-  line-height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: transparent;
   padding: 0.3em;
-  color: #fff;
-  font-size: 1.3em;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: background-color 0.25s ease;
 }
+
 .tip:hover {
   background-color: #82828241;
 }
-/* }
-button:hover {
-  border-color: var(--btnColor);
+
+/* =========================
+   iOS INPUT ZOOM FIX
+   ========================= */
+
+@media screen and (max-width: 768px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
 }
-button[type="submit"] {
-  background-color: var(--btnColor);
+
+/* DEBUG */
+/*
+* {
+  outline: 1px solid red !important;
 }
-button[type="submit"]:hover {
-  box-shadow: 0 0 5px var(--btnColor);
+*/
+/* html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-dark);
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto var(--btnColor);
+
+body {
+  overscroll-behavior-y: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+
+body {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
 } */
-.char-count {
-  margin: 0px 0 4px 0;
-  font-size: 11px;
-  opacity: 0.6;
-  text-align: right;
-}
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  /* button {
-    background-color: #f9f9f9;
-  } */
-}

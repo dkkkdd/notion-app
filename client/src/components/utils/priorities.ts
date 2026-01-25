@@ -24,6 +24,7 @@ export const PRIORITY_OPTIONS = [
     bg: "transparent",
   },
 ];
+
 type ColorOption = { value: string; label: string };
 export const OPTIONS: ColorOption[] = [
   { label: "Grey", value: "#8c8c8c" },

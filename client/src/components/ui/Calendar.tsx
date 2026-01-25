@@ -4,6 +4,10 @@ import { format } from "date-fns";
 import { QuickBtn } from "../utils/QuickBtn";
 import DatePicker from "react-datepicker";
 import { FloatingPortal } from "@floating-ui/react";
+import { useTranslation } from "react-i18next";
+import i18n, { localeMap } from "../../i18n";
+import { enUS } from "date-fns/locale";
+
 interface CalendarUiProps {
   date: string | null | undefined;
   time: string | null | undefined;
@@ -48,6 +52,10 @@ export const CalendarUi = (props: CalendarUiProps) => {
     timeOptions,
     children,
   } = props;
+
+  const { t } = useTranslation();
+  const currentLocale = localeMap[i18n.language] || enUS;
+
   return (
     <>
       {children ? (
@@ -65,21 +73,20 @@ export const CalendarUi = (props: CalendarUiProps) => {
           type="button"
           style={{
             color:
-              dateColor(formatDateLabel(date ?? null)).color === "#ffbbf2d9"
-                ? "#ffffffda"
-                : dateColor(formatDateLabel(date ?? null)).color,
+              dateColor(formatDateLabel(date ?? null, t)).color === "#ffbbf2d9"
+                ? undefined
+                : dateColor(formatDateLabel(date ?? null, t)).color,
           }}
-          className="focus:outline-none cursor-pointer flex justify-between items-center gap-2 bg-[#242424] border-[0.5px] border-[#d0d0d05a]/60 rounded-lg px-3 h-[38px] w-fit text-sm hover:border-[#888]"
+          className="focus:outline-none cursor-pointer min-h-[38px] flex justify-between items-center gap-2 bg-transparent border-[0.5px] border-black/20 dark:border-[#d0d0d05a]/60 rounded px-3 h-[35px] w-fit text-sm hover:border-black/40 dark:hover:border-[#888]"
         >
           <div className="truncate flex gap-2 items-center">
             <span
               className={`${
-                dateColor(formatDateLabel(date ?? null)).icon
+                dateColor(formatDateLabel(date ?? null, t)).icon
               } text-[1.5em] opacity-70`}
             />
-            {/* Здесь date || time и так отсекают undefined/null для логики строки */}
             {date || time
-              ? `${formatDateLabel(date ?? null)} ${time ? time : ""}`
+              ? `${formatDateLabel(date ?? null, t)} ${time ? time : ""}`
               : ""}
           </div>
           {date && (
@@ -90,41 +97,41 @@ export const CalendarUi = (props: CalendarUiProps) => {
                 setDate(null);
                 setTime("");
               }}
-              className="icon-icons8-close bg-[#444] p-1.5 text-white rounded-md hover:bg-[#555]"
+              className="icon-icons8-close bg-black/10 dark:bg-[#444] p-1.5 text-black dark:text-white rounded-md hover:bg-black/20 dark:hover:bg-[#555]"
             />
           )}
         </button>
       )}
+
       {open && (
         <FloatingPortal>
           <div
             ref={refs.setFloating}
             style={{
               ...floatingStyles,
-              // КЛЮЧЕВОЙ МОМЕНТ: скрываем, пока не встал в нужную позицию
               visibility: isPositioned ? "visible" : "hidden",
               opacity: isPositioned ? 1 : 0,
             }}
             {...getFloatingProps()}
-            className="z-[9999] flex flex-col gap-2 bg-[#242424] border border-[#d0d0d05a]/60 rounded-xl p-3 shadow-2xl w-[300px]"
+            className="z-[9999] flex flex-col gap-2 bg-white dark:bg-[#242424] border border-black/10 dark:border-[#d0d0d05a]/60 rounded-xl p-3 shadow-2xl w-[300px]"
           >
             <div className="flex justify-center overflow-hidden">
               <DatePicker
+                locale={currentLocale}
                 selected={safeDate}
                 onChange={(d: Date | null) => {
                   if (!d) return;
                   setDate(format(d, "yyyy-MM-dd"));
-                  // Если хочешь закрывать сразу после выбора даты:
-                  // setOpen(false);
                 }}
                 inline
                 minDate={new Date()}
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-1 border-t border-white/5 pt-2">
+            {/* Сетки кнопок - поменял border-white/5 на адаптивный */}
+            <div className="grid grid-cols-2 gap-1 border-t border-black/5 dark:border-white/5 pt-2">
               <QuickBtn
-                label="Today"
+                label={t("today")}
                 icon="icon-calendar-_2"
                 color="text-[#00c853]"
                 isActive={date === todayStr}
@@ -134,7 +141,7 @@ export const CalendarUi = (props: CalendarUiProps) => {
                 }}
               />
               <QuickBtn
-                label="Tomorrow"
+                label={t("tomorrow")}
                 icon="icon-calendar-_5"
                 color="text-[#ffab00]"
                 isActive={date === tomorrowStr}
@@ -144,7 +151,7 @@ export const CalendarUi = (props: CalendarUiProps) => {
                 }}
               />
               <QuickBtn
-                label="This Weekend"
+                label={t("this_weekend")}
                 icon="icon-calendar-_4"
                 color="text-blue-500"
                 isActive={date === weekendStr}
@@ -154,7 +161,7 @@ export const CalendarUi = (props: CalendarUiProps) => {
                 }}
               />
               <QuickBtn
-                label={nextWeekDayNameStr} // Динамическое имя: Next Tuesday, Next Monday и т.д.
+                label={nextWeekDayNameStr}
                 icon="icon-calendar-_3"
                 color="text-[#673ab7]"
                 isActive={date === nextWeekStr}
@@ -165,17 +172,18 @@ export const CalendarUi = (props: CalendarUiProps) => {
               />
             </div>
 
-            <div className="mt-2 pt-3 border-t border-white/5">
+            {/* Секция времени - поменял цвета текста и бордеров */}
+            <div className="mt-2 pt-3 border-t border-black/5 dark:border-white/5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] text-white/40 uppercase font-bold tracking-widest">
-                  Reminder
+                <span className="text-[10px] text-black/40 dark:text-white/40 uppercase font-bold tracking-widest">
+                  {t("reminder")}
                 </span>
                 {time && (
                   <button
                     onClick={() => setTime("")}
                     className="text-[10px] cursor-pointer text-[#9d174d] hover:underline"
                   >
-                    Remove
+                    {t("remove")}
                   </button>
                 )}
               </div>
@@ -184,7 +192,7 @@ export const CalendarUi = (props: CalendarUiProps) => {
                 value={time === undefined ? null : time}
                 options={timeOptions}
                 onChange={setTime}
-                placeholder="Set time"
+                placeholder={t("set_time")}
                 symbol="icon-clock"
               />
             </div>

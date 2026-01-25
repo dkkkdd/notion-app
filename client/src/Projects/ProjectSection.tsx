@@ -2,9 +2,11 @@ import { useState, useRef, useEffect } from "react";
 import { ProjectsList } from "./ProjectsList";
 import { ProjectForm } from "../components/features/ProjectFrom";
 import { useProjectsContext } from "../context/ProjectsContext";
-import "./ProjectSection.css";
+import { useTranslation } from "react-i18next";
+import { ModalPortal } from "../components/ui/ModalPortal";
 
 export function ProjectsSection() {
+  const { t } = useTranslation();
   const { projects, createProject, changeMode, setSelectedProjectId } =
     useProjectsContext();
   const [showProjects, setShowProjects] = useState(true);
@@ -20,47 +22,54 @@ export function ProjectsSection() {
   }, [showProjects, projects.length]);
 
   return (
-    <div className="nav-item">
-      <div className="project-section">
-        <div className="project-section-title">Projects</div>
-        <div className="project-event-btn">
+    <div className="py-2">
+      <div className="flex items-center justify-between mb-1 px-2">
+        <div className="text-gray-500 ">{t("projects_count")}</div>
+
+        <div className="flex items-center gap-1">
           <div
-            className="hide-project-btn tip"
+            className="w-7 h-7 flex items-center justify-center rounded-md cursor-pointer transition-colors hover:bg-gray-200 dark:hover:bg-[#82828241] group"
             onClick={() => setShowProjects(!showProjects)}
           >
             <span
-              className="close icon-reshot-icon-arrow-chevron-right-WDGHUKQ634"
+              className="icon-reshot-icon-arrow-chevron-right-WDGHUKQ634 text-[1.3em] transition-transform duration-250 ease-in-out text-gray-400 group-hover:text-black/70 dark:group-hover:text-white"
               style={{
                 transform: showProjects ? "rotate(90deg)" : "rotate(0deg)",
               }}
             ></span>
           </div>
+
           <div
-            className="add-project-btn tip"
+            className="w-7 h-7 flex items-center justify-center rounded-md cursor-pointer transition-colors hover:bg-gray-200 dark:hover:bg-[#82828241] group"
             onClick={() => setShowForm(true)}
           >
-            <span className="plus icon-icons8-close"></span>
+            <span className="icon-icons8-close text-lg rotate-45 text-gray-400 group-hover:text-black/70 dark:group-hover:text-white"></span>
           </div>
         </div>
       </div>
 
-      <div ref={wrapperRef} className="projects-wrapper">
+      <div
+        ref={wrapperRef}
+        className="overflow-hidden transition-[max-height] duration-300 ease-in-out"
+      >
         <ProjectsList projects={projects} />
       </div>
 
       {showForm && (
-        <ProjectForm
-          mode="create"
-          onClose={() => setShowForm(false)}
-          onSubmit={async ({ title, color }) => {
-            const newProject = await createProject(title, 3, color, false);
-            if (newProject) {
-              setSelectedProjectId(newProject.id);
-              changeMode("project", newProject.id);
-            }
-            setShowForm(false);
-          }}
-        />
+        <ModalPortal>
+          <ProjectForm
+            mode="create"
+            onClose={() => setShowForm(false)}
+            onSubmit={async ({ title, color }) => {
+              const newProject = await createProject(title, 3, color, false);
+              if (newProject) {
+                setSelectedProjectId(newProject.id);
+                changeMode("project", newProject.id);
+              }
+              setShowForm(false);
+            }}
+          />
+        </ModalPortal>
       )}
     </div>
   );

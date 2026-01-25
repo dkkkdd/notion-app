@@ -73,16 +73,17 @@ export function useAuth() {
     if (user) {
       setUser({ ...user, ...data });
     }
+
     try {
       const newInfo = await authApi.updateMe(data);
-      setUser(newInfo);
+
+      setUser((prev) => (prev ? { ...prev, ...newInfo } : newInfo));
     } catch (err) {
       setUser(oldInfo);
       console.error("Update failed", err);
       throw err;
     }
   };
-
   const getMe = async () => {
     try {
       const userData = await authApi.getMe();

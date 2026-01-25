@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CustomSelect } from "../../components/features/CustomSelect";
 import type { Project } from "../../types/project";
+import { useTranslation } from "react-i18next";
 
 type ColorOption = { value: string; label: string };
 const OPTIONS: ColorOption[] = [
@@ -29,6 +30,7 @@ export const ProjectForm = ({
   onSubmit,
   onClose,
 }: ProjectFormProps) => {
+  const { t } = useTranslation();
   const [name, setName] = useState(initialProject?.title ?? "");
   const [color, setColor] = useState(
     initialProject?.color ?? OPTIONS[0]?.value ?? "#8c8c8c"
@@ -96,7 +98,7 @@ export const ProjectForm = ({
           </div>
 
           <div className="flex flex-col gap-2 items-start text-sm text-[#888]">
-            Color
+            {t("color")}
             <CustomSelect
               position="right"
               symbol="dot"
@@ -117,7 +119,7 @@ export const ProjectForm = ({
               disabled={isSubmitting}
               className="cursor-pointer px-3 py-2 border-[0.5px] border-[#888] rounded-lg"
             >
-              Cancel
+              {t("cancel")}
             </button>
             <button
               type="submit"
