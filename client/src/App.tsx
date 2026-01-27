@@ -14,6 +14,7 @@ import { AuthPage } from "./components/features/AuthPage";
 import { useProjectsContext } from "./context/ProjectsContext";
 import { useEffect } from "react";
 import { applyTheme } from "./components/features/UserInfo";
+import { useTranslation } from "react-i18next";
 
 // Обертка для задач
 function TasksWrapper({ children }: { children: React.ReactNode }) {
@@ -56,6 +57,7 @@ function ProtectedApp() {
 // };
 // Вспомогательный компонент для защиты роутов
 function AppContent() {
+  const { t } = useTranslation();
   const { isAuthenticated, loading } = useAuthState();
   const location = useLocation();
   useEffect(() => {
@@ -74,7 +76,7 @@ function AppContent() {
   if (loading)
     return (
       <div className="h-screen w-full flex items-center justify-center bg-[#111] text-white">
-        Loading...
+        {t("loading")}...
       </div>
     );
 

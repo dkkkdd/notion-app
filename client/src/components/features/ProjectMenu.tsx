@@ -22,6 +22,7 @@ interface GlobalMenuProps {
   isOpen: boolean;
   isFavorite: boolean;
   onClose: () => void;
+  onSelect?: () => void;
   onToggleFavorite: () => void;
   onEdit: () => void;
   onDelete: () => void;
@@ -33,6 +34,7 @@ export const ProjectMenu = ({
   isFavorite,
   onToggleFavorite,
   onClose,
+  onSelect,
   onEdit,
   onDelete,
 }: GlobalMenuProps) => {
@@ -112,6 +114,18 @@ export const ProjectMenu = ({
             <span className="icon-books opacity-[0.7]"> </span>
             {t("add_section")}
           </div>
+          {onSelect && (
+            <div
+              onClick={() => {
+                onSelect();
+                onClose();
+              }}
+              className="w-full text-left p-2 hover:bg-black/5 dark:hover:bg-[#333] cursor-pointer text-gray-700 dark:text-white rounded transition-colors flex items-center gap-2"
+            >
+              <span className="icon-bookmarks opacity-[0.7]"> </span>
+              {t("start_selection")}
+            </div>
+          )}
 
           <div className="flex justify-center w-full">
             <CustomSelect
@@ -181,11 +195,13 @@ export function ProjectMenuController({
   anchor,
   projectId,
   onClose,
+  onSelect,
   onReset,
 }: {
   anchor: HTMLElement | null;
   projectId: string | null;
   onClose: () => void;
+  onSelect?: () => void;
   onReset: () => void;
 }) {
   const { projects, toggleFavorite, deleteProject, updateProject } =
@@ -206,6 +222,7 @@ export function ProjectMenuController({
           <ProjectMenu
             anchorEl={anchor}
             isOpen
+            onSelect={onSelect}
             isFavorite={project.favorites}
             onClose={onClose}
             onToggleFavorite={() =>

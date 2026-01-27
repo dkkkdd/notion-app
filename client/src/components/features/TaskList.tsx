@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTasksActions } from "../../context/TasksContext";
 import { TaskForm } from "./TaskForm";
 import { TaskCard } from "./TaskCard";
@@ -12,8 +12,13 @@ import { GlobalMenuController } from "./GeneralMenu";
 import { ProjectMenuController } from "./ProjectMenu";
 import { useProjectMenu } from "./ProjectMenu";
 import { Trans, useTranslation } from "react-i18next";
+import { Selector } from "./Selector";
+import { useTaskSelection } from "../../hooks/useTaskSelection";
 
 export const TaskList = () => {
+  const { tasks, ready } = useFilteredTasks();
+  const { t } = useTranslation();
+  const { mode, selectedProjectId } = useProjectsContext();
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
   const [activeParentId, setActiveParentId] = useState<string | null>(null);
@@ -21,8 +26,6 @@ export const TaskList = () => {
   const [expandedTasks, setExpandedTasks] = useState<Record<string, boolean>>(
     {}
   );
-  const { t } = useTranslation();
-  const { mode, selectedProjectId } = useProjectsContext();
 
   const toggleTask = (taskId: string) => {
     setExpandedTasks((prev) => ({
@@ -30,8 +33,21 @@ export const TaskList = () => {
       [taskId]: prev[taskId] === false ? true : false,
     }));
   };
-  const { tasks, ready } = useFilteredTasks();
   const { deleteTask, updateTask, createTask } = useTasksActions();
+  const {
+    selectionMode,
+    setSelectionMode,
+    selectedIds,
+    toggleSelect,
+    toggleSelectAll,
+    clearSelection,
+    bulkComplete,
+    total,
+    bulkUpdateDeadline,
+    bulkDelete,
+    openPrioritySheet,
+  } = useTaskSelection();
+
   const handleStartEditing = (id: string) => {
     setEditingTaskId(id);
     setActiveParentId(null);
@@ -52,6 +68,13 @@ export const TaskList = () => {
   const [globalMenuAnchor, setGlobalMenuAnchor] = useState<HTMLElement | null>(
     null
   );
+  useEffect(() => {
+    if (selectionMode) {
+      setOpenForm(false);
+      setActiveParentId(null);
+      setEditingTaskId(null);
+    }
+  }, [selectionMode]);
 
   const menu = useProjectMenu();
   if (!ready) return null;
@@ -59,9 +82,8 @@ export const TaskList = () => {
   return (
     <div className="mx-auto max-w-[870px] p-4">
       {mode !== "completed" && (
-        <div className="flex">
+        <div className="flex fixed top-2 right-2">
           <button
-            // Адаптировал цвета и ховер кнопки меню под две темы
             className="!ml-auto !inline-flex absolute top-5 right-5 cursor-pointer flex items-center justify-center leading-none bg-transparent p-[0.3em] rounded-[8px] hover:bg-black/5 dark:hover:bg-[#82828241] text-black dark:text-white transition-colors"
             onClick={(e) => {
               if (selectedProjectId) {
@@ -78,6 +100,7 @@ export const TaskList = () => {
 
       <ProjectMenuController
         anchor={menu.anchor}
+        onSelect={() => setSelectionMode(true)}
         projectId={menu.projectId}
         onClose={menu.close}
         onReset={menu.reset}
@@ -85,6 +108,7 @@ export const TaskList = () => {
 
       <GlobalMenuController
         anchor={globalMenuAnchor}
+        onSelect={() => setSelectionMode(true)}
         mode={mode}
         onClose={() => setGlobalMenuAnchor(null)}
       />
@@ -109,6 +133,9 @@ export const TaskList = () => {
                 showSubTasks={
                   mode === "today" ? false : expandedTasks[task.id] !== false
                 }
+                selectionMode={selectionMode}
+                selected={selectedIds.has(task.id)}
+                onSelect={() => toggleSelect(task.id)}
                 setShowSubTasks={() => toggleTask(task.id)}
                 onEdit={() => handleStartEditing(task.id)}
                 onDeleteRequest={() => setTaskToDelete(task)}
@@ -133,6 +160,9 @@ export const TaskList = () => {
                     ) : (
                       <TaskCard
                         task={sub}
+                        selectionMode={selectionMode}
+                        selected={selectedIds.has(sub.id)}
+                        onSelect={() => toggleSelect(sub.id)}
                         isEditing={false}
                         onEdit={() => handleStartEditing(sub.id)}
                         onDeleteRequest={() => setTaskToDelete(sub)}
@@ -199,6 +229,20 @@ export const TaskList = () => {
       {!openForm && tasks.length === 0 && (
         <EmptyState mode={mode} onOpenForm={() => setOpenForm(true)} />
       )}
+
+      <Selector
+        visible={selectionMode}
+        total={total}
+        selectedIds={selectedIds}
+        toggleSelectAll={toggleSelectAll}
+        onClear={clearSelection}
+        onComplete={() => bulkComplete([...selectedIds])}
+        onDelete={() => bulkDelete([...selectedIds])}
+        onUpdateDeadline={(d: any, t: any) =>
+          bulkUpdateDeadline([...selectedIds], d, t)
+        }
+        onSetPriority={(p: any) => openPrioritySheet([...selectedIds], p)}
+      />
     </div>
   );
 };

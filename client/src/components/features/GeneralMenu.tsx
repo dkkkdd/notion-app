@@ -5,6 +5,7 @@ interface GlobalMenuProps {
   anchorEl: HTMLElement | null;
   mode: "inbox" | "today" | "completed" | "overdue";
   onClose: () => void;
+  onSelect: () => void;
 }
 import {
   useFloating,
@@ -19,7 +20,7 @@ import {
 import { CustomSelect } from "./CustomSelect";
 import { useTranslation } from "react-i18next";
 
-function GlobalMenu({ anchorEl, onClose }: GlobalMenuProps) {
+function GlobalMenu({ anchorEl, onClose, onSelect }: GlobalMenuProps) {
   const { refs, floatingStyles, context, isPositioned } = useFloating({
     open: Boolean(anchorEl),
     onOpenChange: (open) => !open && onClose(),
@@ -76,6 +77,16 @@ function GlobalMenu({ anchorEl, onClose }: GlobalMenuProps) {
             <span className="icon-books opacity-[0.7]"> </span>
             {t("add_section")}
           </div>
+          <div
+            onClick={() => {
+              onSelect();
+              onClose();
+            }}
+            className="w-full text-left p-2 hover:bg-black/5 dark:hover:bg-[#333] cursor-pointer text-gray-700 dark:text-white rounded flex items-center gap-2"
+          >
+            <span className="icon-bookmarks opacity-[0.7]"> </span>
+            {t("start_selection")}
+          </div>
 
           <div className="flex justify-center w-full">
             <CustomSelect
@@ -108,14 +119,23 @@ function GlobalMenu({ anchorEl, onClose }: GlobalMenuProps) {
 export function GlobalMenuController({
   anchor,
   mode,
+  onSelect,
   onClose,
 }: {
   anchor: HTMLElement | null;
   mode: "inbox" | "today" | "completed" | "project" | "overdue";
   onClose: () => void;
+  onSelect: () => void;
 }) {
   if (!anchor) return null;
   if (mode === "project") return null;
 
-  return <GlobalMenu anchorEl={anchor} mode={mode} onClose={onClose} />;
+  return (
+    <GlobalMenu
+      anchorEl={anchor}
+      mode={mode}
+      onClose={onClose}
+      onSelect={onSelect}
+    />
+  );
 }

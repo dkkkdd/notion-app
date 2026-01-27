@@ -15,8 +15,7 @@ export function ProjectItem({
   onOpenMenu,
   isMenuOpen,
 }: ProjectCardProps) {
-  const { selectedProjectId, setSelectedProjectId, changeMode } =
-    useProjectsContext();
+  const { selectedProjectId, changeMode } = useProjectsContext();
   const btnRef = useRef<HTMLDivElement>(null);
   const handleMenuClick = useCallback(
     (e: React.MouseEvent) => {
@@ -43,7 +42,8 @@ export function ProjectItem({
         btnRef={btnRef}
         isMenuOpen={isMenuOpen}
         onSelect={() => {
-          setSelectedProjectId(project.id);
+          // setSelectedProjectId(project.id);
+
           changeMode("project", project.id);
         }}
       />

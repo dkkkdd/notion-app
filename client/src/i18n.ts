@@ -24,6 +24,22 @@ registerLocale("fr", fr);
 const resources = {
   en: {
     translation: {
+      selected_count: "{{count}} selected",
+      apply: "Apply",
+      deselect_all: "Deselect all",
+      complete_tasks_title: "Complete tasks",
+      confirm: "Confirm",
+      loading: "Loading",
+      start_selection: "Select tasks",
+      delete_tasks_message:
+        "Are you sure you want to delete the selected tasks?",
+      complete_tasks_message: "Mark the selected tasks as completed?",
+      complete: "Complete",
+      change_priority: "Change priority",
+      change_due_date: "Change due date",
+      select_all: "Select all",
+      clear_selection: "Clear selection",
+
       empty_states: {
         inbox_title: "All caught up!",
         inbox_desc: "Your inbox is clear. Time to plan something new.",
@@ -171,6 +187,21 @@ const resources = {
   },
   ru: {
     translation: {
+      start_selection: "Выбрать задачи",
+      selected_count: "Выбрано: {{count}}",
+      apply: "Применить",
+      deselect_all: "Снять выделение",
+      complete_tasks_title: "Завершить задачи",
+      confirm: "Подтвердить",
+      loading: "Загрузка",
+      complete: "Выполнить",
+      delete_tasks_message: "Вы уверены, что хотите удалить выбранные задачи?",
+      complete_tasks_message: "Отметить выбранные задачи как выполненные?",
+      change_priority: "Изменить приоритет",
+      change_due_date: "Изменить срок",
+
+      select_all: "Выбрать все",
+      clear_selection: "Снять выделение",
       // Общее
       overdue: "Просроченные",
       inbox: "Входящие",
@@ -318,6 +349,21 @@ const resources = {
   uk: {
     translation: {
       // Загальне
+      start_selection: "Обрати завдання",
+      selected_count: "Обрано: {{count}}",
+      apply: "Застосувати",
+      deselect_all: "Зняти вибір",
+      complete_tasks_title: "Завершити завдання",
+      confirm: "Підтвердити",
+      delete_tasks_message: "Ви впевнені, що хочете видалити вибрані завдання?",
+      complete_tasks_message: "Позначити вибрані завдання як виконані?",
+      complete: "Виконати",
+      change_priority: "Змінити пріоритет",
+      change_due_date: "Змінити термін",
+      loading: "Завантаження",
+      select_all: "Обрати всі",
+      clear_selection: "Зняти вибір",
+
       overdue: "Протерміновані",
       inbox: "Вхідні",
       project: "Проєкт",
@@ -463,7 +509,24 @@ const resources = {
   },
   es: {
     translation: {
-      // General / Común
+      selected_count: "{{count}} seleccionadas",
+      apply: "Aplicar",
+      start_selection: "Seleccionar tareas",
+      deselect_all: "Deseleccionar todo",
+      complete_tasks_title: "Completar tareas",
+      confirm: "Confirmar",
+      loading: "Cargando",
+      delete_tasks_message:
+        "¿Estás seguro de que deseas eliminar las tareas seleccionadas?",
+      complete_tasks_message:
+        "¿Marcar las tareas seleccionadas como completadas?",
+      complete: "Completar",
+      change_priority: "Cambiar prioridad",
+      change_due_date: "Cambiar fecha",
+
+      select_all: "Seleccionar todo",
+      clear_selection: "Limpiar selección",
+
       overdue: "Atrasadas",
 
       inbox: "Bandeja de entrada",
@@ -613,6 +676,22 @@ const resources = {
   de: {
     translation: {
       // Allgemein
+      loading: "Laden",
+      start_selection: "Aufgaben auswählen",
+      deselect_all: "Auswahl aufheben",
+      selected_count: "{{count}} ausgewählt",
+      apply: "Anwenden",
+      complete: "Erledigen",
+      change_priority: "Priorität ändern",
+      change_due_date: "Fälligkeitsdatum ändern",
+      complete_tasks_title: "Aufgaben abschließen",
+      confirm: "Bestätigen",
+      delete_tasks_message:
+        "Möchten Sie die ausgewählten Aufgaben wirklich löschen?",
+      complete_tasks_message: "Ausgewählte Aufgaben als erledigt markieren?",
+      select_all: "Alle auswählen",
+      clear_selection: "Auswahl aufheben",
+
       overdue: "Brennend",
       inbox: "Posteingang",
       project: "Projekt",
@@ -761,7 +840,20 @@ const resources = {
   },
   pl: {
     translation: {
-      // Ogólne
+      loading: "Ładowanie",
+      deselect_all: "Odznacz wszystko",
+      start_selection: "Wybierz zadania",
+      selected_count: "Wybrano: {{count}}",
+      apply: "Zastosuj",
+      complete: "Ukończ",
+      change_priority: "Zmień priorytet",
+      change_due_date: "Zmień termin",
+      complete_tasks_title: "Ukończyć zadania",
+      confirm: "Potwierdź",
+      delete_tasks_message: "Czy na pewno chcesz usunąć wybrane zadania?",
+      complete_tasks_message: "Oznaczyć wybrane zadania jako wykonane?",
+      select_all: "Zaznacz wszystko",
+      clear_selection: "Wyczyść zaznaczenie",
       overdue: "Zaległe",
 
       inbox: "Skrzynka odbiorcza",
@@ -909,7 +1001,23 @@ const resources = {
   },
   fr: {
     translation: {
-      // Général
+      complete_tasks_title: "Terminer les tâches",
+      confirm: "Confirmer",
+      loading: "Chargement",
+      delete_tasks_message:
+        "Êtes-vous sûr de vouloir supprimer les tâches sélectionnées ?",
+      complete_tasks_message:
+        "Marquer les tâches sélectionnées comme terminées ?",
+      deselect_all: "Tout désélectionner",
+      start_selection: "Sélectionner des tâches",
+      selected_count: "{{count}} sélectionnées",
+      apply: "Appliquer",
+      complete: "Terminer",
+      change_priority: "Changer la priorité",
+      change_due_date: "Changer la date",
+
+      select_all: "Tout sélectionner",
+      clear_selection: "Effacer la sélection",
       overdue: "En retard",
       inbox: "Boîte de réception",
       project: "Projet",

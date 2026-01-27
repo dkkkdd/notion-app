@@ -17,9 +17,13 @@ interface TaskCardUiProps {
   updateTime: (time: string) => void;
   updateDone: (e: React.MouseEvent) => void;
   isDone: boolean;
+  selectionMode?: boolean;
+  selected?: boolean;
+  onSelect?: (e: React.MouseEvent) => void;
   dateColor: (
     label: string,
-    dateInput?: string | Date | null
+    dateInput?: string | Date | null,
+    reminderAt?: string | null
   ) => { color: string; icon: string };
   formatDateLabel: (v: string, t: any) => string;
   onMenuClick: (e: React.MouseEvent) => void;
@@ -60,6 +64,9 @@ export const TaskCardUi = memo(function TaskCardUi(props: TaskCardUiProps) {
     setShowSubTasks,
     isDone,
     completedAt,
+    selected,
+    selectionMode,
+    onSelect,
     formatDateLabel,
     priorityColor,
     priorityBg,
@@ -81,15 +88,25 @@ export const TaskCardUi = memo(function TaskCardUi(props: TaskCardUiProps) {
     : null;
 
   const meta = currentDeadlineStr
-    ? dateColor(formatDateLabel(currentDeadlineStr, t), currentDeadlineStr)
+    ? dateColor(
+        formatDateLabel(currentDeadlineStr, t),
+        currentDeadlineStr,
+        reminderAt
+      )
     : { color: "currentColor", icon: "icon-calendar-_1" };
-
   const isDefaultColor = meta.color === "currentColor";
 
   return (
     <div
-      onClick={() => setOpenTaskInfo(true)}
+      onClick={(e) => {
+        if (selectionMode) {
+          onSelect?.(e);
+        } else {
+          setOpenTaskInfo(true);
+        }
+      }}
       className={`
+        ${selected ? "!text-[#9d174d] " : "text-black dark:text-white"}
         group flex items-center justify-between py-2 border-b border-black/10 dark:border-[#88888846] w-full transition-colors relative cursor-pointer
         ${
           isDone
@@ -116,11 +133,28 @@ export const TaskCardUi = memo(function TaskCardUi(props: TaskCardUiProps) {
       )}
 
       <div className="flex items-center gap-4 text-[1em] overflow-hidden">
-        <span
-          onClick={updateDone}
-          className="min-w-[1.2em] min-h-[1.2em] border rounded-full cursor-pointer flex items-center justify-center transition-transform active:scale-90"
-          style={{ borderColor: priorityColor, backgroundColor: priorityBg }}
-        />
+        {selectionMode && (
+          <div
+            className={`
+      min-w-5 h-5 rounded-lg border flex items-center justify-center
+      ${
+        selected
+          ? "bg-[#9d174d] border-[#610c2e] text-white"
+          : "border-black/30 dark:border-white/30"
+      }
+    `}
+          >
+            {selected && <span className="icon-icons8-checkmark text-xs" />}
+          </div>
+        )}
+
+        {!selectionMode && (
+          <span
+            onClick={updateDone}
+            className="min-w-[1.2em] min-h-[1.2em] border rounded-full cursor-pointer flex items-center justify-center transition-transform active:scale-90"
+            style={{ borderColor: priorityColor, backgroundColor: priorityBg }}
+          />
+        )}
 
         <div className="flex flex-col flex-wrap min-w-0">
           <span
@@ -149,7 +183,7 @@ export const TaskCardUi = memo(function TaskCardUi(props: TaskCardUiProps) {
               )}
 
               {currentDeadlineStr && !isCompletedMode && (
-                <div
+                <button
                   style={{
                     color: isDone || isDefaultColor ? undefined : meta.color,
                     pointerEvents: isDone ? "none" : "all",
@@ -162,6 +196,7 @@ export const TaskCardUi = memo(function TaskCardUi(props: TaskCardUiProps) {
                       : ""
                   }`}
                   onClick={(e) => e.stopPropagation()}
+                  disabled={selectionMode}
                 >
                   <CustomCalendar
                     date={currentDeadlineStr}
@@ -177,7 +212,7 @@ export const TaskCardUi = memo(function TaskCardUi(props: TaskCardUiProps) {
                       )}
                     </span>
                   </CustomCalendar>
-                </div>
+                </button>
               )}
 
               {isCompletedMode && completedAt && (
@@ -210,54 +245,61 @@ export const TaskCardUi = memo(function TaskCardUi(props: TaskCardUiProps) {
         </div>
       </div>
 
-      <div
-        className={`flex items-center = ${
-          isCompletedMode ? "pointer-events-none opacity-0" : ""
-        }`}
-      >
-        <span
-          onClick={onEdit}
-          className="opacity-0 group-hover:opacity-100 text-gray-800 dark:text-white icon-pencil p-2 rounded-md cursor-pointer hover:bg-black/5 dark:hover:bg-[#82828241] "
-        />
+      {
+        <div className={`flex items-center`}>
+          <button
+            onClick={onEdit}
+            className={`opacity-0 group-hover:opacity-100 text-gray-800 dark:text-white icon-pencil p-2 rounded-md cursor-pointer hover:bg-black/5 dark:hover:bg-[#82828241]   ${
+              selectionMode ? "!opacity-0 pointer-events-none" : ""
+            }`}
+          />
 
-        <div onClick={(e) => e.stopPropagation()}>
-          <CustomCalendar
-            date={currentDeadlineStr}
-            setDate={updateDate}
-            time={reminderAt}
-            setIsCalOpen={setIsCalOpen}
-            setTime={updateTime}
+          <div
+            className={` ${
+              selectionMode ? "opacity-0 pointer-events-none" : ""
+            }`}
+            onClick={(e) => e.stopPropagation()}
           >
-            <span
-              onClick={() => setIsCalOpen(true)}
-              className={`
+            <CustomCalendar
+              date={currentDeadlineStr}
+              setDate={updateDate}
+              time={reminderAt}
+              setIsCalOpen={setIsCalOpen}
+              setTime={updateTime}
+            >
+              <button
+                onClick={() => setIsCalOpen(true)}
+                className={`
                 ${
                   isCalOpen
                     ? "opacity-100 bg-black/5 dark:bg-[#82828241]"
                     : "opacity-0 group-hover:opacity-100"
                 }
+                  
                 text-gray-800 dark:text-white icon-calendar-_1 p-2 rounded-md cursor-pointer hover:bg-black/5 dark:hover:bg-[#82828241] 
               `}
-            />
-          </CustomCalendar>
-        </div>
+              />
+            </CustomCalendar>
+          </div>
 
-        <span
-          ref={btnRef}
-          onClick={(e) => {
-            onMenuClick(e);
-            setIsCalOpen(false);
-          }}
-          className={`
+          <button
+            ref={btnRef}
+            onClick={(e) => {
+              onMenuClick(e);
+              setIsCalOpen(false);
+            }}
+            className={`
             ${
               isMenuOpen
                 ? "opacity-100 bg-black/5 dark:bg-[#82828241]"
                 : "opacity-0 group-hover:opacity-100"
             }
+            ${selectionMode ? "!opacity-0 pointer-events-none" : ""}
             text-gray-800 dark:text-white icon-three-dots-punctuation-sign-svgrepo-com p-2 rounded-md cursor-pointer hover:bg-black/5 dark:hover:bg-[#82828241] 
           `}
-        />
-      </div>
+          />
+        </div>
+      }
     </div>
   );
 });

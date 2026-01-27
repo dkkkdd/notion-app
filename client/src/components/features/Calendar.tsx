@@ -28,7 +28,7 @@ const STEP = 30;
 
 export const CustomCalendar = (props: CustomCalendarProps) => {
   const { t, i18n } = useTranslation();
-  const { date, setDate, time, setIsCalOpen } = props;
+  const { date, setIsCalOpen } = props;
   const currentDeadlineStr = date ? format(new Date(date), "yyyy-MM-dd") : null;
 
   const [open, setOpen] = useState(false);
@@ -67,26 +67,6 @@ export const CustomCalendar = (props: CustomCalendarProps) => {
     click,
     dismiss,
   ]);
-  useEffect(() => {
-    if (!time) return;
-    const now = new Date();
-    const [selectedHours, selectedMinutes] = time.split(":").map(Number);
-    const selectedTimeToday = new Date();
-    selectedTimeToday.setHours(selectedHours, selectedMinutes, 0, 0);
-
-    if (!currentDeadlineStr || currentDeadlineStr === dates.today) {
-      if (selectedTimeToday < now) {
-        setDate(dates.tomorrow);
-      } else if (!date) {
-        setDate(dates.today);
-      }
-    } else if (
-      currentDeadlineStr === dates.tomorrow &&
-      selectedTimeToday > now
-    ) {
-      setDate(dates.today);
-    }
-  }, [time, date, setDate, dates]);
 
   const timeOptions = useMemo(() => {
     const options = Array.from({ length: (24 * 60) / STEP }, (_, i) => {

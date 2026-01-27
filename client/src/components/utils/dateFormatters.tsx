@@ -126,53 +126,65 @@ export const SPECIAL_COLORS: Record<SpecialLabel, DateMeta> = {
 };
 
 const DEFAULT_META: DateMeta = {
-  color: "currentColor",
+  color: "#ffffffd9",
   icon: "icon-calendar-_1",
 };
 
 /* ---------- meta resolver ---------- */
 export const dateColor = (
   label: string,
-  dateInput?: string | Date | null
+  deadline?: string | Date | null,
+  reminderAt?: string | null
 ): DateMeta => {
-  // 1. Если есть дата, проверяем на реальную просрочку
-  if (dateInput) {
-    const now = startOfDay(new Date());
-    const target = startOfDay(new Date(dateInput));
+  if (deadline) {
+    const now = new Date();
+    const targetDate = new Date(deadline);
 
-    if (target < now) {
-      return SPECIAL_COLORS["Yesterday"]; // Красный для всего, что было до сегодня
+    if (reminderAt && reminderAt.includes(":")) {
+      const [hours, minutes] = reminderAt.split(":").map(Number);
+      targetDate.setHours(hours, minutes, 0, 0);
+    } else {
+      targetDate.setHours(23, 59, 59, 999);
     }
+
+    // Если просрочено
+    if (targetDate < now) {
+      return SPECIAL_COLORS["Yesterday"];
+    }
+
+    // Будущие лейблы
+    if (label === t("today")) return SPECIAL_COLORS["Today"];
+    if (label === t("tomorrow")) return SPECIAL_COLORS["Tomorrow"];
+    if (label === t("next_week")) return SPECIAL_COLORS["Next week"];
+
+    const isWeekend = label === t("saturday") || label === t("sunday");
+    if (isWeekend) return SPECIAL_COLORS["Weekend"];
+
+    const days = [
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+      "sunday",
+    ];
+    const foundDay = days.find((d) => t(d) === label);
+
+    if (foundDay) {
+      const englishKey = (foundDay.charAt(0).toUpperCase() +
+        foundDay.slice(1)) as Weekday;
+      return {
+        color: WEEKDAY_COLORS[englishKey],
+        icon: "icon-calendar-_3",
+      };
+    }
+
+    // Если внутри if (deadline) ничего не подошло, возвращаем дефолт здесь
+    return DEFAULT_META;
   }
 
-  // 2. Если даты нет, работаем по старым добрым лейблам (для будущего)
-  if (label === t("today")) return SPECIAL_COLORS["Today"];
-  if (label === t("tomorrow")) return SPECIAL_COLORS["Tomorrow"];
-  if (label === t("next_week")) return SPECIAL_COLORS["Next week"];
-
-  const isWeekend = label === t("saturday") || label === t("sunday");
-  if (isWeekend) return SPECIAL_COLORS["Weekend"];
-
-  // 3. Поиск по дням недели (для будущего)
-  const days = [
-    "monday",
-    "tuesday",
-    "wednesday",
-    "thursday",
-    "friday",
-    "saturday",
-    "sunday",
-  ];
-  const foundDay = days.find((d) => t(d) === label);
-
-  if (foundDay) {
-    const englishKey = foundDay.charAt(0).toUpperCase() + foundDay.slice(1);
-    return {
-      color: WEEKDAY_COLORS[englishKey as Weekday],
-      icon: "icon-calendar-_3",
-    };
-  }
-
+  // ОБЯЗАТЕЛЬНО: Если deadline вообще не передан, возвращаем дефолт здесь
   return DEFAULT_META;
 };
 /* ---------- full date formatter ---------- */

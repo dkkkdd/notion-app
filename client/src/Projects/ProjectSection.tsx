@@ -7,8 +7,7 @@ import { ModalPortal } from "../components/ui/ModalPortal";
 
 export function ProjectsSection() {
   const { t } = useTranslation();
-  const { projects, createProject, changeMode, setSelectedProjectId } =
-    useProjectsContext();
+  const { projects, createProject, changeMode } = useProjectsContext();
   const [showProjects, setShowProjects] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -63,7 +62,7 @@ export function ProjectsSection() {
             onSubmit={async ({ title, color }) => {
               const newProject = await createProject(title, 3, color, false);
               if (newProject) {
-                setSelectedProjectId(newProject.id);
+                // setSelectedProjectId(newProject.id);
                 changeMode("project", newProject.id);
               }
               setShowForm(false);

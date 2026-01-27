@@ -55,7 +55,7 @@ export const CalendarUi = (props: CalendarUiProps) => {
 
   const { t } = useTranslation();
   const currentLocale = localeMap[i18n.language] || enUS;
-
+  const meta = dateColor(formatDateLabel(date ?? null, t), date);
   return (
     <>
       {children ? (
@@ -72,10 +72,7 @@ export const CalendarUi = (props: CalendarUiProps) => {
           {...getReferenceProps()}
           type="button"
           style={{
-            color:
-              dateColor(formatDateLabel(date ?? null, t)).color === "#ffbbf2d9"
-                ? undefined
-                : dateColor(formatDateLabel(date ?? null, t)).color,
+            color: meta.color === "#ffffffd9" ? undefined : meta.color,
           }}
           className="focus:outline-none cursor-pointer min-h-[38px] flex justify-between items-center gap-2 bg-transparent border-[0.5px] border-black/20 dark:border-[#d0d0d05a]/60 rounded px-3 h-[35px] w-fit text-sm hover:border-black/40 dark:hover:border-[#888]"
         >
@@ -83,7 +80,11 @@ export const CalendarUi = (props: CalendarUiProps) => {
             <span
               className={`${
                 dateColor(formatDateLabel(date ?? null, t)).icon
-              } text-[1.5em] opacity-70`}
+              } text-[1.5em] opacity-70 ${
+                meta.color === "#ffffffd9"
+                  ? "text-black/80 dark:text-white/80"
+                  : meta.color
+              } `}
             />
             {date || time
               ? `${formatDateLabel(date ?? null, t)} ${time ? time : ""}`

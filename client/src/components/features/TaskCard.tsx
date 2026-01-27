@@ -15,6 +15,9 @@ interface TaskCardProps {
   isEditing: boolean;
   onDeleteRequest: () => void;
   onAddSubtask?: () => void;
+  selectionMode?: boolean;
+  selected?: boolean;
+  onSelect?: () => void;
   setShowSubTasks?: () => void; // Теперь это просто функция без аргументов
   showSubTasks?: boolean;
   // isMenuOpen: boolean;
@@ -27,13 +30,15 @@ export const TaskCard = memo(
     isEditing,
     onDeleteRequest,
     onAddSubtask,
+    selected,
+    selectionMode,
+    onSelect,
     setShowSubTasks,
     showSubTasks,
   }: // isMenuOpen,
   TaskCardProps) => {
     const { updateDone, updateTask } = useTasksActions();
-    const { mode, setMode, projects, setSelectedProjectId } =
-      useProjectsContext();
+    const { mode, projects, changeMode } = useProjectsContext();
     const [openTaskInfo, setOpenTaskInfo] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isCalOpen, setIsCalOpen] = useState(false);
@@ -49,7 +54,6 @@ export const TaskCard = memo(
               updateDone(s.id, true);
             }
           });
-          updateDone(task.id, !task.isDone);
         }
 
         updateDone(task.id, !task.isDone);
@@ -85,6 +89,11 @@ export const TaskCard = memo(
     }
     const subCount = task.subtasks?.length || 0;
     const subDone = task.subtasks?.filter((t) => t.isDone === true).length || 0;
+    const handleSelectClick = (e: React.MouseEvent) => {
+      if (!selectionMode) return;
+      e.stopPropagation();
+      onSelect?.();
+    };
 
     return (
       <>
@@ -94,6 +103,9 @@ export const TaskCard = memo(
           setShowSubTasks={setShowSubTasks}
           subCount={subCount}
           subDone={subDone}
+          selectionMode={selectionMode}
+          selected={selected}
+          onSelect={handleSelectClick}
           onEdit={onEdit}
           setOpenTaskInfo={setOpenTaskInfo}
           btnRef={btnRef}
@@ -105,8 +117,7 @@ export const TaskCard = memo(
           priorityColor={baseColor?.color}
           isMenuOpen={isMenuOpen}
           changeProject={(prodId) => {
-            setSelectedProjectId(prodId);
-            setMode(prodId === null ? "inbox" : "project");
+            changeMode(prodId === null ? "inbox" : "project", prodId);
           }}
           onMenuClick={handleMenuClick}
           updateDone={handleToggle}

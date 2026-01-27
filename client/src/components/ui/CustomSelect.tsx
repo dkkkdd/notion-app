@@ -97,7 +97,7 @@ export const CustomSelectUi = ({
           </span>
         </div>
         <span
-          className={`absolute top-[25%] right-[10px] transition-transform duration-200 text-[10px text-gray-700${
+          className={`absolute top-[35%] right-[10px] transition-transform duration-200 text-[10px] text-gray-700${
             open ? "rotate-180" : ""
           }`}
         >

@@ -11,10 +11,6 @@
   --bg-dark: #1f1f1f;
 }
 
-/* =========================
-   BASE RESET (iOS-safe)
-   ========================= */
-
 html {
   background-color: var(--bg-dark);
 }
@@ -30,19 +26,12 @@ body {
   overscroll-behavior: none;
 }
 
-/* ❗️ВАЖНО
-   НЕТ height: 100dvh на body
-*/
 #root {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
   background-color: var(--bg-dark);
 }
-
-/* =========================
-   LAYOUT HELPERS
-   ========================= */
 
 .container {
   margin: 0 auto;
@@ -56,32 +45,15 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* =========================
-   FORMS
-   ========================= */
-
 form {
   width: 100%;
   max-width: 100%;
 }
 
-/* =========================
-   SCROLL RULES
-   ========================= */
-
-/*
-  НЕ задаём overflow-y тут.
-  Скролл должен быть назначен
-  ТОЛЬКО в layout-компоненте (main)
-*/
 main {
   width: 100%;
   overflow-x: hidden;
 }
-
-/* =========================
-   ANIMATIONS
-   ========================= */
 
 .fade-in {
   animation: fadeIn 0.2s ease-in-out;
@@ -98,10 +70,6 @@ main {
   }
 }
 
-/* =========================
-   UI
-   ========================= */
-
 .tip {
   display: flex;
   align-items: center;
@@ -117,10 +85,6 @@ main {
   background-color: #82828241;
 }
 
-/* =========================
-   iOS INPUT ZOOM FIX
-   ========================= */
-
 @media screen and (max-width: 768px) {
   input,
   textarea,
@@ -128,27 +92,3 @@ main {
     font-size: 16px;
   }
 }
-
-/* DEBUG */
-/*
-* {
-  outline: 1px solid red !important;
-}
-*/
-/* html,
-body {
-  margin: 0;
-  padding: 0;
-  background: var(--bg-dark);
-}
-
-body {
-  overscroll-behavior-y: none;
-  -webkit-overflow-scrolling: touch;
-}
-
-
-body {
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
-} */

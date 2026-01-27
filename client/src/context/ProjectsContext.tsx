@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { useProjects } from "../hooks/useProjects";
 
@@ -6,11 +6,11 @@ export type TaskMode = "project" | "inbox" | "today" | "completed" | "overdue";
 
 type ProjectsContextType = ReturnType<typeof useProjects> & {
   selectedProjectId: string | null;
-  setSelectedProjectId: (id: string | null) => void;
+  // setSelectedProjectId: (id: string | null) => void;
   mode: TaskMode;
   setMode: (mode: TaskMode) => void;
-  showAll: boolean; // Добавили
-  setShowAll: (val: boolean) => void; // Добавили
+  showAll: boolean;
+  setShowAll: (val: boolean) => void;
   changeMode: (newMode: TaskMode, projectId?: string | null) => void;
 };
 
@@ -20,11 +20,19 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
   // Теперь useProjects не принимает userId, он берет его из токена на бэкенде
   const projectsData = useProjects();
 
-  const [mode, setMode] = useState<TaskMode>("inbox");
+  const [mode, setMode] = useState<TaskMode>(() => {
+    const v = localStorage.getItem("mode") as TaskMode | null;
+    return v ?? "inbox";
+  });
+
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
-    null
+    () => {
+      const val = localStorage.getItem("selectedProjectId");
+      return val === "null" ? null : val;
+    }
   );
-  const [showAll, setShowAll] = useState(() => {
+
+  const [showAll, setShowAll] = useState<boolean>(() => {
     return localStorage.getItem("showAll") === "true";
   });
   const changeMode = (newMode: TaskMode, projectId: string | null = null) => {
@@ -32,12 +40,23 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
     setSelectedProjectId(projectId);
   };
 
+  useEffect(() => {
+    localStorage.setItem("selectedProjectId", selectedProjectId ?? "null");
+  }, [selectedProjectId]);
+
+  useEffect(() => {
+    localStorage.setItem("showAll", String(showAll));
+  }, [showAll]);
+  useEffect(() => {
+    localStorage.setItem("mode", mode);
+  }, [mode]);
+
   return (
     <ProjectsContext.Provider
       value={{
         ...projectsData,
         selectedProjectId,
-        setSelectedProjectId,
+        // setSelectedProjectId,
         mode,
         setMode,
         showAll,
