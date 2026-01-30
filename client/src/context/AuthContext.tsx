@@ -48,12 +48,12 @@ export function AuthProvider({ children }: any) {
       updateUserInfo,
       getMe,
     }),
-    [loginUser, logoutUser, registerUser, deleteUser, updateUserInfo]
+    [loginUser, logoutUser, registerUser, deleteUser, updateUserInfo],
   );
 
   const state = useMemo(
     () => ({ user, loading, isAuthenticated }),
-    [user, loading, isAuthenticated]
+    [user, loading, isAuthenticated],
   );
 
   return (

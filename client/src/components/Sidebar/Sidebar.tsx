@@ -1,17 +1,24 @@
 import { useProjectsContext } from "../../context/ProjectsContext";
-import { FavoriteProjects } from "../../Projects/FavoriteProjectsSection/FavoriteProjectsSection";
-import { ProjectsSection } from "../../Projects/ProjectSection";
+import { FavoriteProjects } from "../Projects/FavoriteProjectsSection";
+import { ProjectsSection } from "../Projects/ProjectSection";
 import { useState } from "react";
-import { SidebarNavigation } from "../ui/SidebarNavigation";
-import { ModalPortal } from "../ui/ModalPortal";
-import { AddTaskBtn } from "../ui/AddTaskBtn";
-import { useAuthState } from "../../context/AuthContext";
-import { TaskForm } from "../features/TaskForm";
-import { UserInfo } from "../features/UserInfo";
+import { SidebarNavigation } from "./SidebarNavigation";
+import { ModalPortal } from "../../features/ModalPortal";
+import { AddTaskBtn } from "../AddTaskBtn";
+import { TaskForm } from "../Tasks/TaskForm";
+import { UserInfo } from "../User/UserInfo";
+import type { TaskMode } from "../../context/ProjectsContext";
 import { useTasksActions } from "../../context/TasksContext";
+import { UserBtn } from "../User/UserBtn";
 
+const menuItems: { id: TaskMode; icon: string }[] = [
+  { id: "inbox", icon: "icon-inbox" },
+  { id: "today", icon: "icon-calendar-_1" },
+  { id: "completed", icon: "icon-checkmark" },
+  { id: "overdue", icon: "icon-history" },
+  { id: "projects", icon: "icon-heart-svgrepo-com" },
+];
 export function Sidebar({ collapsed }: { collapsed: boolean }) {
-  const { user } = useAuthState();
   const [showUserInfo, setShowUserInfo] = useState(false);
   const { mode, changeMode } = useProjectsContext();
   const { createTask } = useTasksActions();
@@ -20,15 +27,19 @@ export function Sidebar({ collapsed }: { collapsed: boolean }) {
   return (
     <aside
       className={`
-        
+       max-h-[100dvh]
+       overflow-y-auto
         relative shrink-0 transition-all duration-350 ease-in-out
-        bg-[#eee] dark:bg-[#232323] 
-        ${collapsed ? "w-0" : "w-[22em]"}
+        bg-[#eee] dark:bg-[#232323] hidden md:block
+    relative shrink-0 transition-all duration-350 ease-in-out
+    bg-[#eee] dark:bg-[#232323]
+    w-[22em]
+        ${collapsed ? "max-w-0" : "max-w-[22em]"}
       `}
     >
       <div
         className={`
-          h-full w-full p-4 overflow-y-auto transition-all duration-350 ease-in-out
+          h-full w-full p-4  transition-all duration-350 ease-in-out
           ${
             collapsed
               ? "opacity-0 -translate-x-[200%]"
@@ -36,21 +47,7 @@ export function Sidebar({ collapsed }: { collapsed: boolean }) {
           }
         `}
       >
-        {/* User Info */}
-        <div className="mb-6 font-semibold">
-          <span
-            className="w-full flex items-center gap-2 cursor-pointer group"
-            onClick={() => setShowUserInfo(true)}
-          >
-            <div className="w-10 h-10 bg-[#999] dark:bg-[#333] border border-[#888] dark:border-[#222] rounded-lg flex items-center justify-center text-xl font-bold text-white shadow-md transition-transform group-hover:scale-105">
-              {user?.userName?.charAt(0).toUpperCase() ||
-                user?.email.charAt(0).toUpperCase()}
-            </div>
-            <span className="text-[#4270d1] truncate">
-              {user?.userName || user?.email.split("@")[0]}
-            </span>
-          </span>
-        </div>
+        <UserBtn onClick={() => setShowUserInfo(true)} />
 
         {/* Add Task */}
         <div className="flex flex-col items-start justify-center pl-[5px] mb-2">
@@ -77,6 +74,7 @@ export function Sidebar({ collapsed }: { collapsed: boolean }) {
           >
             <div onClick={(e) => e.stopPropagation()}>
               <TaskForm
+                openForm={openForm}
                 formMode="create"
                 onClose={() => setOpenForm(false)}
                 onSubmit={async (data: any) => {
@@ -98,5 +96,138 @@ export function Sidebar({ collapsed }: { collapsed: boolean }) {
         </ModalPortal>
       )}
     </aside>
+  );
+}
+
+import { AnimatePresence, motion } from "framer-motion";
+import { Drawer } from "vaul";
+import { ProjectPage } from "../Projects/ProjectPage";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+
+export function MobileMenu() {
+  const { mode, changeMode } = useProjectsContext();
+  const [showProjects, setShowProjects] = useState(false);
+  const [showUserInfo, setShowUserInfo] = useState(false);
+
+  const handleClick = (item: (typeof menuItems)[number]) => {
+    if (item.id === "projects") {
+      setShowProjects(true);
+      return;
+    }
+    changeMode(item.id);
+    setShowProjects(false);
+  };
+
+  return (
+    <>
+      {/* BOTTOM NAV */}
+      <nav
+        className="
+    absolute bottom-0 left-1/2 -translate-x-1/2
+    w-[90%] z-50 md:hidden
+    rounded-2xl
+    bg-white/70 dark:bg-[#1f1f1f]/70
+    backdrop-blur-2xl
+    border-t border-black/5 dark:border-white/10
+    pb-[env(safe-area-inset-bottom)]
+  "
+      >
+        <div className="flex h-14 items-center">
+          {menuItems.map((item) => {
+            const isActive =
+              mode === item.id ||
+              (mode === "project" && item.id === "projects");
+
+            return (
+              <button
+                key={item.id}
+                onClick={() => handleClick(item)}
+                className="relative flex-1 h-full flex items-center justify-center"
+              >
+                <AnimatePresence>
+                  {isActive && (
+                    <motion.span
+                      layoutId="ios-glass"
+                      initial={{ scale: 0.85, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.9, opacity: 0 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 500,
+                        damping: 35,
+                      }}
+                      className="
+                        absolute w-[90%] h-12 rounded-2xl
+                        backdrop-blur-xl
+                        shadow-[0_8px_20px_rgba(0,0,0,0.12)]
+                      "
+                    >
+                      <span
+                        className="
+                          absolute inset-0 rounded-2xl
+                          dark:bg-[#272727] bg-gray/20
+                        "
+                      />
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+
+                <motion.span
+                  animate={{ scale: isActive ? 1.15 : 1 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  className={`
+                    relative text-xl
+                    ${item.icon}
+                    ${isActive ? "text-[#9d174d]" : "text-black dark:text-white"}
+                  `}
+                />
+              </button>
+            );
+          })}
+        </div>
+      </nav>
+
+      <Drawer.Root
+        open={showProjects}
+        onOpenChange={setShowProjects}
+        shouldScaleBackground
+      >
+        <Drawer.Portal>
+          <Drawer.Overlay className="absolute inset-0 z-40 bg-black/30 " />
+
+          <Drawer.Content
+            className="
+        absolute inset-x-0 bottom-0 z-50
+        bg-white dark:bg-[#1f1f1f]
+        rounded-t-3xl
+        max-h-[90vh]
+        flex flex-col
+      "
+          >
+            <VisuallyHidden>
+              <Drawer.Title>Projects Navigation</Drawer.Title>
+              <Drawer.Description>
+                Select a project to view tasks
+              </Drawer.Description>
+            </VisuallyHidden>
+
+            <Drawer.Handle className="mx-auto my-3 h-1.5 w-14 rounded-full bg-black/20 dark:bg-white/20" />
+
+            <div className="flex-1 overflow-y-auto overscroll-contain px-4 pb-6">
+              <ProjectPage />
+            </div>
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
+
+      {showUserInfo && (
+        <ModalPortal>
+          <UserInfo
+            isOpen={showUserInfo}
+            onClose={() => setShowUserInfo(false)}
+          />
+        </ModalPortal>
+      )}
+    </>
   );
 }

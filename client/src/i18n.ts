@@ -24,6 +24,7 @@ registerLocale("fr", fr);
 const resources = {
   en: {
     translation: {
+      projects: "Projects",
       selected_count: "{{count}} selected",
       apply: "Apply",
       deselect_all: "Deselect all",
@@ -45,6 +46,8 @@ const resources = {
         inbox_desc: "Your inbox is clear. Time to plan something new.",
         today_title: "Nothing for today",
         today_desc: "You've finished everything on your plate. Take a break!",
+        overdue_title: "All caught up",
+        overdue_desc: "Your schedule is crystal clear. Enjoy your free time!",
         completed_title: "No completed tasks",
         completed_desc: "Get to work and start checking things off!",
         default_title: "No tasks found",
@@ -187,6 +190,7 @@ const resources = {
   },
   ru: {
     translation: {
+      projects: "Проекты",
       start_selection: "Выбрать задачи",
       selected_count: "Выбрано: {{count}}",
       apply: "Применить",
@@ -211,6 +215,9 @@ const resources = {
       color: "Цвет",
       today: "Сегодня",
       empty_states: {
+        overdue_title: "Всё под контролем",
+
+        overdue_desc: "В вашем графике ни одного долга. Самое время отдохнуть!",
         inbox_title: "Все дела сделаны!",
         inbox_desc: "Входящие пусты. Самое время запланировать что-то новое.",
         today_title: "На сегодня ничего нет",
@@ -349,6 +356,7 @@ const resources = {
   uk: {
     translation: {
       // Загальне
+      projects: "Проєкти",
       start_selection: "Обрати завдання",
       selected_count: "Обрано: {{count}}",
       apply: "Застосувати",
@@ -372,6 +380,10 @@ const resources = {
       color: "Колір",
       today: "Сьогодні",
       empty_states: {
+        overdue_title: "Все виконано",
+
+        overdue_desc:
+          "Ваш розклад ідеально чистий. Насолоджуйтесь вільним часом!",
         inbox_title: "Усі справи зроблено!",
         inbox_desc: "Скринька порожня. Час запланувати щось нове.",
         today_title: "На сьогодні нічого немає",
@@ -509,6 +521,7 @@ const resources = {
   },
   es: {
     translation: {
+      projects: "Proyectos",
       selected_count: "{{count}} seleccionadas",
       apply: "Aplicar",
       start_selection: "Seleccionar tareas",
@@ -537,6 +550,9 @@ const resources = {
       today: "Hoy",
       empty_states: {
         inbox_title: "¡Todo al día!",
+        overdue_title: "Todo al día",
+
+        overdue_desc: "Tu agenda está impecable. ¡Disfruta de tu tiempo libre!",
         inbox_desc:
           "Tu bandeja de entrada está vacía. Es hora de planear algo nuevo.",
         today_title: "Nada para hoy",
@@ -676,6 +692,7 @@ const resources = {
   de: {
     translation: {
       // Allgemein
+      projects: "Projekte",
       loading: "Laden",
       start_selection: "Aufgaben auswählen",
       deselect_all: "Auswahl aufheben",
@@ -707,6 +724,9 @@ const resources = {
         completed_title: "Keine abgeschlossenen Aufgaben",
         completed_desc: "Fang an zu arbeiten und hake die ersten Aufgaben ab!",
         default_title: "Keine Aufgaben gefunden",
+        overdue_title: "Alles erledigt",
+
+        overdue_desc: "Dein Zeitplan ist absolut klar. Genieße deine Freizeit!",
         default_desc:
           "Erstelle eine neue Aufgabe, um den Überblick zu behalten.",
         add_first_btn: "Oder füge deine erste Aufgabe hinzu",
@@ -840,6 +860,7 @@ const resources = {
   },
   pl: {
     translation: {
+      projects: "Projekty",
       loading: "Ładowanie",
       deselect_all: "Odznacz wszystko",
       start_selection: "Wybierz zadania",
@@ -867,6 +888,10 @@ const resources = {
         inbox_desc:
           "Twoja skrzynka odbiorcza jest pusta. Czas zaplanować coś nowego.",
         today_title: "Nic na dzisiaj",
+        overdue_title: "Wszystko nadrobione",
+
+        overdue_desc:
+          "Twój harmonogram jest idealnie czysty. Ciesz się czasem wolnym!",
         today_desc: "Skończyłeś wszystko na dziś. Odpocznij chwilę!",
         completed_title: "Brak ukończonych zadań",
         completed_desc: "Zabierz się do pracy i zacznij odhaczać zadania!",
@@ -1001,6 +1026,7 @@ const resources = {
   },
   fr: {
     translation: {
+      projects: "Projets",
       complete_tasks_title: "Terminer les tâches",
       confirm: "Confirmer",
       loading: "Chargement",
@@ -1027,6 +1053,10 @@ const resources = {
       today: "Aujourd'hui",
       empty_states: {
         inbox_title: "Tout est à jour !",
+        overdue_title: "Tout est à jour",
+
+        overdue_desc:
+          "Votre emploi du temps est limpide. Profitez de votre temps libre !",
         inbox_desc:
           "Votre boîte de réception est vide. Il est temps de planifier du nouveau.",
         today_title: "Rien pour aujourd'hui",

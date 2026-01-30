@@ -1,23 +1,28 @@
 import { useMemo, useState } from "react";
-import { useTasksActions, useTasksState } from "../context/TasksContext";
+import { useTasksActions } from "../context/TasksContext";
 
-export function useTaskSelection() {
-  const { tasks } = useTasksState();
+export function useTaskSelection(filteredTasks: any[]) {
   const { updateTask, deleteTask } = useTasksActions();
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const allIds = useMemo(() => {
+
+  // Вычисляем ID только из тех задач, которые переданы (отфильтрованы)
+  const currentIds = useMemo(() => {
     const set = new Set<string>();
-    tasks.forEach((t: any) => {
+    filteredTasks.forEach((t: any) => {
       set.add(t.id);
       t.subtasks?.forEach((s: any) => set.add(s.id));
     });
     return set;
-  }, [tasks]);
-  const total = tasks.reduce(
-    (acc: any, t: any) => acc + 1 + (t.subtasks?.length || 0),
-    0
-  );
+  }, [filteredTasks]);
+
+  // Общее количество видимых задач (включая подзадачи)
+  const total = useMemo(() => {
+    return filteredTasks.reduce(
+      (acc: any, t: any) => acc + 1 + (t.subtasks?.length || 0),
+      0,
+    );
+  }, [filteredTasks]);
 
   const toggleSelect = (id: string) => {
     setSelectedIds((prev) => {
@@ -29,8 +34,8 @@ export function useTaskSelection() {
 
   const toggleSelectAll = () => {
     setSelectedIds((prev) => {
-      const isAllSelected = prev.size === allIds.size;
-      return isAllSelected ? new Set() : allIds;
+      const isAllSelected = prev.size === currentIds.size;
+      return isAllSelected ? new Set() : currentIds;
     });
   };
 
@@ -39,7 +44,7 @@ export function useTaskSelection() {
     setSelectionMode(false);
   };
 
-  const buildDeadline = (date: string, time?: string) => {
+  const buildDeadline = (date: string, time?: string | null) => {
     const d = new Date(date);
 
     if (time) {
@@ -60,7 +65,7 @@ export function useTaskSelection() {
   const bulkUpdateDeadline = async (
     ids: string[],
     newDate: string | null,
-    newTime: string
+    newTime: string | null,
   ) => {
     const deadline = newDate ? buildDeadline(newDate, newTime) : null;
     const reminderAt = newDate ? newTime : null;
@@ -70,8 +75,8 @@ export function useTaskSelection() {
         updateTask(id, {
           deadline,
           reminderAt,
-        })
-      )
+        }),
+      ),
     );
 
     clearSelection();

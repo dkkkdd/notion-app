@@ -1,20 +1,19 @@
 import { useEffect, useState } from "react";
 import type { Project } from "../types/project";
-import { projectsApi } from "../api/projects"; // Импортируем наш новый объект
+import { projectsApi } from "../api/projects";
 
 export function useProjects() {
-  // userId убрали из аргументов
   const [projects, setProjects] = useState<Project[]>([]);
 
   useEffect(() => {
     projectsApi.fetchProjects().then(setProjects).catch(console.error);
-  }, []); // Загружаем один раз при старте
+  }, []);
 
   const create = async (
     title: string,
     order: number,
     color: string,
-    favorites: boolean
+    favorites: boolean,
   ) => {
     const temp: Project = {
       id: "temp-" + Date.now(),

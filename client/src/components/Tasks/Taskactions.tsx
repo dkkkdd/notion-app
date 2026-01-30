@@ -1,0 +1,102 @@
+import { memo } from "react";
+import { Calendar } from "../Calendar/Calendar";
+
+interface TaskActionsProps {
+  isSelectionMode?: boolean;
+  isMobile?: boolean;
+  isMenuOpen: boolean;
+  isCalOpen: boolean;
+  currentDeadlineStr: string | null;
+  reminderAt?: string | null;
+  btnRef?: React.Ref<any>;
+  onEdit: () => void;
+  onMenuClick: (e: React.MouseEvent) => void;
+  onDateUpdate: (date: string | null) => void;
+  onTimeUpdate: (time: string | null) => void;
+  setIsCalOpen: (val: boolean) => void;
+}
+
+export const TaskActions = memo(function TaskActions({
+  isSelectionMode,
+  isMobile,
+  isMenuOpen,
+  isCalOpen,
+  currentDeadlineStr,
+  reminderAt,
+  btnRef,
+  onEdit,
+  onMenuClick,
+  onDateUpdate,
+  onTimeUpdate,
+  setIsCalOpen,
+}: TaskActionsProps) {
+  if (isMobile) return null;
+
+  return (
+    <div className="flex items-center">
+      {/* Edit button */}
+      <button
+        onClick={onEdit}
+        className={`
+          opacity-0 group-hover:opacity-100 
+          text-gray-800 dark:text-white icon-pencil 
+          p-2 rounded-md cursor-pointer 
+          hover:bg-black/5 dark:hover:bg-[#82828241]
+          transition-opacity
+          ${isSelectionMode ? "!opacity-0 pointer-events-none" : ""}
+        `}
+      />
+
+      {/* Calendar button */}
+      <div
+        className={`${isSelectionMode ? "opacity-0 pointer-events-none" : ""}`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Calendar
+          date={currentDeadlineStr}
+          setDate={onDateUpdate}
+          time={reminderAt}
+          setIsCalOpen={setIsCalOpen}
+          setTime={onTimeUpdate}
+        >
+          <button
+            onClick={() => setIsCalOpen(true)}
+            className={`
+              ${
+                isCalOpen
+                  ? "opacity-100 bg-black/5 dark:bg-[#82828241]"
+                  : "opacity-0 group-hover:opacity-100"
+              }
+              text-gray-800 dark:text-white icon-calendar-_1 
+              p-2 rounded-md cursor-pointer 
+              hover:bg-black/5 dark:hover:bg-[#82828241]
+              transition-all
+            `}
+          />
+        </Calendar>
+      </div>
+
+      {/* Menu button */}
+      <button
+        ref={btnRef}
+        onClick={(e) => {
+          onMenuClick(e);
+          setIsCalOpen(false);
+        }}
+        className={`
+          ${
+            isMenuOpen
+              ? "opacity-100 bg-black/5 dark:bg-[#82828241]"
+              : "opacity-0 group-hover:opacity-100"
+          }
+          ${isSelectionMode ? "!opacity-0 pointer-events-none" : ""}
+          text-gray-800 dark:text-white 
+          icon-three-dots-punctuation-sign-svgrepo-com 
+          p-2 rounded-md cursor-pointer 
+          hover:bg-black/5 dark:hover:bg-[#82828241]
+          transition-all
+        `}
+      />
+    </div>
+  );
+});

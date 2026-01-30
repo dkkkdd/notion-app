@@ -12,6 +12,7 @@ export function useFilteredTasks() {
     if (loading) return [];
 
     const now = new Date();
+    if (mode === "projects") return [];
 
     const checkDeadline = (task: Task) => {
       if (!task.deadline) return false;
@@ -72,7 +73,7 @@ export function useFilteredTasks() {
     });
 
     return filtered.sort(
-      (a: any, b: any) => Number(a.isDone) - Number(b.isDone)
+      (a: any, b: any) => Number(a.isDone) - Number(b.isDone),
     );
   }, [tasks, mode, selectedProjectId, loading, showAll]);
 

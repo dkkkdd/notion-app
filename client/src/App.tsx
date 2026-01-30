@@ -8,13 +8,14 @@ import {
 import { AuthProvider, useAuthState } from "./context/AuthContext";
 import { ProjectsProvider } from "./context/ProjectsContext";
 import { TasksProvider } from "./context/TasksContext";
-import { AppLayout } from "./components/layout/AppLayout";
-import { TaskList } from "./components/features/TaskList";
-import { AuthPage } from "./components/features/AuthPage";
+import { AppLayout } from "./components/AppLayout";
+import { TaskList } from "./components/Tasks/TaskList";
+import { AuthPage } from "./components/AuthPage";
 import { useProjectsContext } from "./context/ProjectsContext";
 import { useEffect } from "react";
-import { applyTheme } from "./components/features/UserInfo";
+import { applyTheme } from "./components/User/UserInfo";
 import { useTranslation } from "react-i18next";
+import { ProjectPage } from "./components/Projects/ProjectPage";
 
 // Обертка для задач
 function TasksWrapper({ children }: { children: React.ReactNode }) {
@@ -29,33 +30,28 @@ function TasksWrapper({ children }: { children: React.ReactNode }) {
     </TasksProvider>
   );
 }
+export function MainContent() {
+  const { mode } = useProjectsContext();
 
-// Компонент самого приложения
+  if (mode === "projects") {
+    return <ProjectPage />;
+  }
+
+  return <TaskList />;
+}
+
 function ProtectedApp() {
   return (
     <ProjectsProvider>
       <TasksWrapper>
         <AppLayout>
-          <TaskList />
+          <MainContent />
         </AppLayout>
       </TasksWrapper>
     </ProjectsProvider>
   );
 }
-// export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-//   const { isAuthenticated, loading } = useAuthState();
-//   const location = useLocation();
 
-//   if (loading) return <div>Loading...</div>; // Или спиннер
-
-//   if (!isAuthenticated) {
-//     // Передаем текущий location в state, чтобы Navigate знал, куда вернуться
-//     return <Navigate to="/login" state={{ from: location }} replace />;
-//   }
-
-//   return <>{children}</>;
-// };
-// Вспомогательный компонент для защиты роутов
 function AppContent() {
   const { t } = useTranslation();
   const { isAuthenticated, loading } = useAuthState();

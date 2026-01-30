@@ -14,7 +14,16 @@
 html {
   background-color: var(--bg-dark);
 }
-
+html,
+body {
+  height: 100%; /* Add this */
+  overflow-x: hidden;
+}
+main {
+  /* This ensures the background extends behind the status bar and home bar */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
 body {
   margin: 0;
   padding: 0;
@@ -27,7 +36,7 @@ body {
 }
 
 #root {
-  min-height: 100dvh;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
   background-color: var(--bg-dark);

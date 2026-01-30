@@ -2,11 +2,17 @@ import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { useProjects } from "../hooks/useProjects";
 
-export type TaskMode = "project" | "inbox" | "today" | "completed" | "overdue";
+export type TaskMode =
+  | "project"
+  | "inbox"
+  | "today"
+  | "completed"
+  | "overdue"
+  | "projects";
 
 type ProjectsContextType = ReturnType<typeof useProjects> & {
   selectedProjectId: string | null;
-  // setSelectedProjectId: (id: string | null) => void;
+  selectedProject: string | null;
   mode: TaskMode;
   setMode: (mode: TaskMode) => void;
   showAll: boolean;
@@ -29,9 +35,11 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
     () => {
       const val = localStorage.getItem("selectedProjectId");
       return val === "null" ? null : val;
-    }
+    },
   );
-
+  const selectedProject =
+    projectsData.projects.find((p) => p.id === selectedProjectId)?.title ||
+    null;
   const [showAll, setShowAll] = useState<boolean>(() => {
     return localStorage.getItem("showAll") === "true";
   });
@@ -56,7 +64,7 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
       value={{
         ...projectsData,
         selectedProjectId,
-        // setSelectedProjectId,
+        selectedProject,
         mode,
         setMode,
         showAll,
