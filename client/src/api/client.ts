@@ -4,7 +4,6 @@ const BASE_URL = "http://192.168.0.105:5173/api";
 async function apiRequest<T>(endpoint: string, options: any = {}): Promise<T> {
   const { body, ...customConfig } = options;
 
-  // Достаем токен
   const token = localStorage.getItem("token");
 
   const headers: any = { "Content-Type": "application/json" };

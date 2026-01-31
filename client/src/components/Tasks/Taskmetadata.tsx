@@ -113,14 +113,12 @@ export const TaskMetadata = memo(function TaskMetadata({
         </button>
       )}
 
-      {/* Completed date */}
       {isCompletedMode && completedAt && (
         <span className="text-[10px] opacity-60 text-gray-500 dark:text-gray-400">
           {t("completed")}: {formatFullDate(completedAt)}
         </span>
       )}
 
-      {/* Project badge */}
       {(mode === "today" || isCompletedMode || mode === "overdue") && (
         <span
           onClick={(e) => {

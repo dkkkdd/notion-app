@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
 import type { Project } from "../../types/project";
 import { MobileDrawer } from "../../features/MobileDrawer";
-import { OPTIONS } from "../../utils/priorities";
+import { OPTIONS } from "../../utils/projectColor";
 import { useTranslation } from "react-i18next";
-import { Select } from "../Select";
+import { Select, type Option } from "../Select";
 import { useIsMobile } from "../../hooks/useIsMobile";
 
 export interface ProjectFormProps {
@@ -108,8 +108,8 @@ export const ProjectForm = ({
         outline-none
       "
             >
-              {OPTIONS.map((o) => (
-                <option key={o.value} value={o.value}>
+              {OPTIONS.map((o: Option) => (
+                <option key={o.value} value={o.value || undefined}>
                   {t(o.label.toLowerCase())}
                 </option>
               ))}

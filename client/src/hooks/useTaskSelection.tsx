@@ -6,7 +6,6 @@ export function useTaskSelection(filteredTasks: any[]) {
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
-  // Вычисляем ID только из тех задач, которые переданы (отфильтрованы)
   const currentIds = useMemo(() => {
     const set = new Set<string>();
     filteredTasks.forEach((t: any) => {
@@ -16,7 +15,6 @@ export function useTaskSelection(filteredTasks: any[]) {
     return set;
   }, [filteredTasks]);
 
-  // Общее количество видимых задач (включая подзадачи)
   const total = useMemo(() => {
     return filteredTasks.reduce(
       (acc: any, t: any) => acc + 1 + (t.subtasks?.length || 0),

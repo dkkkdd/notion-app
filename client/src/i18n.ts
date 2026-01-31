@@ -13,7 +13,7 @@ export const localeMap: Record<string, any> = {
   pl: pl,
   fr: fr,
 };
-// Регистрируем нужные языки
+
 registerLocale("ru", ru);
 registerLocale("en", enUS);
 registerLocale("uk", uk);
@@ -54,7 +54,7 @@ const resources = {
         default_desc: "Start by creating a new task to stay on track.",
         add_first_btn: "Or add your first task",
       },
-      // Common
+
       overdue: "Overdue",
       inbox: "Inbox",
       project: "Project",
@@ -63,7 +63,6 @@ const resources = {
       color: "Color",
       today: "Today",
 
-      // Task Info
       add_subtask: "Create sub-task",
       priority: "Priority",
       task_details: "Task Details",
@@ -73,7 +72,6 @@ const resources = {
       active_task: "Active Task",
       completed: "Completed",
 
-      // User Info / Settings
       user_profile: "User Profile",
       projects_count: "Projects",
       active_tasks_count: "Active tasks",
@@ -84,7 +82,6 @@ const resources = {
       delete_account: "Delete Account",
       current_lang: "Current: {{lang}} (Switch)",
 
-      // Modals
       logout_confirm_title: "Logout",
       logout_confirm_msg: "Are you sure you want to leave your session?",
       delete_confirm_title: "Delete Account",
@@ -206,7 +203,7 @@ const resources = {
 
       select_all: "Выбрать все",
       clear_selection: "Снять выделение",
-      // Общее
+
       overdue: "Просроченные",
       inbox: "Входящие",
       project: "Проект",
@@ -229,7 +226,7 @@ const resources = {
         default_desc: "Создайте новую задачу, чтобы держать всё под контролем.",
         add_first_btn: "Или добавьте первую задачу",
       },
-      // Детали задачи
+
       task_details: "Детали задачи",
       description: "Описание",
       subtasks: "Подзадачи",
@@ -239,7 +236,6 @@ const resources = {
       add_subtask: "Создать подзадачу",
       priority: "Приоритет",
 
-      // Профиль пользователя
       user_profile: "Профиль пользователя",
       projects_count: "Проекты",
       active_tasks_count: "Активные задачи",
@@ -250,7 +246,6 @@ const resources = {
       delete_account: "Удалить аккаунт",
       current_lang: "Язык: {{lang}} (Сменить)",
 
-      // Модальные окна
       logout_confirm_title: "Выход",
       logout_confirm_msg: "Вы уверены, что хотите выйти из сессии?",
       delete_confirm_title: "Удаление аккаунта",
@@ -355,7 +350,6 @@ const resources = {
   },
   uk: {
     translation: {
-      // Загальне
       projects: "Проєкти",
       start_selection: "Обрати завдання",
       selected_count: "Обрано: {{count}}",
@@ -395,7 +389,7 @@ const resources = {
         default_desc: "Створіть нове завдання, щоб тримати все під контролем.",
         add_first_btn: "Або додайте перше завдання",
       },
-      // Деталі завдання
+
       task_details: "Деталі завдання",
       description: "Опис",
       subtasks: "Підзавдання",
@@ -405,7 +399,6 @@ const resources = {
       add_subtask: "Створити підзавдання",
       priority: "Пріоритет",
 
-      // Профіль користувача
       user_profile: "Профіль користувача",
       projects_count: "Проєкти",
       active_tasks_count: "Активні завдання",
@@ -416,7 +409,6 @@ const resources = {
       delete_account: "Видалити акаунт",
       current_lang: "Мова: {{lang}} (Змінити)",
 
-      // Модальні вікна
       logout_confirm_title: "Вихід",
       logout_confirm_msg: "Ви впевнені, що хочете вийти з сесії?",
       delete_confirm_title: "Видалення акаунта",
@@ -563,7 +555,7 @@ const resources = {
         default_desc: "Crea una nueva tarea para mantenerte al día.",
         add_first_btn: "O añade tu primera tarea",
       },
-      // Task Info / Información de la tarea
+
       add_subtask: "Crear subtarea",
       priority: "Prioridad",
       task_details: "Detalles de la tarea",
@@ -573,7 +565,6 @@ const resources = {
       active_task: "Tarea activa",
       completed: "Completada",
 
-      // User Info / Settings - Perfil y Ajustes
       user_profile: "Perfil de usuario",
       projects_count: "Proyectos",
       active_tasks_count: "Tareas activas",
@@ -584,7 +575,6 @@ const resources = {
       delete_account: "Eliminar cuenta",
       current_lang: "Idioma: {{lang}} (Cambiar)",
 
-      // Modals / Ventanas modales
       logout_confirm_title: "Cerrar sesión",
       logout_confirm_msg: "¿Estás seguro de que quieres cerrar la sesión?",
       delete_confirm_title: "Eliminar cuenta",
@@ -691,7 +681,6 @@ const resources = {
   },
   de: {
     translation: {
-      // Allgemein
       projects: "Projekte",
       loading: "Laden",
       start_selection: "Aufgaben auswählen",
@@ -731,7 +720,7 @@ const resources = {
           "Erstelle eine neue Aufgabe, um den Überblick zu behalten.",
         add_first_btn: "Oder füge deine erste Aufgabe hinzu",
       },
-      // Aufgaben-Infos
+
       add_subtask: "Unteraufgabe erstellen",
       priority: "Priorität",
       task_details: "Aufgabendetails",
@@ -741,7 +730,6 @@ const resources = {
       active_task: "Aktive Aufgabe",
       completed: "Abgeschlossen",
 
-      // Benutzer-Profil / Einstellungen
       user_profile: "Benutzerprofil",
       projects_count: "Projekte",
       active_tasks_count: "Aktive Aufgaben",
@@ -752,7 +740,6 @@ const resources = {
       delete_account: "Konto löschen",
       current_lang: "Sprache: {{lang}} (Wechseln)",
 
-      // Modale Fenster
       logout_confirm_title: "Abmelden",
       logout_confirm_msg: "Bist du sicher, dass du dich abmelden möchtest?",
       delete_confirm_title: "Konto löschen",
@@ -899,7 +886,7 @@ const resources = {
         default_desc: "Utwórz nowe zadanie, aby trzymać rękę na pulsie.",
         add_first_btn: "Lub dodaj swoje pierwsze zadanie",
       },
-      // Informacje o zadaniu
+
       add_subtask: "Dodaj podzadanie",
       priority: "Priorytet",
       task_details: "Szczegóły zadania",
@@ -909,7 +896,6 @@ const resources = {
       active_task: "Aktywne zadanie",
       completed: "Ukończone",
 
-      // Profil użytkownika / Ustawienia
       user_profile: "Profil użytkownika",
       projects_count: "Projekty",
       active_tasks_count: "Aktywne zadania",
@@ -920,7 +906,6 @@ const resources = {
       delete_account: "Usuń konto",
       current_lang: "Język: {{lang}} (Zmień)",
 
-      // Okna modalne
       logout_confirm_title: "Wyloguj się",
       logout_confirm_msg: "Czy na pewno chcesz zakończyć sesję?",
       delete_confirm_title: "Usuń konto",
@@ -1068,7 +1053,7 @@ const resources = {
         default_desc: "Créez une nouvelle tâche pour rester organisé.",
         add_first_btn: "Ou ajoutez votre première tâche",
       },
-      // Infos sur la tâche
+
       add_subtask: "Créer une sous-tâche",
       priority: "Priorité",
       task_details: "Détails de la tâche",
@@ -1078,7 +1063,6 @@ const resources = {
       active_task: "Tâche active",
       completed: "Terminée",
 
-      // Profil Utilisateur / Paramètres
       user_profile: "Profil utilisateur",
       projects_count: "Projets",
       active_tasks_count: "Tâches actives",
@@ -1089,7 +1073,6 @@ const resources = {
       delete_account: "Supprimer le compte",
       current_lang: "Langue : {{lang}} (Changer)",
 
-      // Modales
       logout_confirm_title: "Déconnexion",
       logout_confirm_msg: "Êtes-vous sûr de vouloir quitter votre session ?",
       delete_confirm_title: "Supprimer le compte",
@@ -1205,8 +1188,8 @@ i18n
     resources,
     fallbackLng: "en",
     detection: {
-      order: ["localStorage", "navigator"], // Сначала смотрим в память браузера
-      caches: ["localStorage"], // Сохраняем туда же при смене
+      order: ["localStorage", "navigator"],
+      caches: ["localStorage"],
     },
     interpolation: {
       escapeValue: false,

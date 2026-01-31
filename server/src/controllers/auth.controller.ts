@@ -1,4 +1,3 @@
-// server/controllers/auth.controller.ts
 import { Request, Response } from "express";
 import { prisma } from "../prisma";
 import bcrypt from "bcrypt";
@@ -6,7 +5,6 @@ import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "super-secret-key";
 
-//registration
 export async function register(req: Request, res: Response) {
   const { userName, email, password } = req.body;
   const existingUser = await prisma.user.findUnique({
@@ -49,7 +47,6 @@ export async function register(req: Request, res: Response) {
     res.status(500).json({ error: "Failed to register user" });
   }
 }
-// server/controllers/auth.controller.ts
 
 export async function getMe(req: any, res: Response) {
   const userId = req.userId;
@@ -91,7 +88,6 @@ export async function updateMe(req: any, res: Response) {
       data: {
         ...(userName !== undefined && { userName }),
         ...(email !== undefined && { email }),
-        // avatarUrl: avatar, // когда доберемся до загрузки файлов
       },
       select: {
         id: true,
@@ -103,14 +99,13 @@ export async function updateMe(req: any, res: Response) {
 
     res.json(user);
   } catch (error: any) {
-    // Если юзер решит сменить email на тот, что уже занят
     if (error.code === "P2002") {
       return res.status(400).json({ error: "Этот email уже занят" });
     }
     res.status(500).json({ error: "Internal server error" });
   }
 }
-//login
+
 export async function login(req: Request, res: Response) {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -153,7 +148,6 @@ export async function login(req: Request, res: Response) {
   }
 }
 
-//delete account
 export async function deleteAcc(req: any, res: Response) {
   const userId = req.userId;
 

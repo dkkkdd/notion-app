@@ -16,11 +16,10 @@ html {
 }
 html,
 body {
-  height: 100%; /* Add this */
+  height: 100%;
   overflow-x: hidden;
 }
 main {
-  /* This ensures the background extends behind the status bar and home bar */
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
 }

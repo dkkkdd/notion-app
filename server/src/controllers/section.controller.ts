@@ -10,20 +10,23 @@ export async function createSection(req: any, res: Response) {
       where: { id: projectId, userId },
     });
 
-    if (!project)
-      return res.status(403).json({ error: "Access denied to this project" });
+    if (!project) return res.status(403).json({ error: "Access denied" });
+
     const section = await prisma.section.create({
       data: {
         title,
-        projectId,
         order: order ?? 0,
+        projectId,
+        userId,
       },
     });
+
     res.status(201).json(section);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 }
+
 export async function updateSection(req: any, res: Response) {
   const { id } = req.params;
   const { title, order } = req.body;

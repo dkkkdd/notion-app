@@ -23,7 +23,6 @@ type ProjectsContextType = ReturnType<typeof useProjects> & {
 const ProjectsContext = createContext<ProjectsContextType | null>(null);
 
 export function ProjectsProvider({ children }: { children: ReactNode }) {
-  // Теперь useProjects не принимает userId, он берет его из токена на бэкенде
   const projectsData = useProjects();
 
   const [mode, setMode] = useState<TaskMode>(() => {
@@ -76,7 +75,7 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
     </ProjectsContext.Provider>
   );
 }
-// хук useProjectsContext оставляем без изменений
+
 export const useProjectsContext = () => {
   const context = useContext(ProjectsContext);
   if (!context)

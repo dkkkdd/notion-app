@@ -2,7 +2,6 @@ import { api } from "./client";
 import type { Task } from "../types/tasks";
 
 export const tasksApi = {
-  // get tasks with filters
   fetchTasks: (params?: Record<string, any>) => {
     const query = new URLSearchParams();
 
@@ -17,7 +16,6 @@ export const tasksApi = {
     return api.get<Task[]>(`/tasks?${query.toString()}`);
   },
 
-  // create new task with basic info
   createTask: (data: {
     title: string;
     userId: string;
@@ -40,21 +38,18 @@ export const tasksApi = {
   fetchProjectTasks: (projectId: string, showCompleted: boolean = false) => {
     const params: any = { projectId };
     if (!showCompleted) {
-      params.isDone = false; // Тянем только активные
+      params.isDone = false;
     }
     return tasksApi.fetchTasks(params);
   },
-  // toggle checkbox
+
   updateStatus: (id: string, isDone: boolean) =>
     api.patch<Task>(`/tasks/${id}`, { isDone }),
 
-  // general update
   updateInfo: (id: string, data: Partial<Task>) =>
     api.patch<Task>(`/tasks/${id}`, data),
 
-  // remove task from db
   deleteTask: (id: string) => api.delete(`/tasks/${id}`),
 
-  // helper to get items without a project (inbox)
   fetchInboxTasks: () => tasksApi.fetchTasks({ projectId: null }),
 };

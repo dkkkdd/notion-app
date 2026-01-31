@@ -34,7 +34,6 @@ export const TaskActions = memo(function TaskActions({
 
   return (
     <div className="flex items-center">
-      {/* Edit button */}
       <button
         onClick={onEdit}
         className={`
@@ -47,7 +46,6 @@ export const TaskActions = memo(function TaskActions({
         `}
       />
 
-      {/* Calendar button */}
       <div
         className={`${isSelectionMode ? "opacity-0 pointer-events-none" : ""}`}
         onClick={(e) => e.stopPropagation()}
@@ -76,7 +74,6 @@ export const TaskActions = memo(function TaskActions({
         </Calendar>
       </div>
 
-      {/* Menu button */}
       <button
         ref={btnRef}
         onClick={(e) => {

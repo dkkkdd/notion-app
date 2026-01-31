@@ -36,9 +36,8 @@ export function useProjects() {
     }
   };
 
-  // Удаление (Оптимистичное)
   const remove = async (id: string) => {
-    const snapshot = projects; // Сохраняем состояние на случай ошибки
+    const snapshot = projects;
     setProjects((p) => p.filter((x) => x.id !== id));
 
     try {
@@ -48,7 +47,6 @@ export function useProjects() {
     }
   };
 
-  // Переключалка избранного
   const toggleFavorite = async (id: string, favorites: boolean) => {
     const snapshot = projects;
     setProjects((p) => p.map((x) => (x.id === id ? { ...x, favorites } : x)));
@@ -60,7 +58,6 @@ export function useProjects() {
     }
   };
 
-  // Редактирование
   const update = async (id: string, data: Partial<Project>) => {
     const snapshot = projects;
     setProjects((p) => p.map((x) => (x.id === id ? { ...x, ...data } : x)));

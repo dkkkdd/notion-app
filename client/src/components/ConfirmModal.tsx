@@ -10,7 +10,11 @@ interface ConfirmModalProps {
   variant?: "danger" | "primary" | "warning";
   isLoading?: boolean;
 }
-
+const variantStyles = {
+  danger: "bg-[#9d174d] hover:shadow-[0_0_15px_rgba(157,23,77,0.4)]",
+  primary: "bg-[#4270d1] hover:shadow-[0_0_15px_rgba(37,99,235,0.4)]",
+  warning: "bg-orange-500 hover:shadow-[0_0_15px_rgba(249,115,22,0.4)]",
+};
 export const ConfirmModal = ({
   onConfirm,
   onClose,
@@ -22,12 +26,6 @@ export const ConfirmModal = ({
   isLoading = false,
 }: ConfirmModalProps) => {
   const { t } = useTranslation();
-
-  const variantStyles = {
-    danger: "bg-[#9d174d] hover:shadow-[0_0_15px_rgba(157,23,77,0.4)]",
-    primary: "bg-[#4270d1] hover:shadow-[0_0_15px_rgba(37,99,235,0.4)]",
-    warning: "bg-orange-500 hover:shadow-[0_0_15px_rgba(249,115,22,0.4)]",
-  };
 
   return (
     <div

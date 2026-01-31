@@ -13,11 +13,10 @@ import { TaskList } from "./components/Tasks/TaskList";
 import { AuthPage } from "./components/AuthPage";
 import { useProjectsContext } from "./context/ProjectsContext";
 import { useEffect } from "react";
-import { applyTheme } from "./components/User/UserInfo";
+import { applyTheme } from "../src/components/User/UserInfo";
 import { useTranslation } from "react-i18next";
 import { ProjectPage } from "./components/Projects/ProjectPage";
 
-// Обертка для задач
 function TasksWrapper({ children }: { children: React.ReactNode }) {
   const { mode, selectedProjectId } = useProjectsContext();
   return (
@@ -78,12 +77,10 @@ function AppContent() {
 
   return (
     <Routes>
-      {/* ПУБЛИЧНЫЕ РОУТЫ */}
       <Route
         path="/login"
         element={
           isAuthenticated ? (
-            // Если залогинен, возвращаем на "откуда пришел" или на главную
             <Navigate to={location.state?.from?.pathname || "/"} replace />
           ) : (
             <AuthPage isLoginMode={true} />
@@ -102,14 +99,12 @@ function AppContent() {
         }
       />
 
-      {/* ЗАЩИЩЕННЫЕ РОУТЫ */}
       <Route
         path="/*"
         element={
           isAuthenticated ? (
             <ProtectedApp />
           ) : (
-            // Сохраняем текущий путь в state перед редиректом на логин
             <Navigate to="/login" state={{ from: location }} replace />
           )
         }

@@ -19,7 +19,7 @@ export async function getProjects(req: any, res: Response) {
 }
 
 export async function getProjectBoard(req: any, res: Response) {
-  const { id } = req.params; // ID проекта
+  const { id } = req.params;
   const userId = req.userId;
   try {
     const project = await prisma.project.findUnique({
@@ -29,7 +29,7 @@ export async function getProjectBoard(req: any, res: Response) {
           orderBy: { order: "asc" },
           include: {
             tasks: {
-              where: { parentId: null }, // Только главные задачи (подзадачи внутри)
+              where: { parentId: null },
               orderBy: { order: "asc" },
               include: {
                 subtasks: {
@@ -39,7 +39,7 @@ export async function getProjectBoard(req: any, res: Response) {
             },
           },
         },
-        // Задачи проекта, которые БЕЗ секций (висят вверху проекта)
+
         tasks: {
           where: {
             sectionId: null,
@@ -87,7 +87,6 @@ export async function updateProject(req: any, res: Response) {
   const { id } = req.params;
   const userId = req.userId;
 
-  // Используем деструктуризацию, чтобы было чище
   const { title, color, favorites, order } = req.body;
 
   if (!id) {
@@ -101,7 +100,7 @@ export async function updateProject(req: any, res: Response) {
         ...(title !== undefined && { title }),
         ...(color !== undefined && { color }),
         ...(favorites !== undefined && { favorites }),
-        ...(order !== undefined && { order }), // Позволяем менять порядок
+        ...(order !== undefined && { order }),
       },
     });
     res.json(project);

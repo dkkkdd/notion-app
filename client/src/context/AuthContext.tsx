@@ -65,7 +65,6 @@ export function AuthProvider({ children }: any) {
   );
 }
 
-// Кастомные хуки для удобного доступа
 export const useAuthState = () => {
   const context = useContext(AuthStateContext);
   if (!context)
