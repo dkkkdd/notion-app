@@ -8,9 +8,8 @@ interface TaskActionsProps {
   isCalOpen: boolean;
   currentDeadlineStr: string | null;
   reminderAt?: string | null;
-  btnRef?: React.Ref<any>;
   onEdit: () => void;
-  onMenuClick: (e: React.MouseEvent) => void;
+  onMenuClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   onDateUpdate: (date: string | null) => void;
   onTimeUpdate: (time: string | null) => void;
   setIsCalOpen: (val: boolean) => void;
@@ -23,7 +22,7 @@ export const TaskActions = memo(function TaskActions({
   isCalOpen,
   currentDeadlineStr,
   reminderAt,
-  btnRef,
+
   onEdit,
   onMenuClick,
   onDateUpdate,
@@ -75,7 +74,6 @@ export const TaskActions = memo(function TaskActions({
       </div>
 
       <button
-        ref={btnRef}
         onClick={(e) => {
           onMenuClick(e);
           setIsCalOpen(false);

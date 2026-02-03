@@ -1,5 +1,7 @@
 import i18next from "i18next";
+import type { TFunction } from "i18next";
 import { addDays } from "date-fns";
+
 export const FILTER_OPTIONS = [
   {
     icon: "icon-list",
@@ -27,7 +29,7 @@ export const startOfWeek = (d: Date) => {
 
 export const formatDateLabel = (
   dateInput: string | Date | null,
-  t: any,
+  t: TFunction,
 ): string => {
   if (!dateInput) return "";
 

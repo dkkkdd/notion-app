@@ -71,7 +71,7 @@ export const Calendar = (props: CalendarProps) => {
   }, [open, setIsCalOpen]);
 
   const timeOptions = useMemo(() => generateTimeOptions(STEP), []);
-  const dates = useMemo(() => generateDatePresets(), [t]);
+  const dates = useMemo(() => generateDatePresets(), []);
   const dateLabel = useMemo(() => formatDateLabel(date ?? null, t), [date, t]);
   const meta = useMemo(() => dateColor(dateLabel, date), [dateLabel, date]);
 
@@ -126,6 +126,7 @@ export const Calendar = (props: CalendarProps) => {
         </div>
       ) : (
         <button
+          // eslint-disable-next-line react-hooks/refs
           ref={refs.setReference}
           {...getReferenceProps()}
           onMouseDown={(e) => e.preventDefault()}
@@ -152,6 +153,7 @@ export const Calendar = (props: CalendarProps) => {
       {!isMobile && open && (
         <FloatingPortal>
           <div
+            // eslint-disable-next-line react-hooks/refs
             ref={refs.setFloating}
             style={{
               ...floatingStyles,
@@ -189,9 +191,9 @@ export const Calendar = (props: CalendarProps) => {
         </FloatingPortal>
       )}
 
-      {isMobile && open && (
+      {isMobile && (
         <MobileDrawer
-          open={isMobile}
+          open={open}
           onClose={() => setOpen(false)}
           drawerTitle={t("calendar_editor")}
           drawerDescription={t("choose_date_and_time")}

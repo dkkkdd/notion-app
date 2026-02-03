@@ -1,31 +1,44 @@
 import { useMemo, useState } from "react";
+import type { Task } from "../types/tasks";
 import { useTasksActions } from "../context/TasksContext";
 
-export function useTaskSelection(filteredTasks: any[]) {
+export function useTaskSelection(
+  filteredTasks: Task[],
+  onSelectionStart?: () => void,
+) {
   const { updateTask, deleteTask } = useTasksActions();
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const currentIds = useMemo(() => {
     const set = new Set<string>();
-    filteredTasks.forEach((t: any) => {
+    filteredTasks.forEach((t: Task) => {
       set.add(t.id);
-      t.subtasks?.forEach((s: any) => set.add(s.id));
+      t.subtasks?.forEach((s: Task) => set.add(s.id));
     });
     return set;
   }, [filteredTasks]);
 
   const total = useMemo(() => {
     return filteredTasks.reduce(
-      (acc: any, t: any) => acc + 1 + (t.subtasks?.length || 0),
+      (acc: number, t: Task) => acc + 1 + (t.subtasks?.length || 0),
       0,
     );
   }, [filteredTasks]);
 
+  const startSelection = () => {
+    setSelectionMode(true);
+    onSelectionStart?.();
+  };
+
   const toggleSelect = (id: string) => {
     setSelectedIds((prev) => {
       const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
       return next;
     });
   };
@@ -92,13 +105,12 @@ export function useTaskSelection(filteredTasks: any[]) {
 
   return {
     selectionMode,
-    setSelectionMode,
+    startSelection,
     selectedIds,
     total,
     toggleSelect,
     toggleSelectAll,
     clearSelection,
-
     bulkComplete,
     bulkUpdateDeadline,
     bulkDelete,

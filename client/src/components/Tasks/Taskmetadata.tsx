@@ -1,5 +1,6 @@
 import { memo } from "react";
 import { format } from "date-fns";
+import type { TFunction } from "i18next";
 import { Calendar } from "../Calendar/Calendar";
 import { formatFullDate } from "../../utils/dateFormatters";
 import { useTranslation } from "react-i18next";
@@ -21,7 +22,7 @@ interface TaskMetadataProps {
     dateInput?: string | Date | null,
     reminderAt?: string | null,
   ) => { color: string; icon: string };
-  formatDateLabel: (v: string, t: any) => string;
+  formatDateLabel: (v: string, t: TFunction) => string;
   onDateUpdate: (date: string | null) => void;
   onTimeUpdate: (time: string | null) => void;
   onProjectClick: (projectId: string | null) => void;

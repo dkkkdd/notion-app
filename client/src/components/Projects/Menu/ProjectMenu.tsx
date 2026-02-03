@@ -68,6 +68,7 @@ export function ProjectMenu({
     <FloatingPortal>
       <FloatingFocusManager context={context} modal={false}>
         <ul
+          // eslint-disable-next-line react-hooks/refs
           ref={refs.setFloating}
           style={{
             ...floatingStyles,

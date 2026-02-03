@@ -210,7 +210,11 @@ export const ProjectForm = ({
                     label: t(`${o.label.toLowerCase()}`),
                     color: o.value,
                   }))}
-                  onChange={setColor}
+                  onChange={(value) => {
+                    if (typeof value === "string") {
+                      setColor(value);
+                    }
+                  }}
                 />
               </div>
 

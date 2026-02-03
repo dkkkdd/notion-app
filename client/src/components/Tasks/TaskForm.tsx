@@ -28,6 +28,7 @@ export interface TaskFormProps {
     parentId?: string | null;
   }) => void | Promise<void>;
   onClose: () => void;
+  onStartAddSubtask?: (parentId: string | null) => void;
 }
 
 export const TaskForm = ({
@@ -36,18 +37,19 @@ export const TaskForm = ({
   openForm,
   parentId = null,
   onSubmit,
+  onStartAddSubtask,
   onClose,
 }: TaskFormProps) => {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
   const { mode } = useProjectsContext();
-  const [activeParentId, setActiveParentId] = useState<string | null>(null);
+
   const { selectedProjectId, projects } = useProjectsContext();
   const [name, setName] = useState(initiaTask?.title ?? "");
   const [date, setDate] = useState(initiaTask?.deadline ?? null);
   const [time, setTime] = useState(initiaTask?.reminderAt ?? null);
   const [comment, setComment] = useState(initiaTask?.comment ?? "");
-  const { deleteTask, createTask } = useTasksActions();
+  const { deleteTask } = useTasksActions();
   const [openComfirm, setOpenConfirm] = useState(false);
   const [priority, setPriority] = useState(initiaTask?.priority ?? 1);
   const [projectId, setProjectId] = useState(selectedProjectId);
@@ -75,7 +77,7 @@ export const TaskForm = ({
 
     try {
       setIsSubmitting(true);
-      let finalDeadline = date;
+      const finalDeadline = date;
 
       await onSubmit({
         title: name,
@@ -175,7 +177,11 @@ export const TaskForm = ({
                         ...opt,
                         label: t(opt.label.toLowerCase()),
                       }))}
-                      onChange={setPriority}
+                      onChange={(value) => {
+                        if (typeof value === "number") {
+                          setPriority(value);
+                        }
+                      }}
                     />
                   </div>
 
@@ -215,7 +221,11 @@ export const TaskForm = ({
                             color: p.color,
                           })),
                         ]}
-                        onChange={setProjectId}
+                        onChange={(value) => {
+                          if (typeof value === "string") {
+                            setProjectId(value);
+                          }
+                        }}
                       />
                     </div>
                   )}
@@ -296,7 +306,7 @@ export const TaskForm = ({
                       {!isSubTask && (
                         <button
                           onClick={() =>
-                            setActiveParentId(initiaTask?.id || null)
+                            onStartAddSubtask?.(initiaTask?.id || null)
                           }
                           className="w-full flex items-center gap-3 p-4 text-white/70 hover:bg-white/5 transition-colors border-t border-white/5"
                         >
@@ -314,7 +324,9 @@ export const TaskForm = ({
                   (!initiaTask?.subtasks ||
                     initiaTask.subtasks.length === 0) && (
                     <button
-                      onClick={() => setActiveParentId(initiaTask?.id || null)}
+                      onClick={() =>
+                        onStartAddSubtask?.(initiaTask?.id || null)
+                      }
                       className="mx-3 mt-4 flex items-center gap-3 p-3 text-black dark:text-white/70 hover:bg-black/5 dark:hover:bg-white/5 rounded-xl transition-colors"
                     >
                       <span className="icon-plus-svgrepo-com-1 text-lg"></span>
@@ -384,7 +396,11 @@ export const TaskForm = ({
                     ...opt,
                     label: t(opt.label.toLowerCase()),
                   }))}
-                  onChange={setPriority}
+                  onChange={(value) => {
+                    if (typeof value === "number") {
+                      setPriority(value);
+                    }
+                  }}
                 />
               </div>
 
@@ -413,7 +429,11 @@ export const TaskForm = ({
                         color: p.color,
                       })),
                     ]}
-                    onChange={setProjectId}
+                    onChange={(value) => {
+                      if (typeof value === "string") {
+                        setProjectId(value);
+                      }
+                    }}
                   />
                 </div>
               )}
@@ -458,24 +478,14 @@ export const TaskForm = ({
             />
           }
           onConfirm={async () => {
-            await deleteTask(initiaTask?.id);
+            if (initiaTask?.id) {
+              await deleteTask(initiaTask.id);
+            }
             setOpenConfirm(false);
           }}
           onClose={() => setOpenConfirm(false)}
           confirmText={t("delete_now")}
           cancelText={t("cancel")}
-        />
-      )}
-
-      {activeParentId === initiaTask?.id && (
-        <TaskForm
-          openForm={true}
-          formMode="create"
-          parentId={initiaTask?.id}
-          onClose={() => setActiveParentId(null)}
-          onSubmit={async (data) => {
-            await createTask({ ...data, parentId: initiaTask?.id });
-          }}
         />
       )}
     </>

@@ -1,4 +1,18 @@
-export const QuickBtn = ({ icon, label, color, isActive, onClick }: any) => (
+interface QuickBtnProps {
+  icon: React.ReactNode;
+  label?: string;
+  color?: string;
+  isActive?: boolean;
+  onClick: () => void;
+}
+
+export const QuickBtn = ({
+  icon,
+  label,
+  color,
+  isActive,
+  onClick,
+}: QuickBtnProps) => (
   <button
     type="button"
     onClick={onClick}

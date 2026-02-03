@@ -37,9 +37,14 @@ export function useFilteredTasks() {
     };
 
     if (mode === "today" || mode === "overdue" || mode === "completed") {
-      const allItems: any[] = [];
+      type FlatTask = Task & {
+        isFlat: boolean;
+        isStandaloneSubtask: boolean;
+        parentName: string | null;
+      };
+      const allItems: FlatTask[] = [];
 
-      const processTask = (task: any, parentName?: string) => {
+      const processTask = (task: Task, parentName?: string) => {
         let isMatch = false;
 
         if (mode === "completed") {
@@ -59,12 +64,14 @@ export function useFilteredTasks() {
         }
       };
 
-      tasks.forEach((parent: any) => {
+      tasks.forEach((parent: Task) => {
         processTask(parent);
-        parent.subtasks?.forEach((sub: any) => processTask(sub, parent.title));
+        parent.subtasks?.forEach((sub: Task) => processTask(sub, parent.title));
       });
 
-      return allItems.sort((a, b) => Number(a.isDone) - Number(b.isDone));
+      return allItems.sort(
+        (a: Task, b: Task) => Number(a.isDone) - Number(b.isDone),
+      );
     }
 
     const filtered = tasks.filter((t: Task) => {
@@ -73,7 +80,7 @@ export function useFilteredTasks() {
     });
 
     return filtered.sort(
-      (a: any, b: any) => Number(a.isDone) - Number(b.isDone),
+      (a: Task, b: Task) => Number(a.isDone) - Number(b.isDone),
     );
   }, [tasks, mode, selectedProjectId, loading, showAll]);
 

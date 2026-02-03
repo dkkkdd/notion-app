@@ -6,10 +6,18 @@ import { ConfirmModal } from "../../ConfirmModal";
 import { ProjectForm } from "../ProjectForm";
 import { ProjectMenu } from "./ProjectMenu";
 import type { Project } from "../../../types/project";
+
 type MenuState = {
   anchor: HTMLElement | null;
   projectId: string | null;
 };
+
+interface ProjectFormData {
+  title?: string;
+  description?: string;
+  color?: string;
+}
+
 export function ProjectMenuController({
   anchor,
   projectId,
@@ -81,7 +89,7 @@ export function ProjectMenuController({
           <ProjectForm
             mode="edit"
             initialProject={project}
-            onSubmit={(data: any) => {
+            onSubmit={(data: ProjectFormData) => {
               updateProject(project.id, data);
               setEditing(false);
               onClose();

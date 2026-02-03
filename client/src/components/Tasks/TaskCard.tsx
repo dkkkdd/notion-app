@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useRef, useState, useMemo } from "react";
+import React, { memo, useCallback, useState, useMemo } from "react";
 import type { Task } from "../../types/tasks";
 import { useTasksActions } from "../../context/TasksContext";
 import { PRIORITY_OPTIONS } from "../../utils/priorities";
@@ -48,7 +48,7 @@ export const TaskCard = memo(
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isCalOpen, setIsCalOpen] = useState(false);
 
-    const btnRef = useRef<HTMLSpanElement>(null);
+    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
     const handleToggle = useCallback(
       (e: React.MouseEvent) => {
@@ -97,10 +97,14 @@ export const TaskCard = memo(
       [task.id, updateTask],
     );
 
-    const handleMenuClick = useCallback((e: React.MouseEvent) => {
-      e.stopPropagation();
-      setIsMenuOpen(true);
-    }, []);
+    const handleMenuClick = useCallback(
+      (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation();
+        setAnchorEl(e.currentTarget);
+        setIsMenuOpen(true);
+      },
+      [],
+    );
 
     const handleSelectClick = useCallback(
       (e: React.MouseEvent) => {
@@ -211,7 +215,6 @@ export const TaskCard = memo(
                 isCalOpen={isCalOpen}
                 currentDeadlineStr={currentDeadlineStr}
                 reminderAt={task.reminderAt}
-                btnRef={btnRef}
                 onEdit={onEdit}
                 onMenuClick={handleMenuClick}
                 onDateUpdate={handleDate}
@@ -233,7 +236,7 @@ export const TaskCard = memo(
           </ModalPortal>
         )}
 
-        {isMenuOpen && btnRef.current && (
+        {isMenuOpen && anchorEl && (
           <GlobalDropdown
             isCalOpen={isCalOpen}
             setIsCalOpen={setIsCalOpen}
@@ -241,7 +244,7 @@ export const TaskCard = memo(
             updateTime={handleTime}
             task={task}
             isOpen={isMenuOpen}
-            anchorEl={btnRef.current}
+            anchorEl={anchorEl}
             onClose={() => setIsMenuOpen(false)}
             onEdit={() => {
               onEdit();

@@ -119,7 +119,7 @@ export const Selector = ({
                   ...o,
                   label: t(o.label.toLowerCase()),
                 }))}
-                onChange={(p) => setBulkPriority(p)}
+                onChange={(p) => setBulkPriority(typeof p === "number" ? p : 1)}
               />
             </div>
 
@@ -147,7 +147,9 @@ export const Selector = ({
                     color: p.color,
                   })),
                 ]}
-                onChange={(val) => setBulkProjectId(val)}
+                onChange={(val) =>
+                  setBulkProjectId(typeof val === "string" ? val : null)
+                }
               />
             </div>
 

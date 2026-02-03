@@ -1,4 +1,5 @@
 import type { Project } from "../../types/project";
+import type { Task } from "../../types/tasks";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 import { enUS, uk, ru, es, fr, pl, de } from "date-fns/locale";
@@ -21,7 +22,7 @@ export const TaskInfo = ({
   onClose,
   isOpen,
 }: {
-  task: any;
+  task: Task;
   projects: Project[] | null;
   onClose: () => void;
   isOpen: boolean;
@@ -31,7 +32,7 @@ export const TaskInfo = ({
   const { t, i18n } = useTranslation();
 
   const parentTask = task.parentId
-    ? tasks.find((t: any) => t.id === task.parentId)
+    ? tasks.find((t: Task) => t.id === task.parentId)
     : null;
   const formattedDeadline = task.deadline
     ? format(new Date(task.deadline), "d MMMM yyyy", {
@@ -41,7 +42,7 @@ export const TaskInfo = ({
 
   const subtasks = task.subtasks || [];
   const subtasksCount = subtasks.length;
-  const subtasksDone = subtasks.filter((s: any) => s.isDone).length;
+  const subtasksDone = subtasks.filter((s: Task) => s.isDone).length;
 
   return (
     <div
@@ -146,7 +147,7 @@ export const TaskInfo = ({
                   {t("subtasks_list")}
                 </span>
                 <div className="max-h-[120px] overflow-y-auto space-y-1 pr-1 custom-scrollbar">
-                  {subtasks.map((sub: any) => (
+                  {subtasks.map((sub: Task) => (
                     <div
                       key={sub.id}
                       className="flex items-center gap-3 p-2 bg-white dark:bg-white/5 rounded-md border border-black/5 dark:border-white/5"

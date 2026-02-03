@@ -1,0 +1,147 @@
+import { useState, useRef, useMemo } from "react";
+import { useTranslation } from "react-i18next";
+import { enUS } from "date-fns/locale";
+import { useAuthState, useAuthActions } from "../../../context/AuthProvider";
+import { useProjectsContext } from "../../../context/ProjectsContext";
+import { useTasksState } from "../../../context/TasksContext";
+import { useIsMobile } from "../../../hooks/useIsMobile";
+import { ConfirmModal } from "../../ConfirmModal";
+import { UpdateUserInfo } from "../UpdateUserInfo/UpdateUserInfo";
+import { ModalPortal } from "../../../features/ModalPortal";
+import { localeMap } from "../../../i18n";
+import { applyTheme } from "../../../utils/userSettings";
+import { UserInfoMobile } from "./UserInfoMobile";
+import { UserInfoDesktop } from "./UserInfoDesktop";
+import { formatDistanceToNow } from "date-fns";
+import type { Task } from "../../../types/tasks";
+
+export const UserInfo = ({
+  onClose,
+  isOpen,
+}: {
+  onClose: () => void;
+  isOpen: boolean;
+}) => {
+  const isMobile = useIsMobile();
+  const { t, i18n: i18nInstance } = useTranslation();
+  const { logoutUser, deleteUser } = useAuthActions();
+  const { user } = useAuthState();
+  const { projects } = useProjectsContext();
+  const { tasks } = useTasksState();
+
+  const anchorRef = useRef<HTMLButtonElement>(null);
+
+  const [currentTheme, setCurrentTheme] = useState(
+    localStorage.getItem("theme") || "system",
+  );
+  const [openComfirm, setOpenConfirm] = useState(false);
+  const [openForm, setOpenForm] = useState(false);
+  const [openComfirmDelete, setOpenConfirmDelete] = useState(false);
+
+  const currentLocale = useMemo(
+    () => localeMap[i18nInstance.language] || enUS,
+    [i18nInstance.language],
+  );
+
+  const projectsCount = projects.length || 0;
+  const isSubModalOpen = openComfirm || openComfirmDelete || openForm;
+
+  const undoneTasksCount = useMemo(
+    () => tasks.filter((t: Task) => !t.isDone).length,
+    [tasks],
+  );
+
+  const timeAgo = useMemo(
+    () =>
+      user?.createdAt
+        ? formatDistanceToNow(new Date(user.createdAt), {
+            addSuffix: true,
+            locale: currentLocale,
+          })
+        : "",
+    [user, currentLocale],
+  );
+
+  const formattedDate = useMemo(
+    () =>
+      user?.createdAt
+        ? new Date(user.createdAt).toLocaleDateString(i18nInstance.language)
+        : "",
+    [user, i18nInstance.language],
+  );
+
+  const handleLangChange = (langValue: string | number | null) => {
+    if (typeof langValue === "string") i18nInstance.changeLanguage(langValue);
+  };
+
+  const handleThemeChange = (newTheme: string | number | null) => {
+    if (typeof newTheme === "string") {
+      setCurrentTheme(newTheme);
+      applyTheme(newTheme);
+    }
+  };
+
+  const props = {
+    onClose,
+    isOpen,
+    isSubModalOpen,
+    openComfirmDelete,
+    setOpenConfirm,
+    setOpenForm,
+    setOpenConfirmDelete,
+    anchorRef,
+    projectsCount,
+    undoneTasksCount,
+    timeAgo,
+    formattedDate,
+    handleThemeChange,
+    handleLangChange,
+    currentTheme,
+  };
+
+  if (!user) return null;
+  return (
+    <>
+      {isMobile ? (
+        <UserInfoMobile {...props} />
+      ) : (
+        <UserInfoDesktop {...props} />
+      )}
+      {openComfirm && (
+        <ModalPortal>
+          <ConfirmModal
+            title={t("logout_confirm_title")}
+            message={t("logout_confirm_msg")}
+            variant="warning"
+            cancelText={t("cancel")}
+            confirmText={t("logout")}
+            onConfirm={logoutUser}
+            onClose={() => setOpenConfirm(false)}
+          />
+        </ModalPortal>
+      )}
+
+      {openComfirmDelete && (
+        <ModalPortal>
+          <ConfirmModal
+            title={t("delete_confirm_title")}
+            message={t("delete_confirm_msg")}
+            variant="danger"
+            cancelText={t("cancel")}
+            confirmText={t("confirm_delete_btn")}
+            onConfirm={() => deleteUser()}
+            onClose={() => setOpenConfirmDelete(false)}
+          />
+        </ModalPortal>
+      )}
+
+      <ModalPortal>
+        <UpdateUserInfo
+          anchorRef={anchorRef}
+          isOpen={openForm}
+          onClose={() => setOpenForm(false)}
+        />
+      </ModalPortal>
+    </>
+  );
+};

@@ -1,25 +1,28 @@
-import { useEffect, useState } from "react";
-import { useTasksActions } from "../../context/TasksContext";
+import { useState, useCallback, useMemo, Fragment } from "react";
+import { Trans, useTranslation } from "react-i18next";
+import { useTasksActions, useTasksState } from "../../context/TasksContext";
+import { useProjectsContext } from "../../context/ProjectsContext";
+import { useFilteredTasks } from "../../hooks/useFilteredTasks";
+import { useTaskSelection } from "../../hooks/useTaskSelection";
+import { useIsMobile } from "../../hooks/useIsMobile";
+import type { Task } from "../../types/tasks";
 import { TaskForm } from "./TaskForm";
 import { TaskCard } from "./TaskCard";
-import { useFilteredTasks } from "../../hooks/useFilteredTasks";
 import { ConfirmModal } from "../ConfirmModal";
 import { AddTaskBtn } from "../AddTaskBtn";
 import { EmptyState } from "../EmptyPage";
-import { useProjectsContext } from "../../context/ProjectsContext";
-import type { Task } from "../../types/tasks";
-import { Trans, useTranslation } from "react-i18next";
 import { Selector } from "../Selector";
-import { useTaskSelection } from "../../hooks/useTaskSelection";
-import { useIsMobile } from "../../hooks/useIsMobile";
 import { TaskListMenu } from "./TaskListMenu";
+import { TaskSkeleton } from "./TaskSkeleton";
 
 export const TaskList = () => {
   const isMobile = useIsMobile();
-
-  const { tasks, ready } = useFilteredTasks();
   const { t } = useTranslation();
+  const { tasks, ready } = useFilteredTasks();
+  const { loading } = useTasksState();
   const { mode, selectedProjectId } = useProjectsContext();
+  const { deleteTask, updateTask, createTask } = useTasksActions();
+
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
   const [activeParentId, setActiveParentId] = useState<string | null>(null);
@@ -28,141 +31,145 @@ export const TaskList = () => {
     {},
   );
 
-  const toggleTask = (taskId: string) => {
-    setExpandedTasks((prev) => ({
-      ...prev,
-      [taskId]: prev[taskId] === false ? true : false,
-    }));
-  };
+  const showContent = ready && !loading;
 
-  const { deleteTask, updateTask, createTask } = useTasksActions();
-  const {
-    selectionMode,
-    setSelectionMode,
-    selectedIds,
-    toggleSelect,
-    toggleSelectAll,
-    clearSelection,
-    bulkComplete,
-    total,
-    bulkUpdateDeadline,
-    bulkDelete,
-    openPrioritySheet,
-  } = useTaskSelection(tasks);
+  const toggleTask = useCallback((taskId: string) => {
+    setExpandedTasks((prev) => ({ ...prev, [taskId]: !prev[taskId] }));
+  }, []);
 
-  const handleStartEditing = (id: string) => {
+  const handleStartEditing = useCallback((id: string) => {
     setEditingTaskId(id);
     setActiveParentId(null);
     setOpenForm(false);
-  };
+  }, []);
 
-  const handleStartAddSubtask = (parentId: string) => {
+  const handleStartAddSubtask = useCallback((parentId: string | null) => {
     setActiveParentId(parentId);
     setEditingTaskId(null);
     setOpenForm(false);
-  };
+  }, []);
 
-  const handleStartCreateRoot = () => {
-    setOpenForm(true);
-    setEditingTaskId(null);
+  const handleDeleteRequest = useCallback((task: Task) => {
+    setTaskToDelete(task);
+  }, []);
+  const selection = useTaskSelection(tasks, () => {
+    setOpenForm(false);
     setActiveParentId(null);
+    setEditingTaskId(null);
+  });
+  const handleStartSelection = () => {
+    selection.startSelection();
+  };
+  const shouldShowAddButton = useMemo(
+    () =>
+      !openForm &&
+      mode !== "completed" &&
+      mode !== "overdue" &&
+      (isMobile || tasks.length > 0),
+    [openForm, mode, isMobile, tasks.length],
+  );
+
+  const transComponents = useMemo(
+    () => ({
+      b: <b className="font-bold text-black dark:text-white" />,
+    }),
+    [],
+  );
+
+  const renderTaskItem = (task: Task) => {
+    if (!isMobile && editingTaskId === task.id) {
+      return (
+        <TaskForm
+          key={task.id}
+          openForm
+          initiaTask={task}
+          formMode="edit"
+          onClose={() => setEditingTaskId(null)}
+          onSubmit={async (data) => {
+            await updateTask(task.id, data);
+            setEditingTaskId(null);
+          }}
+        />
+      );
+    }
+
+    return (
+      <Fragment key={task.id}>
+        <TaskCard
+          key={task.id}
+          task={task}
+          isMobile={isMobile}
+          isEditing={false}
+          showSubTasks={
+            mode === "today" ? false : expandedTasks[task.id] !== false
+          }
+          selectionMode={selection.selectionMode}
+          selected={selection.selectedIds.has(task.id)}
+          onSelect={() => selection.toggleSelect(task.id)}
+          setShowSubTasks={() => toggleTask(task.id)}
+          onEdit={() => handleStartEditing(task.id)}
+          onDeleteRequest={() => handleDeleteRequest(task)}
+          onAddSubtask={() => handleStartAddSubtask(task.id)}
+        />
+        {isMobile && (
+          <TaskForm
+            key={`edit-${task.id}`}
+            openForm={editingTaskId === task.id}
+            initiaTask={task}
+            onStartAddSubtask={handleStartAddSubtask}
+            formMode="edit"
+            onClose={() => setEditingTaskId(null)}
+            onSubmit={async (data) => {
+              await updateTask(task.id, data);
+              setEditingTaskId(null);
+            }}
+          />
+        )}
+      </Fragment>
+    );
   };
 
-  useEffect(() => {
-    if (selectionMode) {
-      setOpenForm(false);
-      setActiveParentId(null);
-      setEditingTaskId(null);
-    }
-  }, [selectionMode]);
-  const shouldShowAddButton =
-    !openForm &&
-    mode !== "completed" &&
-    mode !== "overdue" &&
-    (isMobile || tasks.length > 0);
-  if (!ready) return null;
+  if (loading) {
+    return (
+      <div className="w-full max-w-[58rem] mx-auto pt-20 opacity-100 transition-opacity duration-300">
+        <TaskSkeleton />
+      </div>
+    );
+  }
 
   return (
     <>
       <TaskListMenu
         mode={mode}
         selectedProjectId={selectedProjectId}
-        onStartSelection={() => setSelectionMode(true)}
+        onStartSelection={handleStartSelection}
       />
 
-      <div className=" w-full max-w-[58rem] mx-auto pt-20">
+      <div
+        className={`w-full max-w-[58rem] mx-auto pt-20 transition-opacity duration-500 ${
+          showContent ? "opacity-100" : "opacity-0"
+        }`}
+      >
         {tasks.map((task: Task) => (
-          <div key={task.id} className="task-group flex flex-col  ">
-            {editingTaskId === task.id ? (
-              <TaskForm
-                openForm={true}
-                initiaTask={task}
-                formMode="edit"
-                onClose={() => setEditingTaskId(null)}
-                onSubmit={async (data) => {
-                  await updateTask(task.id, data);
-                  setEditingTaskId(null);
-                }}
-              />
-            ) : (
-              <TaskCard
-                task={task}
-                isMobile={isMobile}
-                isEditing={false}
-                showSubTasks={
-                  mode === "today" ? false : expandedTasks[task.id] !== false
-                }
-                selectionMode={selectionMode}
-                selected={selectedIds.has(task.id)}
-                onSelect={() => toggleSelect(task.id)}
-                setShowSubTasks={() => toggleTask(task.id)}
-                onEdit={() => handleStartEditing(task.id)}
-                onDeleteRequest={() => setTaskToDelete(task)}
-                onAddSubtask={() => handleStartAddSubtask(task.id)}
-              />
-            )}
+          <div key={task.id} className="task-group flex flex-col">
+            {renderTaskItem(task)}
 
             {mode !== "today" && expandedTasks[task.id] !== false && (
-              <div className="subtasks-container pl-9 flex flex-col">
-                {task.subtasks?.map((sub: Task) => (
-                  <div key={sub.id}>
-                    {editingTaskId === sub.id ? (
-                      <TaskForm
-                        openForm={true}
-                        initiaTask={sub}
-                        formMode="edit"
-                        onClose={() => setEditingTaskId(null)}
-                        onSubmit={async (data) => {
-                          await updateTask(sub.id, data);
-                          setEditingTaskId(null);
-                        }}
-                      />
-                    ) : (
-                      <TaskCard
-                        task={sub}
-                        isMobile={isMobile}
-                        selectionMode={selectionMode}
-                        selected={selectedIds.has(sub.id)}
-                        onSelect={() => toggleSelect(sub.id)}
-                        isEditing={false}
-                        onEdit={() => handleStartEditing(sub.id)}
-                        onDeleteRequest={() => setTaskToDelete(sub)}
-                      />
-                    )}
-                  </div>
-                ))}
+              <div
+                key={`subtasks-container-${task.id}`}
+                className="subtasks-container pl-9 flex flex-col"
+              >
+                {task.subtasks?.map((sub: Task) => renderTaskItem(sub))}
 
-                {activeParentId === task.id && (
-                  <TaskForm
-                    openForm={true}
-                    formMode="create"
-                    parentId={task.id}
-                    onClose={() => setActiveParentId(null)}
-                    onSubmit={async (data) => {
-                      await createTask({ ...data, parentId: task.id });
-                    }}
-                  />
-                )}
+                <TaskForm
+                  openForm={activeParentId === task.id}
+                  formMode="create"
+                  parentId={task.id}
+                  onClose={() => setActiveParentId(null)}
+                  onSubmit={async (data) => {
+                    await createTask({ ...data, parentId: task.id });
+                  }}
+                />
               </div>
             )}
           </div>
@@ -170,18 +177,31 @@ export const TaskList = () => {
         {shouldShowAddButton && (
           <div className="fixed bottom-[10%] md:static">
             <AddTaskBtn
-              showText={isMobile ? false : true}
-              onOpenForm={handleStartCreateRoot}
+              showText={!isMobile}
+              onOpenForm={() => setOpenForm(true)}
             />
           </div>
         )}
-        {openForm && (
+        {!isMobile && openForm && (
           <TaskForm
             openForm={openForm}
             formMode="create"
             onClose={() => setOpenForm(false)}
             onSubmit={async (data) => {
               await createTask(data);
+              setOpenForm(false);
+            }}
+          />
+        )}
+
+        {isMobile && (
+          <TaskForm
+            openForm={openForm}
+            formMode="create"
+            onClose={() => setOpenForm(false)}
+            onSubmit={async (data) => {
+              await createTask(data);
+              setOpenForm(false);
             }}
           />
         )}
@@ -195,9 +215,7 @@ export const TaskList = () => {
             <Trans
               i18nKey="delete_task_message"
               values={{ title: taskToDelete.title }}
-              components={{
-                b: <b className="font-bold text-black dark:text-white" />,
-              }}
+              components={transComponents}
             />
           }
           onConfirm={async () => {
@@ -215,17 +233,19 @@ export const TaskList = () => {
       )}
 
       <Selector
-        visible={selectionMode}
-        total={total}
-        selectedIds={selectedIds}
-        toggleSelectAll={toggleSelectAll}
-        onClear={clearSelection}
-        onComplete={() => bulkComplete([...selectedIds])}
-        onDelete={() => bulkDelete([...selectedIds])}
+        visible={selection.selectionMode}
+        total={selection.total}
+        selectedIds={selection.selectedIds}
+        toggleSelectAll={selection.toggleSelectAll}
+        onClear={selection.clearSelection}
+        onComplete={() => selection.bulkComplete([...selection.selectedIds])}
+        onDelete={() => selection.bulkDelete([...selection.selectedIds])}
         onUpdateDeadline={(date: string | null, time: string | null) =>
-          bulkUpdateDeadline([...selectedIds], date, time)
+          selection.bulkUpdateDeadline([...selection.selectedIds], date, time)
         }
-        onSetPriority={(p: number) => openPrioritySheet([...selectedIds], p)}
+        onSetPriority={(p: number) =>
+          selection.openPrioritySheet([...selection.selectedIds], p)
+        }
       />
     </>
   );

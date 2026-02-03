@@ -18,7 +18,7 @@ export const SectionApi = {
 
   fetchAllCompleted: () => tasksApi.fetchTasks({ isDone: true }),
   fetchProjectTasks: (projectId: string, showCompleted: boolean = false) => {
-    const params: any = { projectId };
+    const params: Record<string, unknown> = { projectId };
     if (!showCompleted) {
       params.isDone = false;
     }

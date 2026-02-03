@@ -6,7 +6,7 @@ import { SidebarNavigation } from "./SidebarNavigation";
 import { ModalPortal } from "../../features/ModalPortal";
 import { AddTaskBtn } from "../AddTaskBtn";
 import { TaskForm } from "../Tasks/TaskForm";
-import { UserInfo } from "../User/UserInfo";
+import { UserInfo } from "../User/UserInfo/UserInfo";
 import type { TaskMode } from "../../context/ProjectsContext";
 import { useTasksActions } from "../../context/TasksContext";
 import { UserBtn } from "../User/UserBtn";
@@ -77,7 +77,7 @@ export function Sidebar({ collapsed }: { collapsed: boolean }) {
                 openForm={openForm}
                 formMode="create"
                 onClose={() => setOpenForm(false)}
-                onSubmit={async (data: any) => {
+                onSubmit={async (data: Record<string, unknown>) => {
                   await createTask(data);
                   setOpenForm(false);
                 }}

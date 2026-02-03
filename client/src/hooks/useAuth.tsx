@@ -17,7 +17,7 @@ export function useAuth() {
       try {
         const userData = await authApi.getMe();
         setUser(userData);
-      } catch (err) {
+      } catch {
         console.error("Session expired or invalid");
         localStorage.removeItem("token");
       } finally {
@@ -37,7 +37,7 @@ export function useAuth() {
     try {
       const fullUserData = await authApi.getMe();
       setUser(fullUserData);
-    } catch (err) {
+    } catch {
       console.warn("Could not fetch full user details, using basic info");
     }
   };

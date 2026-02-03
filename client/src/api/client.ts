@@ -1,11 +1,20 @@
 const BASE_URL = "https://task-manager-69wj.onrender.com/api";
 
-async function apiRequest<T>(endpoint: string, options: any = {}): Promise<T> {
+interface ApiRequestOptions extends Omit<RequestInit, "body"> {
+  body?: unknown;
+}
+
+async function apiRequest<T>(
+  endpoint: string,
+  options: ApiRequestOptions = {},
+): Promise<T> {
   const { body, ...customConfig } = options;
 
   const token = localStorage.getItem("token");
 
-  const headers: any = { "Content-Type": "application/json" };
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
@@ -28,7 +37,7 @@ async function apiRequest<T>(endpoint: string, options: any = {}): Promise<T> {
     try {
       const errorData = await response.json();
       errorMessage = errorData.error || errorData.message || errorMessage;
-    } catch (e) {
+    } catch {
       errorMessage = response.statusText;
     }
     throw new Error(errorMessage);
@@ -40,9 +49,9 @@ async function apiRequest<T>(endpoint: string, options: any = {}): Promise<T> {
 
 export const api = {
   get: <T>(url: string) => apiRequest<T>(url, { method: "GET" }),
-  post: <T>(url: string, body: any) =>
+  post: <T>(url: string, body: unknown) =>
     apiRequest<T>(url, { method: "POST", body }),
-  patch: <T>(url: string, body: any) =>
+  patch: <T>(url: string, body: unknown) =>
     apiRequest<T>(url, { method: "PATCH", body }),
   delete: <T>(url: string) => apiRequest<T>(url, { method: "DELETE" }),
 };

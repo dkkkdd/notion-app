@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useEffect } from "react";
+import { createContext, useMemo, useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
 import type { User } from "../types/user";
 
@@ -17,16 +17,14 @@ type AuthActions = {
   getMe: ReturnType<typeof useAuth>["getMe"];
 };
 
-const AuthStateContext = createContext<AuthState | null>(null);
-const AuthActionsContext = createContext<AuthActions | null>(null);
+export const AuthStateContext = createContext<AuthState | null>(null);
+export const AuthActionsContext = createContext<AuthActions | null>(null);
 
-export function AuthProvider({ children }: any) {
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      getMe();
-    }
-  }, []);
+interface AuthProviderProps {
+  children: React.ReactNode;
+}
+
+export function AuthProvider({ children }: AuthProviderProps) {
   const {
     user,
     loading,
@@ -48,13 +46,20 @@ export function AuthProvider({ children }: any) {
       updateUserInfo,
       getMe,
     }),
-    [loginUser, logoutUser, registerUser, deleteUser, updateUserInfo],
+    [loginUser, logoutUser, registerUser, deleteUser, updateUserInfo, getMe],
   );
 
   const state = useMemo(
     () => ({ user, loading, isAuthenticated }),
     [user, loading, isAuthenticated],
   );
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      getMe();
+    }
+  }, [getMe]);
 
   return (
     <AuthStateContext.Provider value={state}>
@@ -64,17 +69,3 @@ export function AuthProvider({ children }: any) {
     </AuthStateContext.Provider>
   );
 }
-
-export const useAuthState = () => {
-  const context = useContext(AuthStateContext);
-  if (!context)
-    throw new Error("useAuthState must be used within AuthProvider");
-  return context;
-};
-
-export const useAuthContext = () => {
-  const context = useContext(AuthActionsContext);
-  if (!context)
-    throw new Error("useAuthActions must be used within AuthProvider");
-  return context;
-};

@@ -64,7 +64,7 @@ export const GlobalDropdown = ({
   const currentDeadlineStr = task.deadline
     ? format(new Date(task.deadline), "yyyy-MM-dd")
     : null;
-  const dates = useMemo(() => generateDatePresets(), [t]);
+  const dates = useMemo(() => generateDatePresets(), []);
 
   if (!isOpen) return null;
 
@@ -72,6 +72,7 @@ export const GlobalDropdown = ({
     <FloatingPortal>
       <FloatingFocusManager context={context} modal={false}>
         <div
+          // eslint-disable-next-line react-hooks/refs
           ref={refs.setFloating}
           style={{
             ...floatingStyles,

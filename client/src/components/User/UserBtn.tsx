@@ -1,4 +1,4 @@
-import { useAuthState } from "../../context/AuthContext";
+import { useAuthState } from "../../context/AuthProvider";
 
 export const UserBtn = ({ onClick }: { onClick: () => void }) => {
   const { user } = useAuthState();

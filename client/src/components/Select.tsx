@@ -10,6 +10,7 @@ import {
   useClick,
   useDismiss,
   useRole,
+  size,
   useListNavigation,
   useTypeahead,
   FloatingPortal,
@@ -26,7 +27,7 @@ interface SelectProps {
   symbol?: string;
   value: string | number | null;
   options: Option[];
-  onChange: (v: any) => void;
+  onChange: (value: string | number | null) => void;
   placeholder?: string;
   border?: boolean;
   mobile?: boolean;
@@ -44,16 +45,6 @@ export function Select({
   position,
 }: SelectProps) {
   const [open, setOpen] = useState(false);
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const listItemsRef = useRef<(HTMLLIElement | null)[]>([]);
-
-  const labels = useMemo(() => options.map((o) => o.label), [options]);
-  const labelsRef = useRef(labels);
-
-  useEffect(() => {
-    labelsRef.current = labels;
-  }, [labels]);
-
   const { refs, floatingStyles, context } = useFloating({
     open,
     onOpenChange: setOpen,
@@ -63,8 +54,24 @@ export function Select({
       offset(5),
       flip({ fallbackPlacements: ["top-start", "bottom-end"] }),
       shift({ padding: 10 }),
+      size({
+        apply({ rects, elements }) {
+          Object.assign(elements.floating.style, {
+            width: `${rects.reference.width}px`,
+          });
+        },
+      }),
     ],
   });
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const listItemsRef = useRef<(HTMLLIElement | null)[]>([]);
+
+  const labels = useMemo(() => options.map((o) => o.label), [options]);
+  const labelsRef = useRef(labels);
+
+  useEffect(() => {
+    labelsRef.current = labels;
+  }, [labels]);
 
   const selectedIndex = options.findIndex((o) => o.value === value);
 
@@ -173,10 +180,11 @@ export function Select({
       {open && (
         <FloatingPortal>
           <ul
+            // eslint-disable-next-line react-hooks/refs
             ref={refs.setFloating}
             style={{
               ...floatingStyles,
-              width: refs.domReference.current?.clientWidth,
+
               zIndex: 9999,
             }}
             {...getFloatingProps()}

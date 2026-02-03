@@ -3,8 +3,9 @@ import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { registerLocale } from "react-datepicker";
 import { ru, enUS, uk, es, de, pl, fr } from "date-fns/locale";
+import type { Locale } from "react-day-picker";
 
-export const localeMap: Record<string, any> = {
+export const localeMap: Record<string, Locale> = {
   en: enUS,
   ru: ru,
   uk: uk,

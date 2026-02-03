@@ -1,8 +1,17 @@
 import { api } from "./client";
 import type { Task } from "../types/tasks";
 
+type FetchTasksParams = {
+  projectId?: string | null;
+  sectionId?: string | null;
+  parentId?: string | null;
+  isDone?: boolean;
+  deadline?: string;
+  userId?: string;
+};
+
 export const tasksApi = {
-  fetchTasks: (params?: Record<string, any>) => {
+  fetchTasks: (params?: FetchTasksParams) => {
     const query = new URLSearchParams();
 
     if (params) {
@@ -15,41 +24,27 @@ export const tasksApi = {
 
     return api.get<Task[]>(`/tasks?${query.toString()}`);
   },
+  createTask: (data: Partial<Task>) => api.post<Task>("/tasks", data),
 
-  createTask: (data: {
-    title: string;
-    userId: string;
-    order: number;
-    sectionId?: string | null;
-    projectId?: string | null;
-    parentId?: string | null;
-    priority?: number;
-    deadline?: string | Date | null;
-    comment?: string | null;
-    reminderAt?: string | null;
-  }) => api.post<Task>("/tasks", data),
+  updateInfo: (id: string, data: Partial<Task>) =>
+    api.patch<Task>(`/tasks/${id}`, data),
 
+  updateStatus: (id: string, isDone: boolean) =>
+    api.patch<Task>(`/tasks/${id}/status`, { isDone }),
+
+  deleteTask: (id: string) => api.delete(`/tasks/${id}`),
   fetchTodayTasks: () => {
     const today = new Date().toISOString().split("T")[0];
     return tasksApi.fetchTasks({ deadline: today, isDone: false });
   },
 
   fetchAllCompleted: () => tasksApi.fetchTasks({ isDone: true }),
-  fetchProjectTasks: (projectId: string, showCompleted: boolean = false) => {
-    const params: any = { projectId };
-    if (!showCompleted) {
-      params.isDone = false;
-    }
-    return tasksApi.fetchTasks(params);
-  },
 
-  updateStatus: (id: string, isDone: boolean) =>
-    api.patch<Task>(`/tasks/${id}`, { isDone }),
-
-  updateInfo: (id: string, data: Partial<Task>) =>
-    api.patch<Task>(`/tasks/${id}`, data),
-
-  deleteTask: (id: string) => api.delete(`/tasks/${id}`),
+  fetchProjectTasks: (projectId: string, showCompleted = false) =>
+    tasksApi.fetchTasks({
+      projectId,
+      ...(showCompleted ? {} : { isDone: false }),
+    }),
 
   fetchInboxTasks: () => tasksApi.fetchTasks({ projectId: null }),
 };

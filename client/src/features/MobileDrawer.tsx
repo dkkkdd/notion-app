@@ -25,7 +25,7 @@ export function MobileDrawer({
           data-drawer-content
           className="
             fixed inset-x-0 bottom-0 z-[999]
-            bg-white dark:bg-[#1c1c1e]
+            bg-white dark:bg-[#1f1f1f]
             rounded-t-[32px]
             max-h-[90dvh]
             flex flex-col

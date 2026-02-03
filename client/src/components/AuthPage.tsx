@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
-import { useAuthContext } from "../context/AuthContext";
+import { useAuthActions } from "../context/AuthProvider";
 import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import img from "../../src/assets/form.png";
@@ -24,7 +24,7 @@ export const AuthPage = ({ isLoginMode }: AuthPageProps) => {
   } | null;
 
   const from = locationState?.from?.pathname || searchParams.get("from") || "/";
-  const { loginUser, registerUser } = useAuthContext();
+  const { loginUser, registerUser } = useAuthActions();
   const [confirmPassword, setConfirmPassword] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -88,11 +88,12 @@ export const AuthPage = ({ isLoginMode }: AuthPageProps) => {
           }
 
           navigate(from, { replace: true });
-        } catch (err: any) {
+        } catch (err) {
+          const error = err as Error;
           const message =
-            err.message === "Incorrect password or email"
+            error.message === "Incorrect password or email"
               ? t("auth_error_invalid")
-              : err.message || t("connection_error");
+              : error.message || t("connection_error");
 
           setError(message);
         }
@@ -108,6 +109,7 @@ export const AuthPage = ({ isLoginMode }: AuthPageProps) => {
       registerUser,
       navigate,
       from,
+      t,
     ],
   );
 
