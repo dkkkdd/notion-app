@@ -1,10 +1,14 @@
 import { Request, Response } from "express";
 import { prisma } from "../prisma";
 
-export async function createSection(req: any, res: Response) {
+interface AuthenticatedRequest extends Request {
+  userId?: string;
+}
+
+export async function createSection(req: AuthenticatedRequest, res: Response) {
   try {
     const { title, projectId, order } = req.body;
-    const userId = req.userId;
+    const userId = req.userId as string;
 
     const project = await prisma.project.findFirst({
       where: { id: projectId, userId },
@@ -22,15 +26,17 @@ export async function createSection(req: any, res: Response) {
     });
 
     res.status(201).json(section);
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    res.status(500).json({ error: errorMessage });
   }
 }
 
-export async function updateSection(req: any, res: Response) {
+export async function updateSection(req: AuthenticatedRequest, res: Response) {
   const { id } = req.params;
   const { title, order } = req.body;
-  const userId = req.userId;
+  const userId = req.userId as string;
   try {
     const section = await prisma.section.updateMany({
       where: { id: String(id), project: { userId } },
@@ -45,7 +51,7 @@ export async function updateSection(req: any, res: Response) {
   }
 }
 
-export async function deleteSection(req: any, res: Response) {
+export async function deleteSection(req: AuthenticatedRequest, res: Response) {
   const { id } = req.params;
   const userId = req.userId;
   await prisma.section.deleteMany({

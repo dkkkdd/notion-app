@@ -5,6 +5,7 @@ import {
   deleteAcc,
   getMe,
   updateMe,
+  logout,
 } from "../controllers/auth.controller";
 import { authMiddleware } from "../middleware/auth";
 
@@ -14,6 +15,7 @@ router.get("/me", authMiddleware, getMe);
 router.post("/register", register);
 router.patch("/me", authMiddleware, updateMe);
 router.post("/login", login);
+router.post("/logout", logout);
 router.delete("/me", authMiddleware, deleteAcc);
 
 export default router;

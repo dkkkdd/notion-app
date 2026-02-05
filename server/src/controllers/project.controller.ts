@@ -1,8 +1,12 @@
 import { Request, Response } from "express";
 import { prisma } from "../prisma";
 
-export async function getProjects(req: any, res: Response) {
-  const userId = req.userId;
+interface AuthenticatedRequest extends Request {
+  userId?: string;
+}
+
+export async function getProjects(req: AuthenticatedRequest, res: Response) {
+  const userId = req.userId as string;
 
   const projects = await prisma.project.findMany({
     where: { userId },
@@ -18,7 +22,10 @@ export async function getProjects(req: any, res: Response) {
   res.json(projects);
 }
 
-export async function getProjectBoard(req: any, res: Response) {
+export async function getProjectBoard(
+  req: AuthenticatedRequest,
+  res: Response,
+) {
   const { id } = req.params;
   const userId = req.userId;
   try {
@@ -63,9 +70,9 @@ export async function getProjectBoard(req: any, res: Response) {
   }
 }
 
-export async function createProject(req: any, res: Response) {
+export async function createProject(req: AuthenticatedRequest, res: Response) {
   const { title, color, favorites, order } = req.body;
-  const userId = req.userId;
+  const userId = req.userId as string;
   if (!title) {
     return res.status(400).json({ error: "title is required" });
   }
@@ -83,7 +90,7 @@ export async function createProject(req: any, res: Response) {
   res.status(201).json(project);
 }
 
-export async function updateProject(req: any, res: Response) {
+export async function updateProject(req: AuthenticatedRequest, res: Response) {
   const { id } = req.params;
   const userId = req.userId;
 
@@ -109,7 +116,7 @@ export async function updateProject(req: any, res: Response) {
   }
 }
 
-export async function deleteProject(req: any, res: Response) {
+export async function deleteProject(req: AuthenticatedRequest, res: Response) {
   const { id } = req.params;
   const userId = req.userId;
 

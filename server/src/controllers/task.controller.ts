@@ -1,9 +1,14 @@
 import { Request, Response } from "express";
 import { prisma } from "../prisma";
 
-export async function getTasks(req: any, res: Response) {
+interface AuthenticatedRequest extends Request {
+  userId?: string;
+}
+
+export async function getTasks(req: AuthenticatedRequest, res: Response) {
   const { projectId, isDone } = req.query;
-  const userId = req.userId;
+  const userId = req.userId as string;
+  const projectIdString = Array.isArray(projectId) ? projectId[0] : projectId;
 
   const isDoneFilter =
     isDone === "true" ? true : isDone === "false" ? false : undefined;
@@ -12,7 +17,8 @@ export async function getTasks(req: any, res: Response) {
     where: {
       userId,
       parentId: null,
-      projectId: projectId === "null" ? null : projectId || undefined,
+      projectId:
+        projectIdString === "null" ? null : projectIdString || undefined,
       isDone: isDoneFilter ?? undefined,
     },
     include: {
@@ -29,10 +35,11 @@ export async function getTasks(req: any, res: Response) {
   res.json(tasks);
 }
 
-export async function updateTask(req: any, res: Response) {
+export async function updateTask(req: AuthenticatedRequest, res: Response) {
   const { id } = req.params;
+  const idString = typeof id === "string" ? id : id?.[0];
   const data = req.body;
-  const userId = req.userId;
+  const userId = req.userId as string;
 
   delete data.userId;
   delete data.id;
@@ -42,7 +49,7 @@ export async function updateTask(req: any, res: Response) {
 
   try {
     await prisma.task.updateMany({
-      where: { id, userId },
+      where: { id: idString, userId },
       data: {
         ...data,
         ...(data.isDone !== undefined && {
@@ -52,7 +59,7 @@ export async function updateTask(req: any, res: Response) {
     });
 
     const updatedTask = await prisma.task.findUnique({
-      where: { id },
+      where: { id: idString },
       include: { subtasks: true },
     });
 
@@ -62,7 +69,7 @@ export async function updateTask(req: any, res: Response) {
   }
 }
 
-export async function createTask(req: any, res: Response) {
+export async function createTask(req: AuthenticatedRequest, res: Response) {
   try {
     const {
       title,
@@ -76,7 +83,7 @@ export async function createTask(req: any, res: Response) {
       reminderAt,
     } = req.body;
 
-    const userId = req.userId;
+    const userId = req.userId as string;
     if (!title) {
       return res.status(400).json({ error: "title is required" });
     }
@@ -97,17 +104,20 @@ export async function createTask(req: any, res: Response) {
     });
 
     res.status(201).json(task);
-  } catch (error: any) {
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
     console.error("ОШИБКА PRISMA:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: errorMessage });
   }
 }
 
-export async function deleteTask(req: any, res: Response) {
+export async function deleteTask(req: AuthenticatedRequest, res: Response) {
   const { id } = req.params;
-  const userId = req.userId;
+  const idString = typeof id === "string" ? id : id?.[0];
+  const userId = req.userId as string;
   try {
-    await prisma.task.deleteMany({ where: { id, userId } });
+    await prisma.task.deleteMany({ where: { id: idString, userId } });
     res.status(204).send();
   } catch (e) {
     res.status(404).json({ error: "Task not found" });

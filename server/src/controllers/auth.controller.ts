@@ -5,6 +5,20 @@ import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "super-secret-key";
 
+function setAuthCookie(res: Response, token: string) {
+  res.cookie("accessToken", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    path: "/",
+  });
+}
+
+interface AuthenticatedRequest extends Request {
+  userId?: string;
+}
+
 export async function register(req: Request, res: Response) {
   const { userName, email, password } = req.body;
   const existingUser = await prisma.user.findUnique({
@@ -33,8 +47,9 @@ export async function register(req: Request, res: Response) {
     });
 
     const token = jwt.sign({ userId: user.id }, JWT_SECRET);
+    setAuthCookie(res, token);
+
     res.status(201).json({
-      token,
       user: {
         id: user.id,
         email: user.email,
@@ -48,7 +63,7 @@ export async function register(req: Request, res: Response) {
   }
 }
 
-export async function getMe(req: any, res: Response) {
+export async function getMe(req: AuthenticatedRequest, res: Response) {
   const userId = req.userId;
 
   try {
@@ -78,7 +93,7 @@ export async function getMe(req: any, res: Response) {
   }
 }
 
-export async function updateMe(req: any, res: Response) {
+export async function updateMe(req: AuthenticatedRequest, res: Response) {
   const userId = req.userId;
   const { userName, email } = req.body;
 
@@ -98,8 +113,9 @@ export async function updateMe(req: any, res: Response) {
     });
 
     res.json(user);
-  } catch (error: any) {
-    if (error.code === "P2002") {
+  } catch (error) {
+    const e = error as { code?: string; message?: string };
+    if (e.code === "P2002") {
       return res.status(400).json({ error: "Этот email уже занят" });
     }
     res.status(500).json({ error: "Internal server error" });
@@ -133,8 +149,9 @@ export async function login(req: Request, res: Response) {
     }
 
     const token = jwt.sign({ userId: user.id }, JWT_SECRET);
+    setAuthCookie(res, token);
+
     res.json({
-      token,
       user: {
         id: user.id,
         email: user.email,
@@ -148,7 +165,7 @@ export async function login(req: Request, res: Response) {
   }
 }
 
-export async function deleteAcc(req: any, res: Response) {
+export async function deleteAcc(req: AuthenticatedRequest, res: Response) {
   const userId = req.userId;
 
   try {
@@ -161,4 +178,14 @@ export async function deleteAcc(req: any, res: Response) {
     console.error("Delete Acc Error:", error);
     res.status(500).json({ error: "Failed to delete account" });
   }
+}
+
+export async function logout(req: Request, res: Response) {
+  res.clearCookie("accessToken", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+  });
+  res.sendStatus(200);
 }
