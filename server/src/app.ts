@@ -9,12 +9,13 @@ import cookieParser from "cookie-parser";
 
 export const app = express();
 app.set("trust proxy", 1);
-app.options("*", cors());
 
 app.use(
   cors({
-    origin: "https://task-managera.onrender.com",
+    origin: ["https://task-managera.onrender.com", "http://localhost:5173"],
     credentials: true,
+    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
 app.use(cookieParser());
