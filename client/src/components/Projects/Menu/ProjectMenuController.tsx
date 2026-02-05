@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { useProjectsContext } from "../../../context/ProjectsContext";
+import type { Project } from "@/types/project";
 import { useTranslation } from "react-i18next";
-import { ModalPortal } from "../../../features/ModalPortal";
-import { ConfirmModal } from "../../ConfirmModal";
-import { ProjectForm } from "../ProjectForm";
-import { ProjectMenu } from "./ProjectMenu";
-import type { Project } from "../../../types/project";
+import { useProjectsContext } from "@/context/ProjectsContext";
+import { ModalPortal } from "@/features/ModalPortal";
+import { ConfirmModal } from "@/components/ConfirmModal";
+import { ProjectForm } from "@/components/Projects/ProjectForm";
+import { ProjectMenu } from "@/components/Projects/Menu/ProjectMenu";
 
 type MenuState = {
   anchor: HTMLElement | null;

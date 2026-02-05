@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo } from "react";
-import { useTasks } from "../hooks/useTasks";
-import { useAuth } from "../hooks/useAuth";
+import { useTasks } from "@/hooks/useTasks";
+import { useAuth } from "@/hooks/useAuth";
 
 type UseTasksReturn = ReturnType<typeof useTasks>;
 interface TasksState {

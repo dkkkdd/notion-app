@@ -1,6 +1,6 @@
 import { useEffect, useState, useTransition } from "react";
-import type { Task } from "../types/tasks";
-import { tasksApi } from "../api/tasks";
+import type { Task } from "@/types/tasks";
+import { tasksApi } from "@/api/tasks";
 
 const sortTasks = (list: Task[]): Task[] => {
   return [...list]

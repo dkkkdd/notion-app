@@ -1,19 +1,19 @@
 import { useState, useCallback, useMemo, Fragment } from "react";
 import { Trans, useTranslation } from "react-i18next";
-import { useTasksActions, useTasksState } from "../../context/TasksContext";
-import { useProjectsContext } from "../../context/ProjectsContext";
-import { useFilteredTasks } from "../../hooks/useFilteredTasks";
-import { useTaskSelection } from "../../hooks/useTaskSelection";
-import { useIsMobile } from "../../hooks/useIsMobile";
-import type { Task } from "../../types/tasks";
-import { TaskForm } from "./TaskForm";
-import { TaskCard } from "./TaskCard";
-import { ConfirmModal } from "../ConfirmModal";
-import { AddTaskBtn } from "../AddTaskBtn";
-import { EmptyState } from "../EmptyPage";
-import { Selector } from "../Selector";
-import { TaskListMenu } from "./TaskListMenu";
-import { TaskSkeleton } from "./TaskSkeleton";
+import type { Task } from "@/types/tasks";
+import { useTasksActions, useTasksState } from "@/context/TasksContext";
+import { useProjectsContext } from "@/context/ProjectsContext";
+import { useFilteredTasks } from "@/hooks/useFilteredTasks";
+import { useTaskSelection } from "@/hooks/useTaskSelection";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { TaskForm } from "@/components/Tasks/TaskForm";
+import { TaskCard } from "@/components/Tasks/TaskCard";
+import { ConfirmModal } from "@/components/ConfirmModal";
+import { AddTaskBtn } from "@/components/AddTaskBtn";
+import { EmptyState } from "@/components/EmptyPage";
+import { Selector } from "@/components/Selector";
+import { TaskListMenu } from "@/components/Tasks/TaskListMenu";
+import { TaskSkeleton } from "@/components/Tasks/TaskSkeleton";
 
 export const TaskList = () => {
   const isMobile = useIsMobile();

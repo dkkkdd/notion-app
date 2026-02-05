@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   useFloating,
   autoUpdate,
@@ -9,9 +10,8 @@ import {
   useInteractions,
 } from "@floating-ui/react";
 import { FloatingFocusManager, FloatingPortal } from "@floating-ui/react";
-import { UpdateUserInfoForm } from "./UpdateUserForm";
-import type { UpdateUserInfoProps } from "../../../types/updateUserInfo";
-import { useEffect } from "react";
+import type { UpdateUserInfoProps } from "@/types/updateUserInfo";
+import { UpdateUserInfoForm } from "@/components/User/UpdateUserInfo/UpdateUserForm";
 
 export const UpdateUserInfoDesktop = ({
   isOpen,

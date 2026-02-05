@@ -1,7 +1,7 @@
 import { useState } from "react";
-import type { Project } from "../../types/project";
-import { ProjectItem } from "./ProjectCard";
-import { ProjectMenuController } from "./Menu/ProjectMenuController";
+import type { Project } from "@/types/project";
+import { ProjectItem } from "@/components/Projects/ProjectCard";
+import { ProjectMenuController } from "@/components/Projects/Menu/ProjectMenuController";
 
 export function ProjectsList({ projects }: { projects: Project[] }) {
   const [menu, setMenu] = useState<{

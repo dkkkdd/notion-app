@@ -1,5 +1,5 @@
-import { api } from "./client";
-import type { Task } from "../types/tasks";
+import { api } from "@/api//client";
+import type { Task } from "@/types/tasks";
 
 type FetchTasksParams = {
   projectId?: string | null;
@@ -30,7 +30,7 @@ export const tasksApi = {
     api.patch<Task>(`/tasks/${id}`, data),
 
   updateStatus: (id: string, isDone: boolean) =>
-    api.patch<Task>(`/tasks/${id}/status`, { isDone }),
+    api.patch<Task>(`/tasks/${id}`, { isDone }),
 
   deleteTask: (id: string) => api.delete(`/tasks/${id}`),
   fetchTodayTasks: () => {

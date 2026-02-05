@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
-import type { User } from "../types/user";
-import { authApi } from "../api/auth";
+import type { User } from "@/types/user";
+import { authApi } from "@/api/auth";
+type UpdateMeDto = {
+  userName?: string;
+  email?: string;
+};
 
 export function useAuth() {
   const [loading, setLoading] = useState(true);
@@ -8,18 +12,11 @@ export function useAuth() {
 
   useEffect(() => {
     const initAuth = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setLoading(false);
-        return;
-      }
-
       try {
         const userData = await authApi.getMe();
         setUser(userData);
       } catch {
-        console.error("Session expired or invalid");
-        localStorage.removeItem("token");
+        setUser(null);
       } finally {
         setLoading(false);
       }
@@ -29,17 +26,8 @@ export function useAuth() {
   }, []);
 
   const login = async (data: { email: string; password: string }) => {
-    const { token, user: initialUser } = await authApi.login(data);
-
-    localStorage.setItem("token", token);
-    setUser(initialUser);
-
-    try {
-      const fullUserData = await authApi.getMe();
-      setUser(fullUserData);
-    } catch {
-      console.warn("Could not fetch full user details, using basic info");
-    }
+    const { user } = await authApi.login(data);
+    setUser(user);
   };
 
   const register = async (data: {
@@ -47,43 +35,34 @@ export function useAuth() {
     email: string;
     password: string;
   }) => {
-    const { token, user } = await authApi.register(data);
-    localStorage.setItem("token", token);
+    const { user } = await authApi.register(data);
     setUser(user);
   };
 
   const logout = async () => {
-    localStorage.removeItem("token");
+    await authApi.logout();
     setUser(null);
   };
 
   const remove = async () => {
-    try {
-      await authApi.deleteMe();
-    } catch (err) {
-      console.error(err);
-    } finally {
-      logout();
-    }
+    await authApi.deleteMe();
+    await logout();
   };
 
-  const update = async (data: Partial<User>) => {
-    const oldInfo = user;
+  const update = async (data: UpdateMeDto) => {
+    const oldUser = user;
 
-    if (user) {
-      setUser({ ...user, ...data });
-    }
+    if (user) setUser({ ...user, ...data });
 
     try {
-      const newInfo = await authApi.updateMe(data);
-
-      setUser((prev) => (prev ? { ...prev, ...newInfo } : newInfo));
+      const updatedUser = await authApi.updateMe(data);
+      setUser(updatedUser);
     } catch (err) {
-      setUser(oldInfo);
-      console.error("Update failed", err);
+      setUser(oldUser);
       throw err;
     }
   };
+
   const getMe = async () => {
     try {
       const userData = await authApi.getMe();

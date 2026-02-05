@@ -10,11 +10,11 @@ import {
   FloatingPortal,
   FloatingFocusManager,
 } from "@floating-ui/react";
-import { useProjectsContext } from "../../../context/ProjectsContext";
-import { Select } from "../../Select";
 import { useTranslation } from "react-i18next";
-import { MenuItem } from "../../ui/MenuItem";
-import { FILTER_OPTIONS } from "../../../utils/dateFormatters";
+import { useProjectsContext } from "@/context/ProjectsContext";
+import { Select } from "@/components/Select";
+import { MenuItem } from "@/components/ui/MenuItem";
+import { FILTER_OPTIONS } from "@/utils/dateFormatters";
 
 interface ProjectMenuProps {
   anchorEl: HTMLElement | null;

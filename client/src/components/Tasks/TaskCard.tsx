@@ -1,17 +1,17 @@
 import React, { memo, useCallback, useState, useMemo } from "react";
-import type { Task } from "../../types/tasks";
-import { useTasksActions } from "../../context/TasksContext";
-import { PRIORITY_OPTIONS } from "../../utils/priorities";
-import { GlobalDropdown } from "./TaskMenu";
-import { formatDateLabel, dateColor } from "../../utils/dateFormatters";
-import { useProjectsContext } from "../../context/ProjectsContext";
-import { TaskInfo } from "./TaskInfo";
-import { ModalPortal } from "../../features/ModalPortal";
 import { format } from "date-fns";
-import { TaskCheckbox } from "./TaskCheckbox";
-import { TaskMetadata } from "./Taskmetadata";
-import { TaskActions } from "./Taskactions";
-import { SubtaskToggle } from "./Subtasktoggle";
+import type { Task } from "@/types/tasks";
+import { ModalPortal } from "@/features/ModalPortal";
+import { formatDateLabel, dateColor } from "@/utils/dateFormatters";
+import { PRIORITY_OPTIONS } from "@/utils/priorities";
+import { useTasksActions } from "@/context/TasksContext";
+import { GlobalDropdown } from "@/components/Tasks/TaskMenu";
+import { useProjectsContext } from "@/context/ProjectsContext";
+import { TaskInfo } from "@/components/Tasks/TaskInfo";
+import { TaskCheckbox } from "@/components/Tasks/TaskCheckbox";
+import { TaskMetadata } from "@/components/Tasks/Taskmetadata";
+import { TaskActions } from "@/components/Tasks/Taskactions";
+import { SubtaskToggle } from "@/components/Tasks/Subtasktoggle";
 
 interface TaskCardProps {
   task: Task;

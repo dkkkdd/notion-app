@@ -1,8 +1,8 @@
 import { useMemo } from "react";
-import { useTasksState } from "../context/TasksContext";
-import { useProjectsContext } from "../context/ProjectsContext";
-import type { Task } from "../types/tasks";
 import { isToday } from "date-fns";
+import type { Task } from "@/types/tasks";
+import { useTasksState } from "@/context/TasksContext";
+import { useProjectsContext } from "@/context/ProjectsContext";
 
 export function useFilteredTasks() {
   const { tasks, loading } = useTasksState();

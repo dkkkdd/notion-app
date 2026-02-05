@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import { useProjects } from "../hooks/useProjects";
+import { useProjects } from "@/hooks/useProjects";
 
 export type TaskMode =
   | "project"

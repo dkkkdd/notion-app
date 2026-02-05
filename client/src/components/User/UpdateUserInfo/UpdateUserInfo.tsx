@@ -1,7 +1,7 @@
-import { useIsMobile } from "../../../hooks/useIsMobile";
-import type { UpdateUserInfoProps } from "../../../types/updateUserInfo";
-import { UpdateUserInfoDesktop } from "./UpdateUserInfoDesktop";
-import { UpdateUserInfoMobile } from "./UpdateUserInfoMobile";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import type { UpdateUserInfoProps } from "@/types/updateUserInfo";
+import { UpdateUserInfoDesktop } from "@/components/User/UpdateUserInfo/UpdateUserInfoDesktop";
+import { UpdateUserInfoMobile } from "@/components/User/UpdateUserInfo/UpdateUserInfoMobile";
 
 export const UpdateUserInfo = (props: UpdateUserInfoProps) => {
   const isMobile = useIsMobile();
@@ -12,4 +12,3 @@ export const UpdateUserInfo = (props: UpdateUserInfoProps) => {
     <UpdateUserInfoDesktop {...props} />
   );
 };
-  

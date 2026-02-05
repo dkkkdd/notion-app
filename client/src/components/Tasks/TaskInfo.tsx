@@ -1,5 +1,5 @@
-import type { Project } from "../../types/project";
-import type { Task } from "../../types/tasks";
+import type { Project } from "@/types/project";
+import type { Task } from "@/types/tasks";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 import { enUS, uk, ru, es, fr, pl, de } from "date-fns/locale";

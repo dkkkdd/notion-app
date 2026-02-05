@@ -1,5 +1,5 @@
-import { UserInfoBase } from "./UserInfoBase";
-import type { UserInfoProps } from "../../../types/UserInfo";
+import type { UserInfoProps } from "@/types/UserInfo";
+import { UserInfoBase } from "@/components/User/UserInfo/UserInfoBase";
 
 export const UserInfoDesktop = (props: UserInfoProps) => {
   const { onClose, isOpen, isSubModalOpen } = props;

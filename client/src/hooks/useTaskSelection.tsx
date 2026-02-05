@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
-import type { Task } from "../types/tasks";
-import { useTasksActions } from "../context/TasksContext";
+import type { Task } from "@/types/tasks";
+import { useTasksActions } from "@/context/TasksContext";
 
 export function useTaskSelection(
   filteredTasks: Task[],

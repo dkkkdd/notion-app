@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   useFloating,
   autoUpdate,
@@ -11,14 +13,13 @@ import {
   FloatingFocusManager,
 } from "@floating-ui/react";
 import { format } from "date-fns";
-import { PRIORITY_OPTIONS } from "../../utils/priorities";
-import { useTasksActions } from "../../context/TasksContext";
-import { Calendar } from "../Calendar/Calendar";
-import { QuickBtn } from "../../utils/QuickBtn";
-import type { Task } from "../../types/tasks";
-import { useMemo } from "react";
-import { useTranslation } from "react-i18next";
-import { generateDatePresets } from "../../utils/dateFormatters";
+import type { Task } from "@/types/tasks";
+import { PRIORITY_OPTIONS } from "@/utils/priorities";
+import { generateDatePresets } from "@/utils/dateFormatters";
+import { QuickBtn } from "@/utils/QuickBtn";
+import { useTasksActions } from "@/context/TasksContext";
+import { Calendar } from "@/components/Calendar/Calendar";
+
 interface GlobalMenuProps {
   anchorEl: HTMLElement | null;
   isOpen: boolean;

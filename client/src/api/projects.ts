@@ -1,5 +1,5 @@
-import { api } from "./client";
-import type { Project } from "../types/project";
+import { api } from "@/api/client";
+import type { Project } from "@/types/project";
 
 export const projectsApi = {
   fetchProjects: () => api.get<Project[]>("/projects"),

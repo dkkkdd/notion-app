@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
-import { MobileDrawer } from "../../../features/MobileDrawer";
-import { UpdateUserInfoForm } from "./UpdateUserForm";
-import type { UpdateUserInfoProps } from "../../../types/updateUserInfo";
+import type { UpdateUserInfoProps } from "@/types/updateUserInfo";
+import { MobileDrawer } from "@/features/MobileDrawer";
+import { UpdateUserInfoForm } from "@/components/User/UpdateUserInfo/UpdateUserForm";
 
 export const UpdateUserInfoMobile = ({
   isOpen,

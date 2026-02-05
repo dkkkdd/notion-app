@@ -1,15 +1,15 @@
-import { useProjectsContext } from "../../context/ProjectsContext";
-import { FavoriteProjects } from "../Projects/FavoriteProjectsSection";
-import { ProjectsSection } from "../Projects/ProjectSection";
 import { useState } from "react";
-import { SidebarNavigation } from "./SidebarNavigation";
-import { ModalPortal } from "../../features/ModalPortal";
-import { AddTaskBtn } from "../AddTaskBtn";
-import { TaskForm } from "../Tasks/TaskForm";
-import { UserInfo } from "../User/UserInfo/UserInfo";
-import type { TaskMode } from "../../context/ProjectsContext";
-import { useTasksActions } from "../../context/TasksContext";
-import { UserBtn } from "../User/UserBtn";
+import { ModalPortal } from "@/features/ModalPortal";
+import { useProjectsContext } from "@/context/ProjectsContext";
+import { FavoriteProjects } from "@/components/Projects/FavoriteProjectsSection";
+import { ProjectsSection } from "@/components/Projects/ProjectSection";
+import { SidebarNavigation } from "@/components/Sidebar/SidebarNavigation";
+import { AddTaskBtn } from "@/components/AddTaskBtn";
+import { TaskForm } from "@/components/Tasks/TaskForm";
+import { UserInfo } from "@/components/User/UserInfo/UserInfo";
+import type { TaskMode } from "@/context/ProjectsContext";
+import { useTasksActions } from "@/context/TasksContext";
+import { UserBtn } from "@/components/User/UserBtn";
 
 const menuItems: { id: TaskMode; icon: string }[] = [
   { id: "inbox", icon: "icon-inbox" },

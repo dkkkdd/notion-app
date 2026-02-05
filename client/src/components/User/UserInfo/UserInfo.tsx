@@ -1,19 +1,19 @@
 import { useState, useRef, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { enUS } from "date-fns/locale";
-import { useAuthState, useAuthActions } from "../../../context/AuthProvider";
-import { useProjectsContext } from "../../../context/ProjectsContext";
-import { useTasksState } from "../../../context/TasksContext";
-import { useIsMobile } from "../../../hooks/useIsMobile";
-import { ConfirmModal } from "../../ConfirmModal";
-import { UpdateUserInfo } from "../UpdateUserInfo/UpdateUserInfo";
-import { ModalPortal } from "../../../features/ModalPortal";
-import { localeMap } from "../../../i18n";
-import { applyTheme } from "../../../utils/userSettings";
-import { UserInfoMobile } from "./UserInfoMobile";
-import { UserInfoDesktop } from "./UserInfoDesktop";
+import { localeMap } from "@/i18n";
 import { formatDistanceToNow } from "date-fns";
-import type { Task } from "../../../types/tasks";
+import { enUS } from "date-fns/locale";
+import type { Task } from "@/types/tasks";
+import { ModalPortal } from "@/features/ModalPortal";
+import { applyTheme } from "@/utils/userSettings";
+import { useAuthState, useAuthActions } from "@/context/AuthProvider";
+import { useProjectsContext } from "@/context/ProjectsContext";
+import { useTasksState } from "@/context/TasksContext";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { ConfirmModal } from "@/components/ConfirmModal";
+import { UpdateUserInfo } from "@/components/User/UpdateUserInfo/UpdateUserInfo";
+import { UserInfoMobile } from "@/components/User/UserInfo/UserInfoMobile";
+import { UserInfoDesktop } from "@/components/User/UserInfo/UserInfoDesktop";
 
 export const UserInfo = ({
   onClose,

@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import type { TaskMode } from "../../context/ProjectsContext";
+import type { TaskMode } from "@/context/ProjectsContext";
 
 interface SidebarNavigationProps {
   onChangeMode: (id: TaskMode, n: null) => void;

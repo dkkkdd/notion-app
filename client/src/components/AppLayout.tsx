@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { MobileMenu, Sidebar } from "./Sidebar/Sidebar";
 import { useTranslation } from "react-i18next";
-import { useProjectsContext } from "../context/ProjectsContext";
+import { MobileMenu, Sidebar } from "@/components/Sidebar/Sidebar";
+import { useProjectsContext } from "@/context/ProjectsContext";
 
 interface AppLayoutProps {
   children: React.ReactNode;

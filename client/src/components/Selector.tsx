@@ -1,12 +1,12 @@
-import { useTranslation } from "react-i18next";
 import { useState } from "react";
-import { Select } from "./Select";
-import { Calendar } from "./Calendar/Calendar";
-import { ConfirmModal } from "./ConfirmModal";
-import { PRIORITY_OPTIONS } from "../utils/priorities";
-import { useProjectsContext } from "../context/ProjectsContext";
-import { useTasksActions } from "../context/TasksContext";
-import { useIsMobile } from "../hooks/useIsMobile";
+import { useTranslation } from "react-i18next";
+import { PRIORITY_OPTIONS } from "@/utils/priorities";
+import { useProjectsContext } from "@/context/ProjectsContext";
+import { useTasksActions } from "@/context/TasksContext";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { Select } from "@/components/Select";
+import { Calendar } from "@/components/Calendar/Calendar";
+import { ConfirmModal } from "@/components/ConfirmModal";
 
 type SelectorProps = {
   visible: boolean;

@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from "react";
-import { ProjectsList } from "./ProjectsList";
-import { ProjectForm } from "./ProjectForm";
-import { useProjectsContext } from "../../context/ProjectsContext";
 import { useTranslation } from "react-i18next";
-import { ModalPortal } from "../../features/ModalPortal";
+import { ModalPortal } from "@/features/ModalPortal";
+import { ProjectsList } from "@/components/Projects/ProjectsList";
+import { ProjectForm } from "@/components/Projects/ProjectForm";
+import { useProjectsContext } from "@/context/ProjectsContext";
 
 export function ProjectsSection() {
   const { t } = useTranslation();

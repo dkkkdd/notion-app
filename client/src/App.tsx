@@ -5,18 +5,18 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
-import { useAuthState } from "../src/context/AuthProvider";
-import { AuthProvider } from "../src/context/AuthContext";
-import { ProjectsProvider } from "./context/ProjectsContext";
-import { TasksProvider } from "./context/TasksContext";
-import { AppLayout } from "./components/AppLayout";
-import { TaskList } from "./components/Tasks/TaskList";
-import { AuthPage } from "./components/AuthPage";
-import { useProjectsContext } from "./context/ProjectsContext";
 import { useEffect } from "react";
-import { applyTheme } from "./utils/userSettings";
 import { useTranslation } from "react-i18next";
-import { ProjectPage } from "./components/Projects/ProjectPage";
+import { applyTheme } from "@/utils/userSettings";
+import { useAuthState } from "@/context/AuthProvider";
+import { AuthProvider } from "@/context/AuthContext";
+import { ProjectsProvider } from "@/context/ProjectsContext";
+import { TasksProvider } from "@/context/TasksContext";
+import { useProjectsContext } from "./context/ProjectsContext";
+import { AppLayout } from "@/components/AppLayout";
+import { TaskList } from "@/components/Tasks/TaskList";
+import { AuthPage } from "@/components/AuthPage";
+import { ProjectPage } from "@/components/Projects/ProjectPage";
 
 function TasksWrapper({ children }: { children: React.ReactNode }) {
   const { mode, selectedProjectId } = useProjectsContext();

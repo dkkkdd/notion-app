@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useAuthActions, useAuthState } from "../../../context/AuthProvider";
-import { useIsMobile } from "../../../hooks/useIsMobile";
+import { useAuthActions, useAuthState } from "@/context/AuthProvider";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 export const UpdateUserInfoForm = ({ onClose }: { onClose: () => void }) => {
   const { t } = useTranslation();

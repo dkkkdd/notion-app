@@ -1,7 +1,7 @@
-import { ProjectsList } from "./ProjectsList";
-import { useTranslation } from "react-i18next";
 import { useState, useRef, useLayoutEffect, useMemo } from "react";
-import { useProjectsContext } from "../../context/ProjectsContext";
+import { useTranslation } from "react-i18next";
+import { useProjectsContext } from "@/context/ProjectsContext";
+import { ProjectsList } from "@/components/Projects/ProjectsList";
 
 export const FavoriteProjects = () => {
   const { t } = useTranslation();

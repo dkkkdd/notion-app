@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { QuickBtn } from "../../utils/QuickBtn";
+import { QuickBtn } from "@/utils/QuickBtn";
 
 interface QuickDateButtonsProps {
   dates: {

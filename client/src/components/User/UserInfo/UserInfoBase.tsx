@@ -1,9 +1,10 @@
-import { useTranslation } from "react-i18next";
-import { useAuthState } from "../../../context/AuthProvider";
-import { Select } from "../../Select";
-import { THEME_OPTIONS, LANG_OPTIONS } from "../../../utils/userSettings";
-import type { UserInfoBaseProps } from "../../../types/UserInfo";
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+import type { UserInfoBaseProps } from "@/types/UserInfo";
+import { THEME_OPTIONS, LANG_OPTIONS } from "@/utils/userSettings";
+import { useAuthState } from "@/context/AuthProvider";
+import { Select } from "@/components/Select";
+
 export const UserInfoBase = ({
   anchorRef,
   setOpenConfirm,

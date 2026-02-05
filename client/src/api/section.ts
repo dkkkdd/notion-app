@@ -1,7 +1,7 @@
-import { api } from "./client";
-import type { Section } from "../types/section";
-import { tasksApi } from "./tasks";
-import type { Task } from "../types/tasks";
+import { api } from "@/api/client";
+import type { Section } from "@/types/section";
+import { tasksApi } from "@/api/tasks";
+import type { Task } from "@/types/tasks";
 
 export const SectionApi = {
   createSection: (data: {

@@ -1,10 +1,10 @@
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
 import type { TFunction } from "i18next";
-import { Calendar } from "../Calendar/Calendar";
-import { formatFullDate } from "../../utils/dateFormatters";
-import { useTranslation } from "react-i18next";
-import type { Project } from "../../types/project";
+import type { Project } from "@/types/project";
+import { formatFullDate } from "@/utils/dateFormatters";
+import { Calendar } from "@/components/Calendar/Calendar";
 
 interface TaskMetadataProps {
   deadline?: string | null;

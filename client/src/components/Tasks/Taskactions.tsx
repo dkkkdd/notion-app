@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { Calendar } from "../Calendar/Calendar";
+import { Calendar } from "@/components/Calendar/Calendar";
 
 interface TaskActionsProps {
   isSelectionMode?: boolean;

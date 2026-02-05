@@ -1,6 +1,6 @@
-import { MobileDrawer } from "../../../features/MobileDrawer";
-import { UserInfoBase } from "./UserInfoBase";
-import type { UserInfoProps } from "../../../types/UserInfo";
+import type { UserInfoProps } from "@/types/UserInfo";
+import { MobileDrawer } from "@/features/MobileDrawer";
+import { UserInfoBase } from "@/components/User/UserInfo/UserInfoBase";
 
 export const UserInfoMobile = ({ ...props }: UserInfoProps) => {
   return (

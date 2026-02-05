@@ -1,17 +1,17 @@
 import { useState, useEffect, useRef } from "react";
-import type { Task } from "../../types/tasks";
-import { useIsMobile } from "../../hooks/useIsMobile";
-import { useProjectsContext } from "../../context/ProjectsContext";
-import { Select } from "../Select";
-import { Calendar } from "../Calendar/Calendar";
-import { PRIORITY_OPTIONS } from "../../utils/priorities";
 import TextareaAutosize from "react-textarea-autosize";
-import { MobileDrawer } from "../../features/MobileDrawer";
-import { format } from "date-fns";
 import { Trans, useTranslation } from "react-i18next";
-import { useTasksActions } from "../../context/TasksContext";
-import { ConfirmModal } from "../ConfirmModal";
-import { TaskCard } from "./TaskCard";
+import { format } from "date-fns";
+import type { Task } from "@/types/tasks";
+import { PRIORITY_OPTIONS } from "@/utils/priorities";
+import { MobileDrawer } from "@/features/MobileDrawer";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useProjectsContext } from "@/context/ProjectsContext";
+import { Select } from "@/components/Select";
+import { Calendar } from "@/components/Calendar/Calendar";
+import { useTasksActions } from "@/context/TasksContext";
+import { ConfirmModal } from "@/components/ConfirmModal";
+import { TaskCard } from "@/components/Tasks/TaskCard";
 
 export interface TaskFormProps {
   formMode: "create" | "edit";

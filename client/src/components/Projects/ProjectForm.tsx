@@ -1,10 +1,10 @@
 import { useRef, useState } from "react";
-import type { Project } from "../../types/project";
-import { MobileDrawer } from "../../features/MobileDrawer";
-import { OPTIONS } from "../../utils/projectColor";
 import { useTranslation } from "react-i18next";
-import { Select, type Option } from "../Select";
-import { useIsMobile } from "../../hooks/useIsMobile";
+import type { Project } from "@/types/project";
+import { MobileDrawer } from "@/features/MobileDrawer";
+import { OPTIONS } from "@/utils/projectColor";
+import { Select, type Option } from "@/components/Select";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 export interface ProjectFormProps {
   mode: "create" | "edit";

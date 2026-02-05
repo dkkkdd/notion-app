@@ -5,10 +5,10 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
-import { useAuthActions } from "../context/AuthProvider";
 import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import img from "../../src/assets/form.png";
+import { useAuthActions } from "@/context/AuthProvider";
+import img from "@/assets/form.png";
 
 interface AuthPageProps {
   isLoginMode: boolean;

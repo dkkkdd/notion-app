@@ -1,8 +1,8 @@
-import { useProjectsContext } from "../../context/ProjectsContext";
-import type { Project } from "../../types/project";
 import { useCallback, useRef } from "react";
-import { useTasksState } from "../../context/TasksContext";
-import type { Task } from "../../types/tasks";
+import type { Task } from "@/types/tasks";
+import type { Project } from "@/types/project";
+import { useProjectsContext } from "@/context/ProjectsContext";
+import { useTasksState } from "@/context/TasksContext";
 
 interface ProjectCardProps {
   project: Project;

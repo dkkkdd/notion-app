@@ -1,4 +1,5 @@
-const BASE_URL = "https://task-manager-69wj.onrender.com/api";
+const BASE_URL = import.meta.env.VITE_API_URL;
+console.log("API URL:", BASE_URL);
 
 interface ApiRequestOptions extends Omit<RequestInit, "body"> {
   body?: unknown;
@@ -10,14 +11,9 @@ async function apiRequest<T>(
 ): Promise<T> {
   const { body, ...customConfig } = options;
 
-  const token = localStorage.getItem("token");
-
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
-  }
 
   const config: RequestInit = {
     ...customConfig,
@@ -26,12 +22,11 @@ async function apiRequest<T>(
 
   if (body) config.body = JSON.stringify(body);
 
-  const response = await fetch(`${BASE_URL}${endpoint}`, config);
+  const response = await fetch(`${BASE_URL}${endpoint}`, {
+    ...config,
+    credentials: "include",
+  });
 
-  if (response.status === 401) {
-    localStorage.removeItem("token");
-    throw new Error("Incorrect password or email");
-  }
   if (!response.ok) {
     let errorMessage = "Something went wrong";
     try {
