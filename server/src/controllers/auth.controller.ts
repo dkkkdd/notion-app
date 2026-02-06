@@ -187,5 +187,5 @@ export async function logout(req: Request, res: Response) {
     sameSite: "none",
     path: "/",
   });
-  res.sendStatus(200);
+  res.status(200).json({ message: "Logged out successfully" });
 }

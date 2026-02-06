@@ -12,7 +12,10 @@ app.set("trust proxy", 1);
 
 app.use(
   cors({
-    origin: ["https://task-managera.onrender.com", "http://localhost:5173"],
+    origin: [
+      "https://task-managera.onrender.com",
+      " http://192.168.0.100:5173/",
+    ],
     credentials: true,
     methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
