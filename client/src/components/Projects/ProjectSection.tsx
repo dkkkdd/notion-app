@@ -23,7 +23,7 @@ export function ProjectsSection() {
   return (
     <div className="py-2 z-999">
       <div className="flex items-center justify-between mb-1 px-2">
-        <div className="text-gray-500 ">{t("projects_count")}</div>
+        <div className="text-gray-500">{t("projects_count")}</div>
 
         <div className="flex items-center gap-1">
           <div

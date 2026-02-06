@@ -27,7 +27,8 @@ export function ProjectItem({
   );
   const color = project.color;
   const { tasks } = useTasksState();
-  const projectTasks = tasks.filter(
+  const safeTasks = tasks === null ? [] : tasks;
+  const projectTasks = safeTasks.filter(
     (t: Task) => t.projectId === project.id && t.isDone === false,
   ).length;
 

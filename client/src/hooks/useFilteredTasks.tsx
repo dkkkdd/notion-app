@@ -9,7 +9,7 @@ export function useFilteredTasks() {
   const { mode, selectedProjectId, showAll } = useProjectsContext();
 
   const filteredTasks = useMemo(() => {
-    if (loading) return [];
+    if (!tasks) return null;
 
     const now = new Date();
     if (mode === "projects") return [];
@@ -83,6 +83,8 @@ export function useFilteredTasks() {
       (a: Task, b: Task) => Number(a.isDone) - Number(b.isDone),
     );
   }, [tasks, mode, selectedProjectId, loading, showAll]);
+  // const ready =
+  //   !loading && (tasks.length > 0 ? filteredTasks.length > 0 : true);
 
-  return { tasks: filteredTasks, ready: !loading };
+  return { tasks: filteredTasks, ready: tasks !== null };
 }

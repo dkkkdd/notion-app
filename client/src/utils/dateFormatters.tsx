@@ -1,6 +1,7 @@
 import i18next from "i18next";
 import type { TFunction } from "i18next";
 import { addDays } from "date-fns";
+import { nextSaturday, format } from "date-fns";
 
 export const FILTER_OPTIONS = [
   {
@@ -198,7 +199,7 @@ export const formatFullDate = (dateInput: string | Date): string => {
     minute: "2-digit",
     hour12: false,
   });
-  if (isToday) return `Today at ${timeStr}`;
+  if (isToday) return `${i18next.t("today")} - ${timeStr}`;
 
   return date.toLocaleString("en-US", {
     day: "numeric",
@@ -208,7 +209,7 @@ export const formatFullDate = (dateInput: string | Date): string => {
     hour12: false,
   });
 };
-import { nextSaturday, format } from "date-fns";
+
 export const generateDatePresets = () => {
   const now = new Date();
   const nextWeekDate = addDays(now, 7);

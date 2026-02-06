@@ -30,19 +30,19 @@ export const TaskInfo = ({
   const { tasks } = useTasksState();
   const project = projects?.find((p) => p.id === task.projectId);
   const { t, i18n } = useTranslation();
-
+  const safeTasks = tasks === null ? [] : tasks;
   const parentTask = task.parentId
-    ? tasks.find((t: Task) => t.id === task.parentId)
+    ? safeTasks.find((t: Task) => t.id === task.parentId)
     : null;
   const formattedDeadline = task.deadline
     ? format(new Date(task.deadline), "d MMMM yyyy", {
         locale: localeMap[i18n.language] ?? enUS,
       })
     : null;
-
-  const subtasks = task.subtasks || [];
-  const subtasksCount = subtasks.length;
-  const subtasksDone = subtasks.filter((s: Task) => s.isDone).length;
+  const subtasks = task.subtasks;
+  const safeSubTasks = subtasks === null ? [] : subtasks;
+  const subtasksCount = safeSubTasks?.length;
+  const subtasksDone = safeSubTasks?.filter((s: Task) => s.isDone).length;
 
   return (
     <div
@@ -141,38 +141,39 @@ export const TaskInfo = ({
               </div>
             </div>
 
-            {subtasksCount > 0 && (
-              <div className="bg-gray-50/50 dark:bg-[#2a2a2a]/30 rounded-lg border border-black/5 dark:border-white/5 p-3 space-y-2">
-                <span className="text-[10px] text-gray-500 uppercase tracking-wider font-bold block px-1">
-                  {t("subtasks_list")}
-                </span>
-                <div className="max-h-[120px] overflow-y-auto space-y-1 pr-1 custom-scrollbar">
-                  {subtasks.map((sub: Task) => (
-                    <div
-                      key={sub.id}
-                      className="flex items-center gap-3 p-2 bg-white dark:bg-white/5 rounded-md border border-black/5 dark:border-white/5"
-                    >
-                      <span
-                        className={`w-2 h-2 rounded-full ${
-                          sub.isDone
-                            ? "bg-green-500"
-                            : "bg-gray-300 dark:bg-[#555]"
-                        }`}
-                      />
-                      <span
-                        className={`text-sm flex-1 truncate ${
-                          sub.isDone
-                            ? "text-gray-400 line-through"
-                            : "text-gray-700 dark:text-gray-300"
-                        }`}
+            {subtasksCount ||
+              (0 > 0 && (
+                <div className="bg-gray-50/50 dark:bg-[#2a2a2a]/30 rounded-lg border border-black/5 dark:border-white/5 p-3 space-y-2">
+                  <span className="text-[10px] text-gray-500 uppercase tracking-wider font-bold block px-1">
+                    {t("subtasks_list")}
+                  </span>
+                  <div className="max-h-[120px] overflow-y-auto space-y-1 pr-1 custom-scrollbar">
+                    {safeSubTasks?.map((sub: Task) => (
+                      <div
+                        key={sub.id}
+                        className="flex items-center gap-3 p-2 bg-white dark:bg-white/5 rounded-md border border-black/5 dark:border-white/5"
                       >
-                        {sub.title}
-                      </span>
-                    </div>
-                  ))}
+                        <span
+                          className={`w-2 h-2 rounded-full ${
+                            sub.isDone
+                              ? "bg-green-500"
+                              : "bg-gray-300 dark:bg-[#555]"
+                          }`}
+                        />
+                        <span
+                          className={`text-sm flex-1 truncate ${
+                            sub.isDone
+                              ? "text-gray-400 line-through"
+                              : "text-gray-700 dark:text-gray-300"
+                          }`}
+                        >
+                          {sub.title}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              ))}
 
             {task.deadline && (
               <div className="bg-gray-50 dark:bg-[#2a2a2a]/50 p-4 rounded-lg border border-black/5 dark:border-white/5 flex items-center space-x-4">

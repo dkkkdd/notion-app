@@ -28,6 +28,6 @@ export const QuickBtn = ({
     `}
   >
     <span className={`${icon} text-[1.8em]`} />
-    <span className="font-semibold">{label}</span>
+    {label && <span className="font-semibold">{label}</span>}
   </button>
 );

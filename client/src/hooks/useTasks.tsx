@@ -1,4 +1,4 @@
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import type { Task } from "@/types/tasks";
 import { tasksApi } from "@/api/tasks";
 
@@ -56,25 +56,28 @@ const addSubtaskNode = (
 };
 
 export function useTasks(userId: string) {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [isPending, startTransition] = useTransition();
+  // const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<Task[] | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!userId) return;
 
-    startTransition(() => {
-      tasksApi.fetchTasks({ userId }).then((data) => {
-        setTasks(sortTasks(data));
-      });
+    setLoading(true);
+
+    tasksApi.fetchTasks({ userId }).then((data) => {
+      setTasks(sortTasks(data));
+      setLoading(false);
     });
   }, [userId]);
 
-  const loading = isPending;
-
   const create = async (data: Partial<Task> & { parentId?: string | null }) => {
     const tempId = `temp-${Date.now()}`;
+    const safeTask = tasks === null ? [] : tasks;
     const nextOrder =
-      tasks.length > 0 ? Math.max(...tasks.map((t) => t.order ?? 0)) + 1 : 0;
+      safeTask.length > 0
+        ? Math.max(...safeTask.map((t) => t.order ?? 0)) + 1
+        : 0;
 
     const tempNode: Task = {
       id: tempId,
@@ -94,8 +97,8 @@ export function useTasks(userId: string) {
     };
     setTasks((prev) => {
       const newList = data.parentId
-        ? addSubtaskNode(prev, data.parentId, tempNode)
-        : [...prev, tempNode];
+        ? addSubtaskNode(prev || [], data.parentId, tempNode)
+        : [...(prev || []), tempNode];
       return sortTasks(newList);
     });
 
@@ -113,15 +116,15 @@ export function useTasks(userId: string) {
         comment: data.comment,
       });
 
-      setTasks((prev) => sortTasks(updateNode(prev, tempId, real)));
+      setTasks((prev) => sortTasks(updateNode(prev || [], tempId, real)));
     } catch {
-      setTasks((prev) => updateNode(prev, tempId, null));
+      setTasks((prev) => updateNode(prev || [], tempId, null));
     }
   };
 
   const update = async (id: string, data: Partial<Task>) => {
     const snapshot = tasks;
-    setTasks((prev) => updateNode(prev, id, data));
+    setTasks((prev) => updateNode(prev || [], id, data));
 
     try {
       await tasksApi.updateInfo(id, data);
@@ -137,7 +140,7 @@ export function useTasks(userId: string) {
       completedAt: isDone ? new Date() : null,
     };
 
-    setTasks((prev) => sortTasks(updateNode(prev, id, patch)));
+    setTasks((prev) => sortTasks(updateNode(prev || [], id, patch)));
 
     try {
       await tasksApi.updateStatus(id, isDone);
@@ -148,7 +151,7 @@ export function useTasks(userId: string) {
   const remove = async (id: string) => {
     const snapshot = tasks;
 
-    setTasks((prev) => updateNode(prev, id, null));
+    setTasks((prev) => updateNode(prev || [], id, null));
 
     try {
       await tasksApi.deleteTask(id);

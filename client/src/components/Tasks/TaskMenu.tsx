@@ -169,11 +169,10 @@ export const GlobalDropdown = ({
                 <span
                   onClick={() => setIsCalOpen(true)}
                   className={`${
-                    isCalOpen
-                      ? "opacity-100 bg-black/5 dark:bg-[#82828241] "
-                      : ""
+                    isCalOpen ? "bg-black/5 dark:bg-[#82828241] " : ""
                   }
-                  !transition-none tip icon-three-dots-punctuation-sign-svgrepo-com p-2 rounded-md cursor-pointer hover:bg-black/5 dark:hover:bg-[#82828241] text-black dark:text-white`}
+                 icon-three-dots-punctuation-sign-svgrepo-com text-[1.2em] flex items-center gap-2 p-2 text-left rounded-lg cursor-pointer transition-all 
+      hover:bg-black/5 dark:hover:bg-white/5`}
                 />
               </Calendar>
             </div>

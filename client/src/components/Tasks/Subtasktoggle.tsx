@@ -10,10 +10,9 @@ interface SubtaskToggleProps {
 export const SubtaskToggle = memo(function SubtaskToggle({
   subCount,
   showSubTasks,
-  mode,
   onToggle,
 }: SubtaskToggleProps) {
-  if (subCount === 0 || mode === "today" || !onToggle) return null;
+  if (subCount === 0 || !onToggle) return null;
 
   return (
     <div

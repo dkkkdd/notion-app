@@ -45,9 +45,9 @@ export const UserInfo = ({
 
   const projectsCount = projects.length || 0;
   const isSubModalOpen = openComfirm || openComfirmDelete || openForm;
-
+  const safeTasks = tasks === null ? [] : tasks;
   const undoneTasksCount = useMemo(
-    () => tasks.filter((t: Task) => !t.isDone).length,
+    () => safeTasks.filter((t: Task) => !t.isDone).length,
     [tasks],
   );
 

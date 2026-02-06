@@ -13,12 +13,13 @@ import { AddTaskBtn } from "@/components/AddTaskBtn";
 import { EmptyState } from "@/components/EmptyPage";
 import { Selector } from "@/components/Selector";
 import { TaskListMenu } from "@/components/Tasks/TaskListMenu";
-import { TaskSkeleton } from "@/components/Tasks/TaskSkeleton";
+import { TaskLoader } from "@/components/Tasks/TaskLoader";
 
 export const TaskList = () => {
   const isMobile = useIsMobile();
   const { t } = useTranslation();
   const { tasks, ready } = useFilteredTasks();
+  const saveTasks = tasks === null ? [] : tasks;
   const { loading } = useTasksState();
   const { mode, selectedProjectId } = useProjectsContext();
   const { deleteTask, updateTask, createTask } = useTasksActions();
@@ -34,7 +35,10 @@ export const TaskList = () => {
   const showContent = ready && !loading;
 
   const toggleTask = useCallback((taskId: string) => {
-    setExpandedTasks((prev) => ({ ...prev, [taskId]: !prev[taskId] }));
+    setExpandedTasks((prev) => {
+      const current = prev[taskId] ?? true;
+      return { ...prev, [taskId]: !current };
+    });
   }, []);
 
   const handleStartEditing = useCallback((id: string) => {
@@ -52,7 +56,7 @@ export const TaskList = () => {
   const handleDeleteRequest = useCallback((task: Task) => {
     setTaskToDelete(task);
   }, []);
-  const selection = useTaskSelection(tasks, () => {
+  const selection = useTaskSelection(saveTasks, () => {
     setOpenForm(false);
     setActiveParentId(null);
     setEditingTaskId(null);
@@ -65,8 +69,8 @@ export const TaskList = () => {
       !openForm &&
       mode !== "completed" &&
       mode !== "overdue" &&
-      (isMobile || tasks.length > 0),
-    [openForm, mode, isMobile, tasks.length],
+      (isMobile || saveTasks.length > 0),
+    [openForm, mode, isMobile, saveTasks.length],
   );
 
   const transComponents = useMemo(
@@ -100,9 +104,7 @@ export const TaskList = () => {
           task={task}
           isMobile={isMobile}
           isEditing={false}
-          showSubTasks={
-            mode === "today" ? false : expandedTasks[task.id] !== false
-          }
+          showSubTasks={expandedTasks[task.id] !== false}
           selectionMode={selection.selectionMode}
           selected={selection.selectedIds.has(task.id)}
           onSelect={() => selection.toggleSelect(task.id)}
@@ -129,10 +131,10 @@ export const TaskList = () => {
     );
   };
 
-  if (loading) {
+  if (!ready) {
     return (
       <div className="w-full max-w-[58rem] mx-auto pt-20 opacity-100 transition-opacity duration-300">
-        <TaskSkeleton />
+        <TaskLoader />
       </div>
     );
   }
@@ -150,7 +152,7 @@ export const TaskList = () => {
           showContent ? "opacity-100" : "opacity-0"
         }`}
       >
-        {tasks.map((task: Task) => (
+        {saveTasks.map((task: Task) => (
           <div key={task.id} className="task-group flex flex-col">
             {renderTaskItem(task)}
 
@@ -189,7 +191,6 @@ export const TaskList = () => {
             onClose={() => setOpenForm(false)}
             onSubmit={async (data) => {
               await createTask(data);
-              setOpenForm(false);
             }}
           />
         )}
@@ -228,7 +229,7 @@ export const TaskList = () => {
         />
       )}
 
-      {!openForm && tasks.length === 0 && (
+      {!openForm && saveTasks.length === 0 && (
         <EmptyState mode={mode} onOpenForm={() => setOpenForm(true)} />
       )}
 

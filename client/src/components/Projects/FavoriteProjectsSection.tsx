@@ -25,8 +25,6 @@ export const FavoriteProjects = () => {
       : "0px";
   }, [showProjects, favProjects]);
 
-  if (favProjects.length === 0) return null;
-
   return (
     <div className="py-2">
       <div className="flex items-center justify-between mb-1 px-2">
