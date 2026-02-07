@@ -6,15 +6,18 @@ import jwt from "jsonwebtoken";
 const JWT_SECRET = process.env.JWT_SECRET || "super-secret-key";
 
 function setAuthCookie(res: Response, token: string) {
+  const isProduction = process.env.NODE_ENV === "production";
+
   res.cookie("accessToken", token, {
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
+    secure: isProduction,
+    sameSite: isProduction ? "lax" : "none",
+
+    ...(isProduction && { domain: ".task-managerr.pp.ua" }),
     maxAge: 7 * 24 * 60 * 60 * 1000,
     path: "/",
   });
 }
-
 interface AuthenticatedRequest extends Request {
   userId?: string;
 }
@@ -181,10 +184,13 @@ export async function deleteAcc(req: AuthenticatedRequest, res: Response) {
 }
 
 export async function logout(req: Request, res: Response) {
+  const isProduction = process.env.NODE_ENV === "production";
+
   res.clearCookie("accessToken", {
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
+    secure: isProduction,
+    sameSite: isProduction ? "lax" : "none",
+    ...(isProduction && { domain: ".task-managerr.pp.ua" }),
     path: "/",
   });
   res.status(200).json({ message: "Logged out successfully" });
