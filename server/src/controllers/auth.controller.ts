@@ -6,14 +6,18 @@ import jwt from "jsonwebtoken";
 const JWT_SECRET = process.env.JWT_SECRET || "super-secret-key";
 
 function setAuthCookie(res: Response, token: string) {
-  const isProduction = process.env.NODE_ENV === "production";
+  const origin = res.req.headers.origin || "";
+  const isLocalhost = origin.includes("localhost");
 
   res.cookie("accessToken", token, {
     httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? "lax" : "none",
 
-    ...(isProduction && { domain: ".task-managerr.pp.ua" }),
+    secure: true,
+
+    sameSite: isLocalhost ? "none" : "lax",
+
+    ...(isLocalhost ? {} : { domain: ".task-managerr.pp.ua" }),
+
     maxAge: 7 * 24 * 60 * 60 * 1000,
     path: "/",
   });
