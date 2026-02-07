@@ -188,14 +188,17 @@ export async function deleteAcc(req: AuthenticatedRequest, res: Response) {
 }
 
 export async function logout(req: Request, res: Response) {
+  const origin = req.headers.origin || "";
+  const isLocalhost = origin.includes("localhost");
   const isProduction = process.env.NODE_ENV === "production";
 
   res.clearCookie("accessToken", {
     httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? "lax" : "none",
-    ...(isProduction && { domain: ".task-managerr.pp.ua" }),
+    secure: true,
+    sameSite: isLocalhost ? "none" : "lax",
+    ...(isLocalhost ? {} : { domain: ".task-managerr.pp.ua" }),
     path: "/",
   });
+
   res.status(200).json({ message: "Logged out successfully" });
 }
