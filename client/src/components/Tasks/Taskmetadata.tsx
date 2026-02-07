@@ -1,13 +1,15 @@
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
-import { format } from "date-fns";
-import type { TFunction } from "i18next";
+
 import type { Project } from "@/types/project";
 import { formatFullDate } from "@/utils/dateFormatters";
 import { Calendar } from "@/components/Calendar/Calendar";
+import type { Locale } from "react-day-picker";
+import { localeMap } from "@/i18n";
+import { enUS } from "date-fns/locale";
 
 interface TaskMetadataProps {
-  deadline?: string | null;
+  deadline?: Date | null;
   reminderAt?: string | null;
   completedAt?: Date | null;
   subCount: number | null;
@@ -18,12 +20,15 @@ interface TaskMetadataProps {
   isDone: boolean;
   isSelectionMode?: boolean;
   dateColor: (
-    label: string,
-    dateInput?: string | Date | null,
+    dateInput: Date | null,
     reminderAt?: string | null,
   ) => { color: string; icon: string };
-  formatDateLabel: (v: string, t: TFunction) => string;
-  onDateUpdate: (date: string | null) => void;
+
+  formatDateLabel: (
+    dateInput: Date | null,
+    locale: Pick<Locale, "options" | "localize" | "formatLong">,
+  ) => string;
+  onDateUpdate: (date: Date | null) => void;
   onTimeUpdate: (time: string | null) => void;
   onProjectClick: (projectId: string | null) => void;
 }
@@ -45,23 +50,23 @@ export const TaskMetadata = memo(function TaskMetadata({
   onTimeUpdate,
   onProjectClick,
 }: TaskMetadataProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const langKey = i18n.language.split("-")[0];
+  const locale = localeMap[langKey] ?? enUS;
 
   const projectOfTask = projects?.find((p) => p.id === projectId);
   const isCompletedMode = mode === "completed";
-  const currentDeadlineStr = deadline
-    ? format(new Date(deadline), "yyyy-MM-dd")
-    : null;
+  const currentDeadlineStr = deadline ? new Date(deadline) : null;
 
-  const meta = currentDeadlineStr
-    ? dateColor(
-        formatDateLabel(currentDeadlineStr, t),
-        currentDeadlineStr,
-        reminderAt,
-      )
-    : { color: "currentColor", icon: "icon-calendar-_1" };
+  const dateLabel = formatDateLabel(currentDeadlineStr, locale);
 
+  const meta = dateColor(currentDeadlineStr, reminderAt);
   const isDefaultColor = meta.color === "currentColor";
+  const { label, time } = formatFullDate(completedAt || null, locale);
+
+  const title = ["today", "tomorrow", "yesterday"].includes(label)
+    ? t(label)
+    : label;
 
   const shouldShowMetadata =
     subCount !== 0 ||
@@ -100,12 +105,12 @@ export const TaskMetadata = memo(function TaskMetadata({
           <Calendar
             date={currentDeadlineStr}
             setDate={onDateUpdate}
-            time={reminderAt}
+            time={reminderAt || null}
             setTime={onTimeUpdate}
           >
-            <span className="flex items-center cursor-pointer">
+            <span className="flex items-center gap-1 cursor-pointer">
               <span className={meta.icon} />
-              {formatDateLabel(currentDeadlineStr, t)}
+              {t(dateLabel)}
               {reminderAt && (
                 <span className="ml-1 opacity-80">{reminderAt}</span>
               )}
@@ -116,7 +121,7 @@ export const TaskMetadata = memo(function TaskMetadata({
 
       {isCompletedMode && completedAt && (
         <span className="text-[10px] opacity-60 text-gray-500 dark:text-gray-400">
-          {t("completed")}: {formatFullDate(completedAt)}
+          {t("completed")}: {title} - {time}
         </span>
       )}
 

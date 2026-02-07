@@ -13,8 +13,8 @@ import {
 import { useTranslation } from "react-i18next";
 import { useProjectsContext } from "@/context/ProjectsContext";
 import { Select } from "@/components/Select";
-import { MenuItem } from "@/components/ui/MenuItem";
-import { FILTER_OPTIONS } from "@/utils/dateFormatters";
+import { MenuItem } from "@/components/Projects/Menu/MenuItem";
+import { FILTER_OPTIONS } from "@/utils/userSettings";
 
 interface ProjectMenuProps {
   anchorEl: HTMLElement | null;

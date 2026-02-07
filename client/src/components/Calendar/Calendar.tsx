@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 import type { ReactNode } from "react";
-import { format, addDays, startOfToday } from "date-fns";
+import { addDays, startOfToday } from "date-fns";
 import { useTranslation } from "react-i18next";
 import {
   useFloating,
@@ -22,23 +22,26 @@ import { MobileDrawer } from "../../features/MobileDrawer";
 import { SharedDayPicker } from "./SharedDayPicker";
 import { QuickDateButtons } from "./Quickdatebuttons";
 import { TimeSelector } from "./Timeselector";
+import { localeMap } from "@/i18n";
+import { enUS } from "date-fns/locale";
 
 interface CalendarProps {
-  date: string | null | undefined;
-  time: string | null | undefined;
+  date: Date | null;
+  time: string | null;
   setIsCalOpen?: (val: boolean) => void;
-  setDate: (val: string | null) => void;
+  setDate: (val: Date | null) => void;
   setTime: (val: string | null) => void;
   children?: ReactNode;
 }
 
 const STEP = 30;
-const FLOATING_MIDDLEWARE = [offset(4), flip(), shift({ padding: 10 })];
 
 export const Calendar = (props: CalendarProps) => {
   const isMobile = useIsMobile();
   const { date, time, setDate, setTime, setIsCalOpen, children } = props;
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const langKey = i18n.language.split("-")[0];
+  const locale = localeMap[langKey] ?? enUS;
   const [open, setOpen] = useState(false);
 
   const handleOpenChange = useCallback((value: boolean) => {
@@ -51,14 +54,18 @@ export const Calendar = (props: CalendarProps) => {
     placement: "left-end",
     whileElementsMounted: autoUpdate,
     strategy: "fixed",
-    middleware: FLOATING_MIDDLEWARE,
+    middleware: [offset(4), flip(), shift({ padding: 10 })],
   });
 
   const click = useClick(context);
+  // const dismiss = useDismiss(context, {
+  //   outsidePress: (event) => {
+  //     return !(event.target as HTMLElement)?.closest("[data-drawer-content]");
+  //   },
+  // });
   const dismiss = useDismiss(context, {
-    outsidePress: (event) => {
-      return !(event.target as HTMLElement)?.closest("[data-drawer-content]");
-    },
+    bubbles: false,
+    outsidePressEvent: "mousedown",
   });
 
   const { getReferenceProps, getFloatingProps } = useInteractions([
@@ -70,17 +77,18 @@ export const Calendar = (props: CalendarProps) => {
     setIsCalOpen?.(open);
   }, [open, setIsCalOpen]);
 
-  const timeOptions = useMemo(() => generateTimeOptions(STEP), []);
-  const dates = useMemo(() => generateDatePresets(), []);
-  const dateLabel = useMemo(() => formatDateLabel(date ?? null, t), [date, t]);
-  const meta = useMemo(() => dateColor(dateLabel, date), [dateLabel, date]);
+  const timeOptions = useMemo(() => generateTimeOptions(STEP), [open]);
+
+  const dates = useMemo(() => generateDatePresets(), [i18n.language]);
+  const label = formatDateLabel(date, locale);
+  const meta = dateColor(date);
 
   const handleClearDate = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
       e.preventDefault();
       setDate(null);
-      setTime("");
+      setTime(null);
     },
     [setDate, setTime],
   );
@@ -88,7 +96,7 @@ export const Calendar = (props: CalendarProps) => {
   const handleTimeChange = useCallback(
     (newTime: string) => {
       if (!date) {
-        setDate(format(new Date(), "yyyy-MM-dd"));
+        setDate(new Date());
       }
       setTime(newTime);
     },
@@ -98,7 +106,7 @@ export const Calendar = (props: CalendarProps) => {
   const handleDaySelect = useCallback(
     (day: Date | undefined) => {
       if (!day) return;
-      setDate(format(day, "yyyy-MM-dd"));
+      setDate(day);
     },
     [setDate],
   );
@@ -112,7 +120,9 @@ export const Calendar = (props: CalendarProps) => {
 
   const buttonColor = meta.color === "#ffffffd9" ? undefined : meta.color;
   const iconColorClass =
-    meta.color === "#ffffffd9" ? "text-black/80 dark:text-white/80" : "";
+    meta.color === "#ffffffd9"
+      ? "text-black/80 dark:text-white/80"
+      : meta.color;
 
   return (
     <>
@@ -139,7 +149,7 @@ export const Calendar = (props: CalendarProps) => {
               className={`${meta.icon} text-[1.5em] opacity-70 ${iconColorClass}`}
               style={iconColorClass ? undefined : { color: meta.color }}
             />
-            {(date || time) && `${dateLabel} ${time || ""}`}
+            {(date || time) && `${t(label)} ${time || ""}`}
           </div>
           {date && (
             <div

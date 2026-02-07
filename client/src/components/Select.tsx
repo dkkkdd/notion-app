@@ -15,6 +15,7 @@ import {
   useTypeahead,
   FloatingPortal,
 } from "@floating-ui/react";
+import { useTranslation } from "react-i18next";
 
 export type Option = {
   value: string | number | null;
@@ -44,6 +45,7 @@ export function Select({
   mobile = false,
   position,
 }: SelectProps) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const { refs, floatingStyles, context } = useFloating({
     open,
@@ -164,7 +166,7 @@ export function Select({
 
           {!mobile && (
             <span className="truncate text-gray-700 dark:text-white">
-              {current ? current.label : placeholder}
+              {current ? t(current.label) : placeholder}
             </span>
           )}
         </div>
@@ -229,7 +231,7 @@ export function Select({
                     />
                   )
                 )}
-                <span className="truncate">{o.label}</span>
+                <span className="truncate">{t(o.label)}</span>
               </li>
             ))}
           </ul>

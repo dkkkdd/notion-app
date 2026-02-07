@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { Trans, useTranslation } from "react-i18next";
-import { format } from "date-fns";
 import type { Task } from "@/types/tasks";
 import { PRIORITY_OPTIONS } from "@/utils/priorities";
 import { MobileDrawer } from "@/features/MobileDrawer";
@@ -21,7 +20,7 @@ export interface TaskFormProps {
   onSubmit: (data: {
     title: string;
     projectId: string | null;
-    deadline?: string | null;
+    deadline?: Date | null;
     reminderAt?: string | null;
     comment?: string | null;
     priority?: number;
@@ -67,7 +66,7 @@ export const TaskForm = ({
 
   useEffect(() => {
     if (mode === "today" && formMode === "create") {
-      setDate(format(new Date(), "yyyy-MM-dd"));
+      setDate(new Date());
     }
   }, [mode, formMode]);
 
@@ -96,7 +95,7 @@ export const TaskForm = ({
         setTime(null);
 
         if (mode === "today") {
-          setDate(format(new Date(), "yyyy-MM-dd"));
+          setDate(new Date());
         } else {
           setDate(null);
         }
@@ -394,7 +393,7 @@ export const TaskForm = ({
                   value={priority}
                   options={PRIORITY_OPTIONS.map((opt) => ({
                     ...opt,
-                    label: t(opt.label.toLowerCase()),
+                    label: opt.label.toLowerCase(),
                   }))}
                   onChange={(value) => {
                     if (typeof value === "number") {

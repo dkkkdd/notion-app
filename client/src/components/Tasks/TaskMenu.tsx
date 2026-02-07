@@ -12,13 +12,14 @@ import {
   FloatingPortal,
   FloatingFocusManager,
 } from "@floating-ui/react";
-import { format } from "date-fns";
+
 import type { Task } from "@/types/tasks";
 import { PRIORITY_OPTIONS } from "@/utils/priorities";
 import { generateDatePresets } from "@/utils/dateFormatters";
-import { QuickBtn } from "@/utils/QuickBtn";
+import { QuickBtn } from "@/components/QuickBtn";
 import { useTasksActions } from "@/context/TasksContext";
 import { Calendar } from "@/components/Calendar/Calendar";
+import { isSameDay } from "date-fns";
 
 interface GlobalMenuProps {
   anchorEl: HTMLElement | null;
@@ -29,7 +30,7 @@ interface GlobalMenuProps {
   onDelete: () => void;
   isCalOpen: boolean;
   setIsCalOpen: (val: boolean) => void;
-  updateDate: (newDate: string | null) => void;
+  updateDate: (newDate: Date | null) => void;
   updateTime: (newTime: string | null) => void;
   onAddSubtask?: () => void;
 }
@@ -62,9 +63,7 @@ export const GlobalDropdown = ({
   const dismiss = useDismiss(context);
   const role = useRole(context);
   const { getFloatingProps } = useInteractions([dismiss, role]);
-  const currentDeadlineStr = task.deadline
-    ? format(new Date(task.deadline), "yyyy-MM-dd")
-    : null;
+  const currentDeadlineStr = task.deadline || null;
   const dates = useMemo(() => generateDatePresets(), []);
 
   if (!isOpen) return null;
@@ -111,7 +110,11 @@ export const GlobalDropdown = ({
               <QuickBtn
                 icon="icon-calendar-_2"
                 color="text-[#00c853]"
-                isActive={currentDeadlineStr === dates.today}
+                isActive={
+                  currentDeadlineStr
+                    ? isSameDay(currentDeadlineStr, dates.today)
+                    : false
+                }
                 onClick={() => {
                   updateDate(dates.today);
                   setIsCalOpen(false);
@@ -121,7 +124,11 @@ export const GlobalDropdown = ({
               <QuickBtn
                 icon="icon-calendar-_5"
                 color="text-[#ffab00]"
-                isActive={currentDeadlineStr === dates.tomorrow}
+                isActive={
+                  currentDeadlineStr
+                    ? isSameDay(currentDeadlineStr, dates.tomorrow)
+                    : false
+                }
                 onClick={() => {
                   updateDate(dates.tomorrow);
                   setIsCalOpen(false);
@@ -131,7 +138,11 @@ export const GlobalDropdown = ({
               <QuickBtn
                 icon="icon-calendar-_4"
                 color="text-blue-500"
-                isActive={currentDeadlineStr === dates.weekend}
+                isActive={
+                  currentDeadlineStr
+                    ? isSameDay(currentDeadlineStr, dates.weekend)
+                    : false
+                }
                 onClick={() => {
                   updateDate(dates.weekend);
                   setIsCalOpen(false);
@@ -141,7 +152,11 @@ export const GlobalDropdown = ({
               <QuickBtn
                 icon="icon-calendar-_3"
                 color="text-[#673ab7]"
-                isActive={currentDeadlineStr === dates.nextWeek}
+                isActive={
+                  currentDeadlineStr
+                    ? isSameDay(currentDeadlineStr, dates.nextWeek)
+                    : false
+                }
                 onClick={() => {
                   updateDate(dates.nextWeek);
                   setIsCalOpen(false);
@@ -162,7 +177,7 @@ export const GlobalDropdown = ({
               <Calendar
                 date={task.deadline}
                 setDate={updateDate}
-                time={task.reminderAt}
+                time={task.reminderAt || null}
                 setIsCalOpen={setIsCalOpen}
                 setTime={updateTime}
               >

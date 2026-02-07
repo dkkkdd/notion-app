@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useState, useMemo } from "react";
-import { format } from "date-fns";
+
 import type { Task } from "@/types/tasks";
 import { ModalPortal } from "@/features/ModalPortal";
 import { formatDateLabel, dateColor } from "@/utils/dateFormatters";
@@ -66,15 +66,13 @@ export const TaskCard = memo(
     );
 
     const handleDate = useCallback(
-      (newDate: string | null) => {
+      (newDate: Date | null) => {
         updateTask(task.id, { deadline: newDate });
       },
       [task.id, updateTask],
     );
 
-    const currentDeadlineStr = task.deadline
-      ? format(new Date(task.deadline), "yyyy-MM-dd")
-      : null;
+    const currentDeadlineStr = task.deadline ? new Date(task.deadline) : null;
 
     const handleCardClick = (e: React.MouseEvent) => {
       if (selectionMode) {

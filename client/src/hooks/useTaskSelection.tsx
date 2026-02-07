@@ -55,7 +55,7 @@ export function useTaskSelection(
     setSelectionMode(false);
   };
 
-  const buildDeadline = (date: string, time?: string | null) => {
+  const buildDeadline = (date: Date, time?: string | null) => {
     const d = new Date(date);
 
     if (time) {
@@ -65,7 +65,7 @@ export function useTaskSelection(
       d.setHours(23, 59, 59, 999);
     }
 
-    return d.toISOString();
+    return d;
   };
 
   const bulkComplete = async (ids: string[]) => {
@@ -75,7 +75,7 @@ export function useTaskSelection(
 
   const bulkUpdateDeadline = async (
     ids: string[],
-    newDate: string | null,
+    newDate: Date | null,
     newTime: string | null,
   ) => {
     const deadline = newDate ? buildDeadline(newDate, newTime) : null;

@@ -56,7 +56,6 @@ const addSubtaskNode = (
 };
 
 export function useTasks(userId: string) {
-  // const [tasks, setTasks] = useState<Task[]>([]);
   const [tasks, setTasks] = useState<Task[] | null>(null);
   const [loading, setLoading] = useState(true);
 

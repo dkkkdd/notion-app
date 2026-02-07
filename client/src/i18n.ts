@@ -14,6 +14,15 @@ export const localeMap: Record<string, Locale> = {
   pl: pl,
   fr: fr,
 };
+export const intlLocaleMap: Record<string, string> = {
+  en: "en-US",
+  ru: "ru-RU",
+  uk: "uk-UA",
+  es: "es-ES",
+  de: "de-DE",
+  pl: "pl-PL",
+  fr: "fr-FR",
+};
 
 registerLocale("ru", ru);
 registerLocale("en", enUS);

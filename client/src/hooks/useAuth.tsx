@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { User } from "@/types/user";
 import { authApi } from "@/api/auth";
+
 type UpdateMeDto = {
   userName?: string;
   email?: string;

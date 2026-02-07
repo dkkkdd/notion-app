@@ -241,7 +241,7 @@ export const TaskList = () => {
         onClear={selection.clearSelection}
         onComplete={() => selection.bulkComplete([...selection.selectedIds])}
         onDelete={() => selection.bulkDelete([...selection.selectedIds])}
-        onUpdateDeadline={(date: string | null, time: string | null) =>
+        onUpdateDeadline={(date: Date | null, time: string | null) =>
           selection.bulkUpdateDeadline([...selection.selectedIds], date, time)
         }
         onSetPriority={(p: number) =>

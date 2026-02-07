@@ -7,8 +7,8 @@ export const UserInfoMobile = ({ ...props }: UserInfoProps) => {
     <MobileDrawer
       onClose={props.onClose}
       open={props.isOpen}
-      drawerDescription="ld"
-      drawerTitle="o"
+      drawerTitle="Profile"
+      drawerDescription="Manage your account, preferences, and view your activity."
     >
       <UserInfoBase
         anchorRef={props.anchorRef}

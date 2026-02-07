@@ -6,11 +6,11 @@ interface TaskActionsProps {
   isMobile?: boolean;
   isMenuOpen: boolean;
   isCalOpen: boolean;
-  currentDeadlineStr: string | null;
+  currentDeadlineStr: Date | null;
   reminderAt?: string | null;
   onEdit: () => void;
   onMenuClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  onDateUpdate: (date: string | null) => void;
+  onDateUpdate: (date: Date | null) => void;
   onTimeUpdate: (time: string | null) => void;
   setIsCalOpen: (val: boolean) => void;
 }
@@ -52,7 +52,7 @@ export const TaskActions = memo(function TaskActions({
         <Calendar
           date={currentDeadlineStr}
           setDate={onDateUpdate}
-          time={reminderAt}
+          time={reminderAt || null}
           setIsCalOpen={setIsCalOpen}
           setTime={onTimeUpdate}
         >

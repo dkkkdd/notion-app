@@ -7,7 +7,20 @@ export const LANG_OPTIONS = [
   { value: "pl", label: "Polski", icon: "icon-language" },
   { value: "fr", label: "Français", icon: "icon-language" },
 ];
-
+export const FILTER_OPTIONS = [
+  {
+    icon: "icon-list",
+    value: "all",
+    label: "show_all_tasks",
+    color: "#4270d1",
+  },
+  {
+    icon: "icon-list2",
+    value: "active",
+    label: "show_active_tasks",
+    color: "#9d174d",
+  },
+];
 export const applyTheme = (theme: string) => {
   const root = window.document.documentElement;
 

@@ -207,7 +207,7 @@ export const ProjectForm = ({
                   value={color}
                   options={OPTIONS.map((o) => ({
                     value: o.value,
-                    label: t(`${o.label.toLowerCase()}`),
+                    label: o.label.toLowerCase(),
                     color: o.value,
                   }))}
                   onChange={(value) => {

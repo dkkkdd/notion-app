@@ -1,16 +1,17 @@
 import { useTranslation } from "react-i18next";
-import { QuickBtn } from "@/utils/QuickBtn";
+import { QuickBtn } from "@/components/QuickBtn";
+import { format, isSameDay } from "date-fns";
+import { localeMap } from "@/i18n";
 
 interface QuickDateButtonsProps {
   dates: {
-    today: string;
-    tomorrow: string;
-    weekend: string;
-    nextWeek: string;
-    nextWeekLabel: string;
+    today: Date;
+    tomorrow: Date;
+    weekend: Date;
+    nextWeek: Date;
   };
-  currentDate: string | null | undefined;
-  onDateSelect: (date: string | null) => void;
+  currentDate: Date | null;
+  onDateSelect: (date: Date | null) => void;
   onTimeSelect: (time: string | null) => void;
   onClose?: () => void;
 
@@ -25,9 +26,12 @@ export const QuickDateButtons = ({
   onClose,
   variant = "grid",
 }: QuickDateButtonsProps) => {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
+  const locale = localeMap[i18n.language];
 
-  const handleClick = (date: string) => {
+  const dayName = format(new Date(dates.nextWeek), "EEEE", { locale });
+  const nextWeekLabel = t("next_week_label", { day: dayName });
+  const handleClick = (date: Date) => {
     onDateSelect(date);
     onClose?.();
   };
@@ -52,7 +56,7 @@ export const QuickDateButtons = ({
       value: dates.weekend,
     },
     {
-      label: dates.nextWeekLabel,
+      label: nextWeekLabel,
       icon: "icon-calendar-_3",
       color: "text-[#673ab7]",
       value: dates.nextWeek,
@@ -68,11 +72,11 @@ export const QuickDateButtons = ({
     <div className={containerClass}>
       {buttons.map((btn) => (
         <QuickBtn
-          key={btn.value}
+          key={btn.label}
           label={btn.label}
           icon={btn.icon}
           color={btn.color}
-          isActive={currentDate === btn.value}
+          isActive={currentDate ? isSameDay(currentDate, btn.value) : false}
           onClick={() => handleClick(btn.value)}
         />
       ))}

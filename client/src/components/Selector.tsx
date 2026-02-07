@@ -16,7 +16,7 @@ type SelectorProps = {
   onClear: () => void;
   onComplete: () => void;
   onDelete: () => void;
-  onUpdateDeadline: (date: string | null, time: string | null) => void;
+  onUpdateDeadline: (date: Date | null, time: string | null) => void;
   onSetPriority: (priority: number) => void;
 };
 
@@ -38,7 +38,7 @@ export const Selector = ({
   const [bulkProjectId, setBulkProjectId] = useState<string | null>(
     selectedProjectId,
   );
-  const [bulkDate, setBulkDate] = useState<string | null>(null);
+  const [bulkDate, setBulkDate] = useState<Date | null>(null);
   const [bulkTime, setBulkTime] = useState<string | null>(null);
   const [bulkPriority, setBulkPriority] = useState(1);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -86,7 +86,7 @@ export const Selector = ({
         </div>
 
         {selectedIds.size > 0 && (
-          <div className="flex gap-2 items-center gap-2 justify-between">
+          <div className="flex gap-2 items-center gap-2 justify-start">
             <button
               onClick={() => setConfirmDone(true)}
               className="
@@ -171,7 +171,7 @@ export const Selector = ({
                   setBulkPriority(1);
                 }}
                 className="
-            h-10 px-4 rounded-xl flex-1
+            h-10 px-4 rounded-xl 
             bg-blue-500 text-white
             hover:bg-blue-400
             text-sm font-medium

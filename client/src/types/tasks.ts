@@ -7,11 +7,11 @@ export interface Task {
 
   parentId?: string | null;
   comment: string | null;
-  deadline: string | null;
+  deadline: Date | null;
   reminderAt?: string | null;
   userId: string;
   projectId?: string | null;
-  completedAt: Date | null | undefined;
+  completedAt: Date | null;
   subtasks?: Task[];
   sectionId?: string | null;
   _count?: { tasks: number };

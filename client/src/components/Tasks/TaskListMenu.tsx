@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ProjectMenuController } from "@/components/Projects/Menu/ProjectMenuController";
-import { MenuItem } from "@/components/ui/MenuItem";
+import { MenuItem } from "@/components/Projects/Menu/MenuItem";
 
 interface TaskListMenuProps {
   mode: string;
