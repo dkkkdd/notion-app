@@ -5,22 +5,32 @@ interface AuthenticatedRequest extends Request {
   userId?: string;
 }
 
+function normalizeId(id: string | string[] | undefined): string | undefined {
+  if (!id) return undefined;
+  return Array.isArray(id) ? id[0] : id;
+}
+
 export async function createSection(req: AuthenticatedRequest, res: Response) {
   try {
     const { title, projectId, order } = req.body;
-    const userId = req.userId as string;
+    const userId = req.userId;
+
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    if (!title) return res.status(400).json({ error: "Title is required" });
+    if (!projectId)
+      return res.status(400).json({ error: "Project id is required" });
 
     const project = await prisma.project.findFirst({
-      where: { id: projectId, userId },
+      where: { id: String(projectId), userId },
     });
 
     if (!project) return res.status(403).json({ error: "Access denied" });
 
     const section = await prisma.section.create({
       data: {
-        title,
+        title: title.trim(),
         order: order ?? 0,
-        projectId,
+        projectId: String(projectId),
         userId,
       },
     });
@@ -29,33 +39,62 @@ export async function createSection(req: AuthenticatedRequest, res: Response) {
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
+    console.error("CREATE SECTION ERROR:", errorMessage);
     res.status(500).json({ error: errorMessage });
   }
 }
 
 export async function updateSection(req: AuthenticatedRequest, res: Response) {
-  const { id } = req.params;
-  const { title, order } = req.body;
-  const userId = req.userId as string;
   try {
-    const section = await prisma.section.updateMany({
-      where: { id: String(id), project: { userId } },
+    const userId = req.userId;
+    const id = normalizeId(req.params.id);
+    const { title, order } = req.body;
+
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    if (!id) return res.status(400).json({ error: "Section id is required" });
+
+    const section = await prisma.section.findFirst({
+      where: { id, project: { userId } },
+    });
+
+    if (!section) return res.status(404).json({ error: "Section not found" });
+
+    const updated = await prisma.section.update({
+      where: { id },
       data: {
-        ...(title !== undefined && { title }),
-        ...(order !== undefined && { order }),
+        ...(title !== undefined && { title: title.trim() }),
+        ...(order !== undefined && { order: Number(order) }),
       },
     });
-    res.json(section);
+
+    res.json(updated);
   } catch (error) {
-    res.status(404).json({ error: "Section not found" });
+    console.error("UPDATE SECTION ERROR:", error);
+    res.status(500).json({ error: "Failed to update section" });
   }
 }
 
 export async function deleteSection(req: AuthenticatedRequest, res: Response) {
-  const { id } = req.params;
-  const userId = req.userId;
-  await prisma.section.deleteMany({
-    where: { id: String(id), project: { userId } },
-  });
-  res.status(204).send();
+  try {
+    const userId = req.userId;
+    const id = normalizeId(req.params.id);
+
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    if (!id) return res.status(400).json({ error: "Section id is required" });
+
+    const section = await prisma.section.findFirst({
+      where: { id, project: { userId } },
+    });
+
+    if (!section) return res.status(404).json({ error: "Section not found" });
+
+    await prisma.section.delete({
+      where: { id },
+    });
+
+    res.status(204).send();
+  } catch (error) {
+    console.error("DELETE SECTION ERROR:", error);
+    res.status(500).json({ error: "Failed to delete section" });
+  }
 }
