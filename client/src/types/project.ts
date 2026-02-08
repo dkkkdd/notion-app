@@ -5,6 +5,5 @@ export interface Project {
   color: string;
   order: number;
   favorites: boolean;
-  userId: string;
   sections?: Section[];
 }

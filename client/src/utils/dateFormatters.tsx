@@ -20,7 +20,7 @@ export const formatDateLabel = (
     return format(date, "EEEE", { locale });
   }
 
-  return format(date, "dd MMMM", { locale });
+  return format(date, "d MMMM", { locale });
 };
 
 export type DateMeta = {

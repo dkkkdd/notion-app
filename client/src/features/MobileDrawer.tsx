@@ -13,7 +13,6 @@ export function MobileDrawer({
   onClose: () => void;
   children: React.ReactNode;
   drawerTitle: string;
-
   drawerDescription: string;
 }) {
   return (

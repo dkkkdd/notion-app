@@ -93,7 +93,15 @@ export function Select({
   });
 
   const click = useClick(context);
-  const dismiss = useDismiss(context);
+  const dismiss = useDismiss(context, {
+    outsidePressEvent: "click",
+    outsidePress: (event) => {
+      event.stopPropagation();
+      event.preventDefault();
+      return true;
+    },
+  });
+
   const role = useRole(context, { role: "listbox" });
 
   const { getReferenceProps, getFloatingProps, getItemProps } = useInteractions(

@@ -34,6 +34,11 @@ registerLocale("fr", fr);
 const resources = {
   en: {
     translation: {
+      auth_error_invalid: "Invalid email or password",
+      user_already_exists: "User with this email already exists",
+      server_error: "Server error. Try again later",
+      connection_error: "Connection error",
+      token_missing_error: "Session expired, please login again",
       projects: "Projects",
       selected_count: "{{count}} selected",
       apply: "Apply",
@@ -138,7 +143,7 @@ const resources = {
       password_min_length: "Password must be at least 8 characters",
       passwords_not_match: "Passwords do not match",
       name_required: "Name is required",
-      connection_error: "Connection error",
+
       login_btn: "Login",
       register_btn: "Register",
       already_have_account: "Already have an account?",
@@ -180,8 +185,6 @@ const resources = {
       sunday: "Sunday",
       next_week_label: "Next {{day}}",
 
-      auth_error_invalid: "Incorrect password or email",
-
       generate_password: "Generate password",
       confirm_password_label: "Confirm password",
       show_password_label: "Show password",
@@ -197,6 +200,11 @@ const resources = {
   },
   ru: {
     translation: {
+      auth_error_invalid: "Неверный email или пароль",
+      user_already_exists: "Пользователь с таким email уже существует",
+      server_error: "Ошибка сервера. Попробуйте позже",
+      connection_error: "Ошибка соединения",
+      token_missing_error: "Сессия истекла, войдите снова",
       projects: "Проекты",
       start_selection: "Выбрать задачи",
       selected_count: "Выбрано: {{count}}",
@@ -299,7 +307,7 @@ const resources = {
       password_min_length: "Пароль должен быть не менее 8 символов",
       passwords_not_match: "Пароли не совпадают",
       name_required: "Имя обязательно для заполнения",
-      connection_error: "Ошибка соединения",
+
       login_btn: "Войти",
       register_btn: "Зарегистрироваться",
       already_have_account: "Уже есть аккаунт?",
@@ -344,7 +352,6 @@ const resources = {
       sunday: "Воскресенье",
       next_week_label: "След. {{day}}",
 
-      auth_error_invalid: "Неверный пароль или почта",
       generate_password: "Сгенерировать пароль",
       confirm_password_label: "Подтвердите пароль",
       show_password_label: "Показать пароль",
@@ -375,7 +382,10 @@ const resources = {
       loading: "Завантаження",
       select_all: "Обрати всі",
       clear_selection: "Зняти вибір",
-
+      auth_error_invalid: "Невірний email або пароль",
+      user_already_exists: "Користувач з таким email вже існує",
+      server_error: "Сталася помилка на сервері. Спробуйте пізніше",
+      connection_error: "Помилка з'єднання з сервером",
       overdue: "Протерміновані",
       inbox: "Вхідні",
       project: "Проєкт",
@@ -462,7 +472,7 @@ const resources = {
       password_min_length: "Пароль має бути не менше 8 символів",
       passwords_not_match: "Паролі не збігаються",
       name_required: "Ім'я обов'язкове для заповнення",
-      connection_error: "Помилка з'єднання",
+
       login_btn: "Увійти",
       register_btn: "Зареєструватися",
       already_have_account: "Вже є акаунт?",
@@ -507,7 +517,6 @@ const resources = {
       sunday: "Неділя",
       next_week_label: "Наст. {{day}}",
 
-      auth_error_invalid: "Невірний пароль або пошта",
       generate_password: "Згенерувати пароль",
       confirm_password_label: "Підтвердьте пароль",
       show_password_label: "Показати пароль",
@@ -543,7 +552,11 @@ const resources = {
       clear_selection: "Limpiar selección",
 
       overdue: "Atrasadas",
-
+      auth_error_invalid: "Correo o contraseña inválidos",
+      user_already_exists: "El usuario con este correo ya existe",
+      server_error: "Error del servidor. Inténtelo más tarde",
+      connection_error: "Error de conexión",
+      token_missing_error: "Sesión expirada, inicie sesión de nuevo",
       inbox: "Bandeja de entrada",
       project: "Proyecto",
       close: "Cerrar",
@@ -632,7 +645,7 @@ const resources = {
       password_min_length: "La contraseña debe tener al menos 8 caracteres",
       passwords_not_match: "Las contraseñas no coinciden",
       name_required: "El nombre es obligatorio",
-      connection_error: "Error de conexión",
+
       login_btn: "Iniciar sesión",
       register_btn: "Registrarse",
       already_have_account: "¿Ya tienes una cuenta?",
@@ -674,8 +687,6 @@ const resources = {
       sunday: "Domingo",
       next_week_label: "Próximo {{day}}",
 
-      auth_error_invalid: "Correo o contraseña incorrectos",
-
       generate_password: "Generar contraseña",
       confirm_password_label: "Confirmar contraseña",
       show_password_label: "Mostrar contraseña",
@@ -707,7 +718,11 @@ const resources = {
       complete_tasks_message: "Ausgewählte Aufgaben als erledigt markieren?",
       select_all: "Alle auswählen",
       clear_selection: "Auswahl aufheben",
-
+      auth_error_invalid: "Ungültige E-Mail oder Passwort",
+      user_already_exists: "Benutzer mit dieser E-Mail existiert bereits",
+      server_error: "Serverfehler. Später erneut versuchen",
+      connection_error: "Verbindungsfehler",
+      token_missing_error: "Sitzung abgelaufen, bitte erneut anmelden",
       overdue: "Brennend",
       inbox: "Posteingang",
       project: "Projekt",
@@ -798,7 +813,7 @@ const resources = {
       password_min_length: "Das Passwort muss mindestens 8 Zeichen lang sein",
       passwords_not_match: "Passwörter stimmen nicht überein",
       name_required: "Name ist erforderlich",
-      connection_error: "Verbindungsfehler",
+
       login_btn: "Anmelden",
       register_btn: "Registrieren",
       already_have_account: "Hast du schon ein Konto?",
@@ -840,8 +855,6 @@ const resources = {
       sunday: "Sonntag",
       next_week_label: "Nächster {{day}}",
 
-      auth_error_invalid: "E-Mail oder Passwort falsch",
-
       generate_password: "Passwort generieren",
       confirm_password_label: "Passwort bestätigen",
       show_password_label: "Passwort anzeigen",
@@ -873,7 +886,11 @@ const resources = {
       select_all: "Zaznacz wszystko",
       clear_selection: "Wyczyść zaznaczenie",
       overdue: "Zaległe",
-
+      auth_error_invalid: "Błędny e-mail lub hasło",
+      user_already_exists: "Użytkownik o tym adresie e-mail już istnieje",
+      server_error: "Błąd serwera. Spróbuj później",
+      connection_error: "Błąd połączenia",
+      token_missing_error: "Sesja wygasła, zaloguj się ponownie",
       inbox: "Skrzynka odbiorcza",
       project: "Projekt",
       close: "Zamknij",
@@ -962,7 +979,7 @@ const resources = {
       password_min_length: "Hasło musi mieć co najmniej 8 znaków",
       passwords_not_match: "Hasła nie pasują do siebie",
       name_required: "Imię jest wymagane",
-      connection_error: "Błąd połączenia",
+
       login_btn: "Zaloguj się",
       register_btn: "Zarejestruj się",
       already_have_account: "Masz już konto?",
@@ -1004,8 +1021,6 @@ const resources = {
       sunday: "Niedziela",
       next_week_label: "Następny: {{day}}",
 
-      auth_error_invalid: "Błędny e-mail lub hasło",
-
       generate_password: "Generuj hasło",
       confirm_password_label: "Potwierdź hasło",
       show_password_label: "Pokaż hasło",
@@ -1046,6 +1061,11 @@ const resources = {
       add_task: "Ajouter une tâche",
       color: "Couleur",
       today: "Aujourd'hui",
+      auth_error_invalid: "E-mail ou mot de passe invalide",
+      user_already_exists: "Un utilisateur avec cet e-mail existe déjà",
+      server_error: "Erreur serveur. Réessayez plus tard",
+      connection_error: "Erreur de connexion",
+      token_missing_error: "Session expirée, veuillez vous reconnecter",
       empty_states: {
         inbox_title: "Tout est à jour !",
         overdue_title: "Tout est à jour",
@@ -1132,7 +1152,7 @@ const resources = {
         "Le mot de passe doit contenir au moins 8 caractères",
       passwords_not_match: "Les mots de passe ne correspondent pas",
       name_required: "Le nom est requis",
-      connection_error: "Erreur de connexion",
+
       login_btn: "Se connecter",
       register_btn: "S'inscrire",
       already_have_account: "Vous avez déjà un compte ?",
@@ -1173,8 +1193,6 @@ const resources = {
       saturday: "Samedi",
       sunday: "Dimanche",
       next_week_label: "{{day}} prochain",
-
-      auth_error_invalid: "E-mail ou mot de passe incorrect",
 
       generate_password: "Générer un mot de passe",
       confirm_password_label: "Confirmer le mot de passe",

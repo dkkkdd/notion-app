@@ -9,21 +9,15 @@ export function useProjects() {
     projectsApi.fetchProjects().then(setProjects).catch(console.error);
   }, []);
 
-  const create = async (
-    title: string,
-    order: number,
-    color: string,
-    favorites: boolean,
-  ) => {
+  const create = async (title: string, color: string, favorites: boolean) => {
     const temp: Project = {
       id: "temp-" + Date.now(),
       title,
       color,
       favorites,
-      order,
-
-      userId: "me",
+      order: projects.length + 1,
     };
+
     setProjects((p) => [...p, temp]);
 
     try {

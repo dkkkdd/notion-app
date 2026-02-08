@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useCallback } from "react";
 import type { ReactNode } from "react";
 import { addDays, startOfToday } from "date-fns";
 import { useTranslation } from "react-i18next";
@@ -44,9 +44,13 @@ export const Calendar = (props: CalendarProps) => {
   const locale = localeMap[langKey] ?? enUS;
   const [open, setOpen] = useState(false);
 
-  const handleOpenChange = useCallback((value: boolean) => {
-    setOpen(value);
-  }, []);
+  const handleOpenChange = useCallback(
+    (value: boolean) => {
+      setOpen(value);
+      setIsCalOpen?.(value);
+    },
+    [setIsCalOpen],
+  );
 
   const { refs, floatingStyles, context, isPositioned } = useFloating({
     open,
@@ -58,24 +62,21 @@ export const Calendar = (props: CalendarProps) => {
   });
 
   const click = useClick(context);
-  // const dismiss = useDismiss(context, {
-  //   outsidePress: (event) => {
-  //     return !(event.target as HTMLElement)?.closest("[data-drawer-content]");
-  //   },
-  // });
+
   const dismiss = useDismiss(context, {
-    bubbles: false,
-    outsidePressEvent: "mousedown",
+    enabled: !isMobile,
+    outsidePressEvent: "click",
+    outsidePress: (event) => {
+      event.stopPropagation();
+      event.preventDefault();
+      return true;
+    },
   });
 
   const { getReferenceProps, getFloatingProps } = useInteractions([
     click,
     dismiss,
   ]);
-
-  useEffect(() => {
-    setIsCalOpen?.(open);
-  }, [open, setIsCalOpen]);
 
   const timeOptions = useMemo(() => generateTimeOptions(STEP), [open]);
 

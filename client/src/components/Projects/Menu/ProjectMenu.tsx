@@ -51,10 +51,11 @@ export function ProjectMenu({
   });
 
   const dismiss = useDismiss(context, {
+    outsidePressEvent: "click",
     outsidePress: (event) => {
-      return !(event.target as HTMLElement)?.closest(
-        "[data-floating-ui-portal]",
-      );
+      event.stopPropagation();
+      event.preventDefault();
+      return true;
     },
   });
 

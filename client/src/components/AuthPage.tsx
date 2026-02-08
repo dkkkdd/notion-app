@@ -33,8 +33,6 @@ export const AuthPage = ({ isLoginMode }: AuthPageProps) => {
   const [showPass, setShowPass] = useState(false);
   const spotlightRef = useRef<HTMLDivElement>(null);
 
-  const isEmailErr = error?.includes(t("auth_error_invalid"));
-
   useEffect(() => {
     const container = spotlightRef.current;
     if (!container) return;
@@ -90,12 +88,20 @@ export const AuthPage = ({ isLoginMode }: AuthPageProps) => {
           navigate(from, { replace: true });
         } catch (err) {
           const error = err as Error;
-          const message =
-            error.message === "Incorrect password or email"
-              ? t("auth_error_invalid")
-              : error.message || t("connection_error");
+          const serverMessage = error.message;
 
-          setError(message);
+          const errorMapping: Record<string, string> = {
+            "Invalid credentials": "auth_error_invalid",
+            "User already exists": "user_already_exists",
+            "Internal server error": "server_error",
+            "No token provided": "token_missing_error",
+            "Failed to fetch": "connection_error",
+          };
+
+          const translationKey =
+            errorMapping[serverMessage] || "connection_error";
+
+          setError(t(translationKey));
         }
       }
     },
@@ -136,6 +142,12 @@ export const AuthPage = ({ isLoginMode }: AuthPageProps) => {
             {isLoginMode ? t("login_title") : t("register_title")}
           </legend>
 
+          {error && (
+            <div className="py-3 rounded-lg text-red-500 text-sm animate-shake">
+              {error}
+            </div>
+          )}
+
           {!isLoginMode && (
             <label className="relative block">
               <input
@@ -168,12 +180,8 @@ export const AuthPage = ({ isLoginMode }: AuthPageProps) => {
               type="email"
               autoComplete="email"
               value={email}
-              className={`peer w-full p-[1em] rounded-[10px] bg-transparent text-white outline transition-all 
-      ${
-        isEmailErr
-          ? "outline-2 outline-red-500 focus:outline-red-500"
-          : "outline-1 outline-gray-500 focus:outline-[#4270d1]"
-      }`}
+              className={`peer w-full p-[1em] rounded-[10px] bg-transparent text-white outline transition-all outline-1 focus:outline-2 outline-gray-500 focus:outline-[#4270d1]
+     `}
               onChange={(e) => {
                 setEmail(e.target.value);
                 if (error) setError(null);
@@ -187,19 +195,11 @@ export const AuthPage = ({ isLoginMode }: AuthPageProps) => {
       peer-[:not(:placeholder-shown)]:-top-[1.5em] 
       peer-[:not(:placeholder-shown)]:left-[0.2em] 
       peer-[:not(:placeholder-shown)]:text-[0.8em]
-      ${
-        isEmailErr
-          ? "text-red-500"
-          : "text-white/50 peer-focus:text-[#4270d1] peer-[:not(:placeholder-shown)]:text-[#4270d1]"
-      }`}
+      text-white/50 peer-focus:text-[#4270d1] peer-[:not(:placeholder-shown)]:text-[#4270d1]
+      `}
             >
               {t("email_label")}
             </span>
-            {isEmailErr && (
-              <span className="text-[0.7em] text-red-500 mt-1 block">
-                {error}
-              </span>
-            )}
           </label>
 
           <label className="relative block">

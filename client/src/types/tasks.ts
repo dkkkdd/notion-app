@@ -9,7 +9,6 @@ export interface Task {
   comment: string | null;
   deadline: Date | null;
   reminderAt?: string | null;
-  userId: string;
   projectId?: string | null;
   completedAt: Date | null;
   subtasks?: Task[];

@@ -29,7 +29,15 @@ export const UpdateUserInfoDesktop = ({
     middleware: [offset(4), flip(), shift()],
   });
 
-  const dismiss = useDismiss(context);
+  const dismiss = useDismiss(context, {
+    outsidePressEvent: "click",
+    outsidePress: (event) => {
+      event.stopPropagation();
+      event.preventDefault();
+      return true;
+    },
+  });
+
   const role = useRole(context);
   const { getFloatingProps } = useInteractions([dismiss, role]);
   useEffect(() => {

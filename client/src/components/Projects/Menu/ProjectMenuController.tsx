@@ -84,11 +84,12 @@ export function ProjectMenuController({
         </ModalPortal>
       )}
 
-      {editing && project && (
+      {project && (
         <ModalPortal>
           <ProjectForm
             mode="edit"
             initialProject={project}
+            open={editing}
             onSubmit={(data: ProjectFormData) => {
               updateProject(project.id, data);
               setEditing(false);

@@ -1,78 +1,66 @@
-import { useEffect, useState } from "react";
-import type { Project } from "@/types/project";
-import { projectsApi } from "@/api/projects";
+import { useState } from "react";
+import type { Section } from "@/types/section";
+import { sectionApi } from "@/api/section";
 
-export function useProjects() {
-  const [projects, setProjects] = useState<Project[]>([]);
+export function useSections(initialSections: Section[] = []) {
+  const [sections, setSections] = useState<Section[]>(initialSections);
 
-  useEffect(() => {
-    projectsApi.fetchProjects().then(setProjects).catch(console.error);
-  }, []);
-
-  const create = async (
-    title: string,
-    order: number,
-    color: string,
-    favorites: boolean,
-  ) => {
-    const temp: Project = {
-      id: "temp-" + Date.now(),
-      title,
-      color,
-      favorites,
-      order,
-
-      userId: "me",
+  const createSection = async (title: string, projectId: string) => {
+    const tempId = `temp-${Date.now()}`;
+    const tempSection: Section = {
+      id: tempId,
+      title: title.trim(),
+      order: sections.length,
+      projectId,
     };
-    setProjects((p) => [...p, temp]);
+
+    setSections((prev) => [...prev, tempSection]);
 
     try {
-      const real = await projectsApi.createProject({ title, color, favorites });
-      setProjects((p) => p.map((x) => (x.id === temp.id ? real : x)));
-    } catch {
-      setProjects((p) => p.filter((x) => x.id !== temp.id));
+      const real = await sectionApi.createSection({
+        title,
+        projectId,
+        order: tempSection.order,
+      });
+
+      setSections((prev) => prev.map((s) => (s.id === tempId ? real : s)));
+    } catch (error) {
+      setSections((prev) => prev.filter((s) => s.id !== tempId));
+      console.error("Failed to create section:", error);
     }
   };
 
-  const remove = async (id: string) => {
-    const snapshot = projects;
-    setProjects((p) => p.filter((x) => x.id !== id));
+  const updateSection = async (id: string, data: Partial<Section>) => {
+    const snapshot = sections;
+    setSections((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, ...data } : s)),
+    );
 
     try {
-      await projectsApi.deleteProject(id);
-    } catch {
-      setProjects(snapshot);
+      await sectionApi.updateSection(id, data);
+    } catch (error) {
+      setSections(snapshot);
+      console.error("Failed to update section:", error);
     }
   };
 
-  const toggleFavorite = async (id: string, favorites: boolean) => {
-    const snapshot = projects;
-    setProjects((p) => p.map((x) => (x.id === id ? { ...x, favorites } : x)));
+  const deleteSection = async (id: string) => {
+    const snapshot = sections;
+    setSections((prev) => prev.filter((s) => s.id !== id));
 
     try {
-      await projectsApi.updateProject(id, { favorites });
-    } catch {
-      setProjects(snapshot);
-    }
-  };
-
-  const update = async (id: string, data: Partial<Project>) => {
-    const snapshot = projects;
-    setProjects((p) => p.map((x) => (x.id === id ? { ...x, ...data } : x)));
-
-    try {
-      await projectsApi.updateProject(id, data);
-    } catch {
-      setProjects(snapshot);
+      await sectionApi.deleteSection(id);
+    } catch (error) {
+      setSections(snapshot);
+      console.error("Failed to delete section:", error);
     }
   };
 
   return {
-    projects,
-
-    createProject: create,
-    deleteProject: remove,
-    updateProject: update,
-    toggleFavorite,
+    sections,
+    setSections,
+    createSection,
+    updateSection,
+    deleteSection,
   };
 }

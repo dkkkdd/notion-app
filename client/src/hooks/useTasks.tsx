@@ -72,18 +72,13 @@ export function useTasks(userId: string) {
 
   const create = async (data: Partial<Task> & { parentId?: string | null }) => {
     const tempId = `temp-${Date.now()}`;
-    const safeTask = tasks === null ? [] : tasks;
-    const nextOrder =
-      safeTask.length > 0
-        ? Math.max(...safeTask.map((t) => t.order ?? 0)) + 1
-        : 0;
 
     const tempNode: Task = {
       id: tempId,
       title: data.title || "",
       isDone: false,
-      userId,
-      order: nextOrder,
+
+      order: (tasks?.length || 0) + 1,
       subtasks: [],
       completedAt: null,
       priority: data.priority ?? 1,
@@ -94,6 +89,7 @@ export function useTasks(userId: string) {
       reminderAt: data.reminderAt ?? null,
       comment: data.comment ?? null,
     };
+
     setTasks((prev) => {
       const newList = data.parentId
         ? addSubtaskNode(prev || [], data.parentId, tempNode)
@@ -102,17 +98,9 @@ export function useTasks(userId: string) {
     });
 
     try {
+      const { order, ...restData } = data;
       const real = await tasksApi.createTask({
-        title: data.title || "",
-        userId,
-        order: nextOrder,
-        priority: data.priority,
-        projectId: data.projectId,
-        sectionId: data.sectionId,
-        parentId: data.parentId,
-        deadline: data.deadline,
-        reminderAt: data.reminderAt,
-        comment: data.comment,
+        ...restData,
       });
 
       setTasks((prev) => sortTasks(updateNode(prev || [], tempId, real)));

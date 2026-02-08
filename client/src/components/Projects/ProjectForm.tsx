@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { Project } from "@/types/project";
 import { MobileDrawer } from "@/features/MobileDrawer";
@@ -9,6 +9,7 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 export interface ProjectFormProps {
   mode: "create" | "edit";
   initialProject?: Project;
+  open: boolean;
   onSubmit: (data: { title: string; color: string }) => void | Promise<void>;
   onClose: () => void;
 }
@@ -18,6 +19,7 @@ export const ProjectForm = ({
   initialProject,
   onSubmit,
   onClose,
+  open,
 }: ProjectFormProps) => {
   const isMobile = useIsMobile();
   const [name, setName] = useState(initialProject?.title ?? "");
@@ -26,7 +28,7 @@ export const ProjectForm = ({
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { t } = useTranslation();
-  const inputRef = useRef<HTMLInputElement>(null);
+  // const inputRef = useRef<HTMLInputElement>(null);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || isSubmitting) return;
@@ -47,12 +49,12 @@ export const ProjectForm = ({
   return (
     <>
       <MobileDrawer
-        open={isMobile}
+        open={open && isMobile}
         onClose={onClose}
         drawerDescription="Create or edit project"
         drawerTitle="Project editor"
       >
-        <div className="flex flex-col gap-6 pt-2">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6 pt-2">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold text-black dark:text-white">
               {mode === "create" ? t("add_project") : t("edit_project")}
@@ -73,6 +75,7 @@ export const ProjectForm = ({
               placeholder={t("project_name_placeholder")}
               value={name}
               maxLength={80}
+              autoFocus
               onChange={(e) => setName(e.target.value)}
             />
 
@@ -132,7 +135,6 @@ export const ProjectForm = ({
             </button>
 
             <button
-              onClick={handleSubmit}
               type="submit"
               disabled={!name.trim() || isSubmitting}
               className="
@@ -151,10 +153,10 @@ export const ProjectForm = ({
                   : t("save_btn")}
             </button>
           </div>
-        </div>
+        </form>
       </MobileDrawer>
 
-      {!isMobile && (
+      {!isMobile && open && (
         <div
           className="fixed inset-0 z-[999] bg-black/60 flex items-center justify-center p-4"
           onClick={onClose}
@@ -179,7 +181,7 @@ export const ProjectForm = ({
                   className="w-full bg-transparent p-2 h-auto border-[0.5px] border-black/20 dark:border-[#d0d0d05a]/60 outline-none rounded-lg text-black dark:text-white block box-border placeholder:text-black-60"
                   id="project-title"
                   placeholder={t("project_name_placeholder")}
-                  ref={inputRef}
+                  autoFocus
                   value={name}
                   maxLength={80}
                   onChange={(e) => setName(e.target.value)}

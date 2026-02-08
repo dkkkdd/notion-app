@@ -56,7 +56,6 @@ export const TaskForm = ({
 
   const containerRef = useRef<HTMLFormElement>(null);
   const initialSelectedId = useRef(selectedProjectId);
-  const titleRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (selectedProjectId !== initialSelectedId.current) {
@@ -99,10 +98,6 @@ export const TaskForm = ({
         } else {
           setDate(null);
         }
-
-        if (isMobile && titleRef.current) {
-          titleRef.current.focus();
-        }
       }
     } catch (error) {
       console.error("Failed to submit task:", error);
@@ -141,7 +136,7 @@ export const TaskForm = ({
 
               <div className="flex-1 ">
                 <input
-                  ref={titleRef}
+                  // ref={titleRef}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder={t("task_title_placeholder")}
@@ -359,7 +354,7 @@ export const TaskForm = ({
           <div>
             <label>
               <input
-                ref={titleRef}
+                // ref={titleRef}
                 className="w-full bg-transparent outline-none text-black dark:text-white"
                 id="task-title"
                 placeholder={t("task_title_placeholder")}

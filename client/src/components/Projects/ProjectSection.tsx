@@ -54,21 +54,20 @@ export function ProjectsSection() {
         <ProjectsList projects={projects} />
       </div>
 
-      {showForm && (
-        <ModalPortal>
-          <ProjectForm
-            mode="create"
-            onClose={() => setShowForm(false)}
-            onSubmit={async ({ title, color }) => {
-              const newProject = await createProject(title, 3, color, false);
-              if (newProject) {
-                changeMode("project", newProject.id);
-              }
-              setShowForm(false);
-            }}
-          />
-        </ModalPortal>
-      )}
+      <ModalPortal>
+        <ProjectForm
+          mode="create"
+          open={showForm}
+          onClose={() => setShowForm(false)}
+          onSubmit={async ({ title, color }) => {
+            const newProject = await createProject(title, color, false);
+            if (newProject) {
+              changeMode("project", newProject.id);
+            }
+            setShowForm(false);
+          }}
+        />
+      </ModalPortal>
     </div>
   );
 }

@@ -32,6 +32,7 @@ export const UpdateUserInfoForm = ({ onClose }: { onClose: () => void }) => {
               maxLength={30}
               placeholder=" "
               required
+              autoFocus
               autoComplete="username"
               type="text"
               value={userName}

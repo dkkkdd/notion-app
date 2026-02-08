@@ -202,7 +202,6 @@ export const TaskList = () => {
             onClose={() => setOpenForm(false)}
             onSubmit={async (data) => {
               await createTask(data);
-              setOpenForm(false);
             }}
           />
         )}
