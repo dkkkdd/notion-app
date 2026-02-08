@@ -6,19 +6,14 @@ import jwt from "jsonwebtoken";
 const JWT_SECRET = process.env.JWT_SECRET || "super-secret-key";
 
 function setAuthCookie(res: Response, token: string) {
-  const origin = res.req.headers.origin || "";
-  const isLocalhost = origin.includes("localhost");
+  const isProduction = process.env.NODE_ENV === "production";
 
   res.cookie("accessToken", token, {
     httpOnly: true,
-
     secure: true,
-
-    sameSite: isLocalhost ? "none" : "lax",
-
-    ...(isLocalhost ? {} : { domain: ".task-managerr.pp.ua" }),
-
+    sameSite: "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
+    domain: ".task-managerr.pp.ua",
     path: "/",
   });
 }
@@ -188,17 +183,12 @@ export async function deleteAcc(req: AuthenticatedRequest, res: Response) {
 }
 
 export async function logout(req: Request, res: Response) {
-  const origin = req.headers.origin || "";
-  const isLocalhost = origin.includes("localhost");
-  const isProduction = process.env.NODE_ENV === "production";
-
   res.clearCookie("accessToken", {
     httpOnly: true,
     secure: true,
-    sameSite: isLocalhost ? "none" : "lax",
-    ...(isLocalhost ? {} : { domain: ".task-managerr.pp.ua" }),
+    sameSite: "lax",
+    domain: ".task-managerr.pp.ua",
     path: "/",
   });
-
   res.status(200).json({ message: "Logged out successfully" });
 }
