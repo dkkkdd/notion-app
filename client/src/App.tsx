@@ -54,7 +54,7 @@ function ProtectedApp() {
 
 function AppContent() {
   const { t } = useTranslation();
-  const { isAuthenticated, loading } = useAuthState();
+  const { isAuthenticated, loading, user } = useAuthState();
   const location = useLocation();
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
@@ -104,7 +104,7 @@ function AppContent() {
         path="/*"
         element={
           isAuthenticated ? (
-            <ProtectedApp />
+            <ProtectedApp key={user?.id} />
           ) : (
             <Navigate to="/login" state={{ from: location }} replace />
           )
