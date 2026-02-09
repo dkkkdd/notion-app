@@ -11,9 +11,8 @@ function setAuthCookie(res: Response, token: string) {
   res.cookie("accessToken", token, {
     httpOnly: true,
     secure: true,
-    sameSite: "lax",
+    sameSite: "none",
     maxAge: 7 * 24 * 60 * 60 * 1000,
-    domain: ".task-managerr.pp.ua",
     path: "/",
   });
 }
@@ -118,7 +117,7 @@ export async function updateMe(req: AuthenticatedRequest, res: Response) {
   } catch (error) {
     const e = error as { code?: string; message?: string };
     if (e.code === "P2002") {
-      return res.status(400).json({ error: "Этот email уже занят" });
+      return res.status(400).json({ error: "User already exists" });
     }
     res.status(500).json({ error: "Internal server error" });
   }
@@ -186,8 +185,8 @@ export async function logout(req: Request, res: Response) {
   res.clearCookie("accessToken", {
     httpOnly: true,
     secure: true,
-    sameSite: "lax",
-    domain: ".task-managerr.pp.ua",
+    sameSite: "none",
+
     path: "/",
   });
   res.status(200).json({ message: "Logged out successfully" });
