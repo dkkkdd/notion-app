@@ -2,8 +2,7 @@
 
 ## Authentication
 
-Register with email/password. Login with credentials. JWT stored in localStorage, included in all requests.
-Password hashing with bcrypt (10 rounds). User scoping on all database queries.
+Register with email/password. Login with credentials. JWT stored in **httpOnly secure cookies** and included automatically in all requests. Password hashing with bcrypt (10 rounds). User scoping on all database queries.
 
 ## Projects
 
@@ -36,29 +35,21 @@ See statistics (project count, active tasks).
 ## Responsive Design
 
 Desktop: Sidebar navigation on left, main content on right.
-
 Mobile: Bottom drawer for navigation, header at top.
-
 Safe area handling for iOS notch and home indicator.
-
 Touch-friendly button sizes and spacing.
 
 ## Mobile Features
 
 Bottom drawer for projects navigation. Mobile-optimized forms.
-
 Header menu access on mobile. Responsive task card layout.
 
 ## What's Working
 
-All core CRUD operations for projects, tasks, (sections).
-
+All core CRUD operations for projects, tasks.
 User authentication and profile management.
-
 Responsive mobile and desktop layouts.
-
 Task priorities and deadlines.
-
 Subtask support.
 
 ## What's Planned
@@ -71,11 +62,9 @@ Phase 2:
 - Keyboard shortcuts
 - better error handling
 - board mode
-- Input validation
 - Automated tests
 
 Phase 3:
 
 - Analytics dashboard
 - Productivity trends
-- Comments on tasks

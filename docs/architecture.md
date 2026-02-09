@@ -24,7 +24,8 @@ Custom Hooks:
 - useProjects - Project operations
 - useSections - Section operations
 - useIsMobile - Mobile detection
-- useLocalStorage - Client storage
+- useFilteredTasks - Filter for tasks depending on mode or selected project ID
+- useTaskSelection - Operations on multiple tasks
 
 Components:
 
@@ -85,9 +86,9 @@ Flow:
 
 1. User registers/logs in
 2. Backend hashes password, generates JWT
-3. Frontend stores JWT in localStorage
-4. All requests include JWT in Authorization header
-5. authMiddleware verifies token, sets req.userId
+3. Backend stores JWT in httpOnly secure cookie
+4. Frontend sends all requests with cookies automatically
+5. authMiddleware verifies token from cookies and sets
 
 ## Data Flow
 
