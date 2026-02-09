@@ -65,12 +65,51 @@ export const UpdateUserInfoForm = ({ onClose }: { onClose: () => void }) => {
         </div>
       </div>
       <div
-        className={`flex gap-3 ${isMobile ? "flex-col" : "justify-end"} mt-6`}
+        className={`flex gap-3 mt-6 ${isMobile ? "flex-col" : "justify-end"}`}
       >
-        <button type="button" onClick={onClose} className="...">
+        <button
+          type="button"
+          onClick={onClose}
+          className="
+      w-full sm:w-auto
+      px-5 py-2.5
+      rounded-xl
+      font-medium
+      transition-all duration-200
+
+      bg-gray-100 text-gray-900
+      hover:bg-gray-200
+
+      dark:bg-white/10 dark:text-white
+      dark:hover:bg-white/20
+
+      focus:outline-none
+      focus:ring-2 focus:ring-pink-500
+    "
+        >
           {t("cancel")}
         </button>
-        <button type="submit" className="...">
+
+        <button
+          type="submit"
+          className="
+      w-full sm:w-auto
+      px-5 py-2.5
+      rounded-xl
+      font-semibold
+      transition-all duration-200
+
+      bg-pink-500 text-white
+      hover:bg-pink-600
+
+      dark:bg-pink-600 dark:hover:bg-pink-500
+
+      shadow-sm hover:shadow-md
+
+      focus:outline-none
+      focus:ring-2 focus:ring-pink-400
+    "
+        >
           {t("save_changes")}
         </button>
       </div>

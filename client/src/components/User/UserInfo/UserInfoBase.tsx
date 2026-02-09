@@ -116,7 +116,7 @@ export const UserInfoBase = ({
         </div>
 
         <div className="space-y-2 mt-4">
-          <button className="w-full p-3 flex items-center justify-center bg-gray-100 dark:bg-[#333] rounded-lg font-semibold hover:bg-gray-200 dark:hover:bg-[#444] transition">
+          <button className="w-full p-3 flex items-center justify-center text-black dark:text-white bg-gray-100 dark:bg-[#333] rounded-lg font-semibold hover:bg-gray-200 dark:hover:bg-[#444] transition">
             <span className="icon-prize mr-2" />
             {t("statistics")}
           </button>
