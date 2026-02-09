@@ -1,26 +1,27 @@
-# Notion-App
+# Task Manager App
 
-A full-stack task management app built with React, TypeScript, and Node.js.
+A full-stack task management app inspired by Notion, built with React, TypeScript, and Node.js.
 
 ## What it does
 
-Organize work into projects, sections, and tasks. Set priorities and deadlines, create subtasks, and track progress. Works on desktop and mobile.
+Organize your workflow into projects, sections, and tasks. Create subtasks, set priorities and deadlines, and track progress in a clean and modern interface. Fully responsive for both desktop and mobile.
 
 ## Features
 
-- User authentication (register/login)
-- Projects with color coding and favorites
-- Tasks with subtasks
-- Sections for organizing tasks
-- Priorities and deadlines
-- Mobile responsive design
-- Type-safe database with Prisma ORM
+- Authentication system (register/login)
+- JWT-based auth stored in **httpOnly secure cookies**
+- Projects with color labels and favorites
+- Task management with subtasks
+- Sections for better organization
+- Priorities and due dates
+- Mobile-friendly responsive UI
+- Type-safe database layer with Prisma ORM
 
 ## Tech Stack
 
-Frontend: React 18, TypeScript, Vite, TailwindCSS, Framer Motion
-Backend: Node.js, Express, TypeScript
-Database: SQLite (dev) / PostgreSQL (prod)
+Frontend: React 18, TypeScript, Vite, TailwindCSS, Framer Motion  
+Backend: Node.js, Express, TypeScript  
+Database: PostgreSQL
 
 ## Quick Start
 
@@ -32,7 +33,7 @@ npm install
 npm run dev
 ```
 
-Backend (in another terminal):
+Backend:
 
 ```bash
 cd server
@@ -41,29 +42,30 @@ npx prisma db push
 npm run dev
 ```
 
-Frontend runs at http://localhost:5173
-Backend at http://localhost:3000
+Frontend runs at: https://task-managerr.pp.ua
+Backend runs at: https://api.task-managerr.pp.ua/
 
-## Folder Structure
+Folder Structure
 
 Frontend (/src):
 
-- /api - HTTP client functions
-- /components - React components
-- /context - State management
-- /hooks - Custom hooks
-- /types - TypeScript interfaces
+/api — HTTP client and API requests
+/components — UI components
+/context — Global state providers
+/hooks — Custom React hooks
+/types — Shared TypeScript types
 
 Backend (/src):
 
-- /controllers - Request handlers
-- /routes - API endpoints
-- /middleware - Auth verification
+/controllers — Request handlers
+/routes — REST API endpoints
+/middleware — Cookie-based auth verification
 
 Database:
 
-- /prisma/schema.prisma - Database schema
+/prisma/schema.prisma — Prisma schema and models
 
-## Status
+Status
 
-MVP complete. All core features working. See ROADMAP.md for next steps.
+MVP complete. Core functionality is working.
+Next improvements are listed in ROADMAP.md.

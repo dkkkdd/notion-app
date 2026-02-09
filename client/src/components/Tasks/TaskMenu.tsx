@@ -98,7 +98,7 @@ export const GlobalDropdown = ({
             <span className="icon-pencil"> </span>
             {t("edit")}
           </div>
-          {onAddSubtask && (
+          {onAddSubtask && task.subtasks?.length && (
             <div
               onClick={() => {
                 onAddSubtask();
