@@ -4,6 +4,7 @@ import { startOfDay } from "date-fns";
 import { useTranslation } from "react-i18next";
 import { localeMap } from "@/i18n";
 import { enUS } from "date-fns/locale";
+
 import "react-day-picker/dist/style.css";
 
 interface SharedDayPickerProps {
@@ -28,54 +29,9 @@ export const SharedDayPicker = ({
     [i18n.language],
   );
 
-  const desktopStyles = {
-    day: {
-      cursor: "pointer",
-      borderRadius: "50%",
-      fontSize: "0.7rem",
-      margin: "2px",
-    },
-    caption_label: {
-      borderColor: "#ec4899",
-    },
-    selected: {
-      fontWeight: "bold",
-      borderColor: "#ec4899",
-      backgroundColor: "#ec4899",
-      color: "white",
-    },
-    today: {
-      fontWeight: "bold",
-      border: "1px solid #ec4899",
-      color: "#ec4899",
-    },
-    disabled: {
-      color: "#727272",
-      cursor: "not-allowed",
-    },
-    day_outside: {
-      color: "#a0a0a0",
-      cursor: "not-allowed",
-    },
-  };
-
-  const mobileStyles = {
-    caption: { display: hideCaption ? "none" : "block" },
-    day: {
-      cursor: "pointer",
-      borderRadius: "0.5rem",
-    },
-    selected: {
-      backgroundColor: "#673ab7",
-      color: "white",
-    },
-    today: {
-      fontWeight: "bold",
-      color: "#ff5722",
-    },
-  };
   const today = startOfDay(new Date());
-  const styles = variant === "desktop" ? desktopStyles : mobileStyles;
+
+  const wrapperClass = variant === "desktop" ? "w-full" : "w-fit text-sm";
 
   return (
     <DayPicker
@@ -87,10 +43,49 @@ export const SharedDayPicker = ({
       showOutsideDays
       disabled={{ before: today }}
       toDate={toDate}
-      className={
-        variant === "desktop" ? "w-full h-[300px] overflow-y-auto" : "w-fit"
-      }
-      styles={styles}
+      className={`
+        ${wrapperClass}
+
+        rounded-2xl p-4 shadow-sm
+        bg-white text-gray-900
+        dark:bg-[#111] dark:text-white
+
+        ${hideCaption ? "[&_.rdp-caption]:hidden" : ""}
+
+        /* Month title */
+        [&_.rdp-caption_label]:text-gray-900
+        dark:[&_.rdp-caption_label]:text-white
+        [&_.rdp-caption_label]:font-semibold
+
+        /* Day cells */
+        [&_.rdp-day]:rounded-full
+        [&_.rdp-day]:transition
+        [&_.rdp-day]:text-gray-900
+        dark:[&_.rdp-day]:text-white
+
+        /* Hover */
+        [&_.rdp-day:hover]:bg-gray-100
+        dark:[&_.rdp-day:hover]:bg-white/10
+
+        /* Selected day */
+        [&_.rdp-day_selected]:bg-pink-500
+        [&_.rdp-day_selected]:text-white
+        [&_.rdp-day_selected:hover]:bg-pink-500
+
+        /* Today */
+        [&_.rdp-day_today]:border
+        [&_.rdp-day_today]:border-pink-500
+        [&_.rdp-day_today]:text-pink-500
+
+        /* Disabled */
+        [&_.rdp-day_disabled]:text-gray-300
+        dark:[&_.rdp-day_disabled]:text-white/20
+        [&_.rdp-day_disabled]:cursor-not-allowed
+
+        /* Outside month */
+        [&_.rdp-day_outside]:text-gray-300
+        dark:[&_.rdp-day_outside]:text-white/20
+      `}
     />
   );
 };
