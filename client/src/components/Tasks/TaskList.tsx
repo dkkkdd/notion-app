@@ -111,7 +111,9 @@ export const TaskList = () => {
           setShowSubTasks={() => toggleTask(task.id)}
           onEdit={() => handleStartEditing(task.id)}
           onDeleteRequest={() => handleDeleteRequest(task)}
-          onAddSubtask={() => handleStartAddSubtask(task.id)}
+          onAddSubtask={
+            !!task.parentId ? undefined : () => handleStartAddSubtask(task.id)
+          }
         />
         {isMobile && (
           <TaskForm
