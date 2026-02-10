@@ -83,8 +83,6 @@ export function useFilteredTasks() {
       (a: Task, b: Task) => Number(a.isDone) - Number(b.isDone),
     );
   }, [tasks, mode, selectedProjectId, loading, showAll]);
-  // const ready =
-  //   !loading && (tasks.length > 0 ? filteredTasks.length > 0 : true);
 
   return { tasks: filteredTasks, ready: tasks !== null };
 }

@@ -3,21 +3,23 @@ import type { Task } from "@/types/tasks";
 import { tasksApi } from "@/api/tasks";
 
 const sortTasks = (list: Task[]): Task[] => {
-  return [...list]
-    .sort((a, b) => {
-      if (a.isDone && b.isDone) {
-        return (
-          new Date(b.completedAt!).getTime() -
-          new Date(a.completedAt!).getTime()
-        );
-      }
-      if (a.isDone !== b.isDone) return a.isDone ? 1 : -1;
-      return (a.order ?? 0) - (b.order ?? 0);
-    })
-    .map((node) => ({
-      ...node,
-      subtasks: node.subtasks ? sortTasks(node.subtasks) : [],
-    }));
+  return (
+    [...list]
+      // .sort((a, b) => {
+      //   if (a.isDone && b.isDone) {
+      //     return (
+      //       new Date(b.completedAt!).getTime() -
+      //       new Date(a.completedAt!).getTime()
+      //     );
+      //   }
+      //   if (a.isDone !== b.isDone) return a.isDone ? 1 : -1;
+      //   return (a.order ?? 0) - (b.order ?? 0);
+      // })
+      .map((node) => ({
+        ...node,
+        subtasks: node.subtasks ? sortTasks(node.subtasks) : [],
+      }))
+  );
 };
 
 const updateNode = (
