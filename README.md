@@ -23,6 +23,15 @@ Frontend: React 18, TypeScript, Vite, TailwindCSS, Framer Motion
 Backend: Node.js, Express, TypeScript  
 Database: PostgreSQL
 
+## Screenshots
+
+![Desktop-Dark](./client/src/assets/screenshots/desktop-dark.png)
+![Desktop-Light](./client/src/assets/screenshots/desktop-light.png)
+![Desktop User Profile](./client/src/assets/screenshots/desktop-userInfo.png)
+![Mobile-Dark](./client/src/assets/screenshots/mobile-dark.png)
+![Mobile-Light](./client/src/assets/screenshots/mobile-light.png)
+![Mobile User Profile](./client/src/assets/screenshots/mobile-userInfo.png)
+
 ## Quick Start
 
 Frontend:
@@ -43,7 +52,7 @@ npm run dev
 ```
 
 Frontend runs at: https://task-managerr.pp.ua
-Backend runs at: https://api.task-managerr.pp.ua/
+Backend runs at: https://api.task-managerr.pp.ua
 
 Folder Structure
 
